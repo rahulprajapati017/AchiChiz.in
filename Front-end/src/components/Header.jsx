@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FiSearch,
@@ -7,6 +7,7 @@ import {
   FiShoppingCart,
   FiMenu,
   FiX,
+  FiChevronDown,
 } from "react-icons/fi";
 
 const navItems = [
@@ -64,11 +65,22 @@ const navItems = [
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const hoverTimeout = useRef(null);
+
+  const handleMouseEnter = (idx) => {
+    clearTimeout(hoverTimeout.current);
+    setHovered(idx);
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeout.current = setTimeout(() => {
+      setHovered(null);
+    }, 100);
+  };
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-transparent text-white px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between backdrop-blur-xs border-b border-white/30">
-      
-      {/* Logo */}
       <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
 
       {/* Desktop Nav */}
@@ -77,8 +89,8 @@ export default function Header() {
           <li
             key={idx}
             className="relative"
-            onMouseEnter={() => setHovered(idx)}
-            onMouseLeave={() => setHovered(null)}
+            onMouseEnter={() => handleMouseEnter(idx)}
+            onMouseLeave={handleMouseLeave}
           >
             <NavLink
               to={item.path}
@@ -90,10 +102,8 @@ export default function Header() {
             >
               {item.title}
             </NavLink>
-
-            {/* Dropdown */}
             {hovered === idx && item.dropdown.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-[600px] max-h-[400px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 transition-all duration-1000 z-20">
+              <div className="absolute top-full left-0 mt-2 w-[600px] max-h-[400px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 transition-all duration-1000 ease-out scale-100 origin-top z-20">
                 {item.dropdown.map((option, i) => (
                   <div
                     key={i}
@@ -108,21 +118,17 @@ export default function Header() {
         ))}
       </ul>
 
-      {/* Right icons */}
+      {/* Icons */}
       <div className="hidden lg:flex items-center gap-6 text-lg relative">
         <FiSearch className="cursor-pointer hover:text-orange-500 transition duration-300" />
         <FiUser className="cursor-pointer hover:text-orange-500 transition duration-300" />
         <div className="relative">
           <FiHeart className="cursor-pointer hover:text-orange-500 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-orange-500 text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            0
-          </span>
+          <span className="absolute -top-2 -right-2 bg-orange-500 text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
         </div>
         <div className="relative">
           <FiShoppingCart className="cursor-pointer hover:text-orange-500 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-orange-500 text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            0
-          </span>
+          <span className="absolute -top-2 -right-2 bg-orange-500 text-[10px] w-4 h-4 flex items-center justify-center rounded-full">0</span>
         </div>
       </div>
 
@@ -144,18 +150,31 @@ export default function Header() {
 
         <ul className="flex flex-col gap-4 p-6">
           {navItems.map((item, idx) => (
-            <li key={idx}>
-              <NavLink
-                to={item.path}
-                className="text-lg font-medium text-black hover:text-orange-500"
-                onClick={() => setMobileOpen(false)}
-              >
-                {item.title}
-              </NavLink>
-              {item.dropdown.length > 0 && (
-                <ul className="mt-2 pl-4 space-y-1 text-sm text-gray-700">
-                  {item.dropdown.slice(0, 6).map((sub, i) => (
-                    <li key={i} className="hover:text-orange-500 transition duration-1000">
+            <li key={idx} className="border-b pb-2">
+              <div className="flex justify-between items-center">
+                <NavLink
+                  to={item.path}
+                  className="text-lg font-medium text-black hover:text-orange-500"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.title}
+                </NavLink>
+                {item.dropdown.length > 0 && (
+                  <FiChevronDown
+                    className="ml-2 cursor-pointer"
+                    onClick={() =>
+                      setOpenDropdown(openDropdown === idx ? null : idx)
+                    }
+                  />
+                )}
+              </div>
+              {openDropdown === idx && item.dropdown.length > 0 && (
+                <ul className="mt-2 pl-4 space-y-1 text-sm text-gray-700 transition-all duration-1000 ease-in-out">
+                  {item.dropdown.slice(0, 8).map((sub, i) => (
+                    <li
+                      key={i}
+                      className="hover:text-orange-500 transition duration-1000"
+                    >
                       {sub}
                     </li>
                   ))}

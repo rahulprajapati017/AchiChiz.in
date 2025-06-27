@@ -5,11 +5,11 @@ function Home() {
     <div>
       <Scrollbar />
       <ShopByCategory />
-      <Customerreview />
-      <Followus /> 
       <Newarrival />
       <Customizeproduct />
       <TrendingProduct />
+      <Customerreview />
+      <Followus /> 
     </div>
   )
 }
