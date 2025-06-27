@@ -46,9 +46,9 @@ export default function CategorySlider() {
 
   return (
     <div className="w-full flex items-center justify-center min-h-screen bg-[#f6f3ed]">
-      <div className="flex ">
+      <div className="flex w-[80%]">
         {/* Image with slide animation */}
-        <div className="relative w-[400px] h-[500px] overflow-hidden">
+        <div className="relative w-[800px] h-[500px] overflow-hidden">
           <img
             src={categories[current].image}
             alt={categories[current].name}

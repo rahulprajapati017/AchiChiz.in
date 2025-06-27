@@ -3,12 +3,12 @@ import { Customizeproduct,Customerreview,Followus,Newarrival,Scrollbar,ShopByCat
 function Home() {
   return (
     <div>
+      <Scrollbar />
+      <ShopByCategory />
       <Customerreview />
       <Followus /> 
       <Newarrival />
       <Customizeproduct />
-      <Scrollbar />
-      <ShopByCategory />
       <TrendingProduct />
     </div>
   )
