@@ -5,19 +5,12 @@ function Home() {
     <div>
       <Scrollbar />
       <ShopByCategory />
-<<<<<<< HEAD
-      <Newarrival />
       <Customizeproduct />
-      <TrendingProduct />
-      <Customerreview />
-      <Followus /> 
-=======
       <Customerreview />
       <Followus /> 
       <NewArrivals />
       <Customizeproduct />
       <NewTrending />
->>>>>>> d33b605db14cbabd35efe9cbb621677882ec9fb5
     </div>
   )
 }
