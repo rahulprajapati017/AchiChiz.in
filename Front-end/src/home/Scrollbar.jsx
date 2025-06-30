@@ -1,4 +1,3 @@
-// HeroScroll.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
@@ -69,7 +68,7 @@ export default function HeroScroll() {
   }, [index]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       <div
         ref={containerRef}
         className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory touch-pan-x scrollbar-hide"
@@ -77,38 +76,43 @@ export default function HeroScroll() {
         {panels.map((panel, idx) => (
           <div
             key={idx}
-            className="w-screen h-screen flex-shrink-0 relative snap-start text-white"
+            className="w-screen h-[100vh] flex-shrink-0 relative snap-start text-white"
           >
+            {/* Background Image with 40% blur */}
             <div
-              className="absolute inset-0 bg-cover bg-center blur-md"
-              style={{ backgroundImage: `url(${panel.background})` }}
+              className="absolute inset-0 bg-cover bg-center z-0"
+              style={{
+                backgroundImage: `url(${panel.background})`,
+                filter: "blur(4px)",
+              }}
             ></div>
-            <div className="absolute inset-0 bg-black/60"></div>
+            <div className="absolute inset-0 bg-black/60 z-0"></div>
 
-            <div className="relative z-10 flex flex-col md:flex-row justify-center items-center h-full px-20 md:px-16 py-12 gap-10 text-center">
-              <div className="max-w-4xl space-y-8 animate-fade-in">
-                <h4 className="text-lg md:text-2xl tracking-widest uppercase text-gray-300 animate-slide-in">
+            {/* Foreground Content */}
+            <div className="relative z-10 flex flex-col md:flex-row justify-center items-center h-full pt-[80px] px-6 md:px-16 py-10 gap-8 text-center md:text-left">
+              <div className="max-w-2xl space-y-6 animate-fade-in">
+                <h4 className="text-sm sm:text-base md:text-xl tracking-widest uppercase text-gray-300 animate-slide-in">
                   {panel.subtitle}
                 </h4>
-                <h1 className="text-6xl md:text-8xl font-extrabold leading-tight animate-slide-in delay-100">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight animate-slide-in delay-100">
                   {panel.title}
                 </h1>
-                <p className="text-xl md:text-2xl text-gray-200 leading-relaxed animate-slide-in delay-200">
+                <p className="text-base sm:text-lg md:text-xl text-gray-200 leading-relaxed animate-slide-in delay-200">
                   {panel.description}
                 </p>
-                <button className="mt-6 bg-orange-600 px-10 py-5 text-xl md:text-2xl tracking-wider font-bold uppercase hover:bg-orange-500 transition animate-slide-in delay-300">
+                <button className="mt-4 bg-orange-600 px-8 py-3 text-sm sm:text-lg md:text-xl tracking-wider font-bold uppercase hover:bg-orange-500 transition animate-slide-in delay-300">
                   {panel.button}
                 </button>
               </div>
 
-              <div className="relative flex-shrink-0 hover:scale-105 transition-transform duration-300">
+              <div className="relative flex-shrink-0 hover:scale-105 transition-transform duration-300 mt-10 md:mt-0">
                 <img
                   src={panel.image}
                   alt="Product"
-                  className="w-[320px] h-[400px] md:w-[400px] md:h-[500px] object-cover rounded shadow-lg"
+                  className="w-[250px] h-[330px] sm:w-[300px] sm:h-[400px] md:w-[380px] md:h-[480px] object-cover rounded shadow-lg"
                 />
-                <div className="absolute -left-16 top-1/2 -translate-y-1/2 w-28 h-28 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center text-orange-700 font-semibold text-sm md:text-base text-center shadow-md animate-[spin_16s_linear_infinite]">
-                  <div className="rotate-[-30deg] whitespace-pre-line text-center leading-tight">
+                <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center text-orange-700 font-semibold text-[10px] sm:text-xs text-center shadow-md animate-[spin_16s_linear_infinite]">
+                  <div className="rotate-[-30deg] whitespace-pre-line leading-tight">
                     HANDMADE{"\n"}CREATIONS
                   </div>
                 </div>
@@ -118,15 +122,23 @@ export default function HeroScroll() {
         ))}
       </div>
 
+      {/* Scroll Indicators */}
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
         {panels.map((_, i) => (
-          <div
+          <button
             key={i}
-            className={`w-3 h-3 rounded-full ${index === i ? 'bg-white' : 'bg-gray-500'} transition-all duration-300`}
-          ></div>
+            onClick={() => {
+              setIndex(i);
+              scrollToPanel(i);
+            }}
+            className={`w-3 h-3 rounded-full ${
+              index === i ? "bg-white" : "bg-gray-500"
+            } transition-all duration-300`}
+          ></button>
         ))}
       </div>
 
+      {/* Navigation Arrows */}
       <button
         onClick={prev}
         className="absolute top-1/2 left-2 md:left-4 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/60 z-20"
@@ -142,11 +154,3 @@ export default function HeroScroll() {
     </div>
   );
 }
-
-// Tailwind custom styles required:
-// .scrollbar-hide::-webkit-scrollbar { display: none; }
-// @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-// @keyframes slide-in { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-// .animate-fade-in { animation: fade-in 1s ease-out both; }
-// .animate-slide-in { animation: slide-in 1s ease-out both; }
-// .delay-100, .delay-200, .delay-300 { animation-delay: .1s, .2s, .3s respectively; }
