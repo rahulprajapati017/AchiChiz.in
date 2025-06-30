@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FiSearch,
@@ -66,7 +66,17 @@ export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [showSearch, setShowSearch] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const hoverTimeout = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleMouseEnter = (idx) => {
     clearTimeout(hoverTimeout.current);
@@ -80,7 +90,13 @@ export default function Header() {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-transparent text-white px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between backdrop-blur-xs border-b border-white/30">
+    <nav
+      className={`fixed top-0 w-full z-50 px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between transition-all duration-300 ${
+        scrolled
+          ? "bg-white text-black shadow-md border-b border-black/10"
+          : "bg-transparent text-white border-b border-white/30"
+      }`}
+    >
       <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
 
       {/* Desktop Nav */}
@@ -120,7 +136,24 @@ export default function Header() {
 
       {/* Icons */}
       <div className="hidden lg:flex items-center gap-6 text-lg relative">
-        <FiSearch className="cursor-pointer hover:text-orange-500 transition duration-300" />
+        {/* Search */}
+        <div className="relative">
+          {showSearch ? (
+            <input
+              type="text"
+              placeholder="Search..."
+              autoFocus
+              className="absolute top-0 right-0 bg-white text-black border px-3 py-1 rounded-md w-48 text-sm shadow-md"
+              onBlur={() => setShowSearch(false)}
+            />
+          ) : (
+            <FiSearch
+              className="cursor-pointer hover:text-orange-500 transition duration-300"
+              onClick={() => setShowSearch(true)}
+            />
+          )}
+        </div>
+
         <FiUser className="cursor-pointer hover:text-orange-500 transition duration-300" />
         <div className="relative">
           <FiHeart className="cursor-pointer hover:text-orange-500 transition duration-300" />
