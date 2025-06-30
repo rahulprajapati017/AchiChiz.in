@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+=======
+import React, { useState, useRef, useEffect } from "react";
+import { NavLink } from "react-router-dom";
+
+>>>>>>> refs/remotes/origin/main
 import {
   FiSearch,
   FiUser,
