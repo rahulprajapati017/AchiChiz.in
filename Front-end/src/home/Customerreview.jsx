@@ -39,7 +39,7 @@ const CustomerReview = () => {
   }, []);
 
   return (
-    <section className="bg-white py-16 px-4 md:px-20">
+    <section className="bg-white px-4 md:px-20">
       {/* Heading */}
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-serif uppercase tracking-wide">

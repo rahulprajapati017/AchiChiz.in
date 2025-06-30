@@ -24,7 +24,7 @@ const ScrollToTop = () => {
   return visible ? (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-5 right-5 z-50 bg-red-700 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition duration-300"
+      className="fixed bottom-5 right-5 z-50 bg-yellow-700 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition duration-300"
       aria-label="Scroll to top"
     >
       <FaArrowUp />

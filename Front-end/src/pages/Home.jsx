@@ -5,12 +5,9 @@ function Home() {
     <div>
       <Scrollbar />
       <ShopByCategory />
-      <Customizeproduct />
-      <Customerreview />
-      <Followus /> 
-      < PromoSection />
       <NewArrivals />
       <Customizeproduct />
+      < PromoSection />
       <NewTrending />
       <Customerreview />
       <Followus /> 
