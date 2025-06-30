@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-// Framer Motion variants for staggered text + button
+// Framer Motion variants
 const textGroup = {
   hidden: { opacity: 0, y: 20 },
   show: {
@@ -28,7 +28,6 @@ const panels = [
     button: "SHOP COLLECTION",
     image:
       "https://images.pexels.com/photos/18295443/pexels-photo-18295443.jpeg",
-    // replace these with actual pre‑blurred images for best perf
     blurredBackground:
       "https://images.pexels.com/photos/18295445/pexels-photo-18295445.jpeg",
   },
@@ -67,7 +66,7 @@ const panels = [
   },
 ];
 
-export default function App() {
+export default function HeroScroll() {
   const containerRef = useRef();
   const [index, setIndex] = useState(0);
 
@@ -83,6 +82,7 @@ export default function App() {
     setIndex(i);
     scrollToPanel(i);
   };
+
   const prev = () => {
     const i = (index - 1 + panels.length) % panels.length;
     setIndex(i);
@@ -90,29 +90,22 @@ export default function App() {
   };
 
   useEffect(() => {
-    const timer = setInterval(next, 5000);
+    const timer = setInterval(next, 7000);
     return () => clearInterval(timer);
   }, [index]);
 
   return (
     <div className="font-sans">
-
-      {/* Hero Scroll */}
-      <div
-        className="relative w-full overflow-hidden scroll-container"
-        style={{ willChange: "transform" }}
-      >
+      <div className="relative w-full overflow-hidden pt-[80px]">
         <div
           ref={containerRef}
-          className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory touch-pan-x scrollbar-hide"
+          className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
         >
           {panels.map((panel, idx) => (
             <div
               key={idx}
-              className="w-screen h-[100vh] flex-shrink-0 relative snap-start"
-              style={{ scrollSnapStop: "always" }}
+              className="w-screen h-[calc(100vh-80px)] flex-shrink-0 relative snap-start"
             >
-              {/* Pre‑blurred background image */}
               <div
                 className="absolute inset-0 bg-cover bg-center z-0"
                 style={{
@@ -121,9 +114,7 @@ export default function App() {
               />
               <div className="absolute inset-0 bg-black/60 z-0" />
 
-              {/* Foreground */}
-              <div className="relative z-10 flex flex-col md:flex-row justify-center items-center h-full px-6 md:px-16 py-10 gap-8 text-center md:text-left">
-                {/* Text & Button with staggered animation */}
+              <div className="relative z-10 flex flex-col md:flex-row justify-center items-center h-full px-4 sm:px-8 md:px-16 gap-6 text-center md:text-left">
                 <motion.div
                   variants={textGroup}
                   initial="hidden"
@@ -138,13 +129,13 @@ export default function App() {
                   </motion.h4>
                   <motion.h1
                     variants={item}
-                    className="text-4xl sm:text-5xl md:text-7xl font-extrabold leading-tight text-white"
+                    className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-white leading-tight"
                   >
                     {panel.title}
                   </motion.h1>
                   <motion.p
                     variants={item}
-                    className="text-base sm:text-lg md:text-xl text-gray-200 leading-relaxed"
+                    className="text-sm sm:text-base md:text-lg text-gray-200 leading-relaxed"
                   >
                     {panel.description}
                   </motion.p>
@@ -152,20 +143,19 @@ export default function App() {
                     variants={item}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="mt-4 bg-orange-600 px-8 py-3 text-sm sm:text-lg md:text-xl tracking-wide font-bold uppercase hover:bg-orange-500 transition"
+                    className="mt-4 bg-orange-600 px-6 py-2 sm:px-8 sm:py-3 text-sm sm:text-lg font-bold uppercase text-white hover:bg-orange-500 transition"
                   >
                     {panel.button}
                   </motion.button>
                 </motion.div>
 
-                {/* Image + Rotating Badge */}
-                <div className="relative flex-shrink-0 hover:scale-105 transition-transform duration-300 mt-10 md:mt-0">
+                <div className="relative hover:scale-105 transition-transform duration-300 mt-10 md:mt-0">
                   <img
                     src={panel.image}
                     alt="Product"
-                    className="w-[250px] h-[330px] sm:w-[300px] sm:h-[400px] md:w-[380px] md:h-[480px] object-cover rounded shadow-lg"
+                    className="w-[200px] h-[280px] sm:w-[260px] sm:h-[360px] md:w-[320px] md:h-[420px] object-cover rounded shadow-lg"
                   />
-                  <div className="absolute -left-12 top-1/2 -translate-y-1/2 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-white flex items-center justify-center text-orange-700 font-semibold text-[10px] sm:text-xs text-center shadow-md animate-[spin_16s_linear_infinite]">
+                  <div className="absolute -left-10 top-1/2 -translate-y-1/2 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full bg-white flex items-center justify-center text-orange-700 font-semibold text-[10px] sm:text-xs text-center shadow-md animate-[spin_16s_linear_infinite]">
                     <div className="rotate-[-30deg] whitespace-pre-line leading-tight">
                       HANDMADE{"\n"}CREATIONS
                     </div>
@@ -176,7 +166,7 @@ export default function App() {
           ))}
         </div>
 
-        {/* Dots */}
+        {/* Navigation Dots */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex space-x-2">
           {panels.map((_, i) => (
             <button

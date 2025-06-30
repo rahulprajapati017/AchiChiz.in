@@ -27,7 +27,7 @@ const Footer = () => {
     <footer
       className="bg-black text-white relative flex flex-col items-center justify-center py-12"
       style={{
-        backgroundImage: "url('/your-bg-image.png')", // Replace with your image
+        backgroundImage: "url('/your-bg-image.png')", 
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center",
