@@ -25,10 +25,10 @@ function App() {
               <Route index element={<Home />} />
               <Route path="customer-review" element={<Customerreview />} />
               <Route path="customize-product" element={<Customizeproduct />} />
-              <Route path="follow-us" element={<Followus />} />
              <Route path="product/:id" element={ <Productpage /> }/>
               <Route path="new-arrival" element={<NewArrivals />} />
               <Route path="scrollbar" element={<Scrollbar />} />
+              <Route path="follow-us" element={<Followus />} />
               <Route path="shop-by-category" element={<ShopByCategory />} />
               <Route path="trending-product" element={<NewTrending />} />
             </Route>
