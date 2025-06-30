@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FiSearch,
@@ -7,7 +7,6 @@ import {
   FiShoppingCart,
   FiMenu,
   FiX,
-  FiChevronDown,
 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
@@ -35,12 +34,32 @@ const navItems = [
 export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
 
+  // Scroll effect for navbar styling
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleMouseEnter = (index) => setHovered(index);
+  const handleMouseLeave = () => setHovered(null);
+
   return (
-    <nav className="fixed top-0 w-full z-50 bg-transparent text-white px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between backdrop-blur-xs border-b border-white/30">
+    <nav
+      className={`fixed top-0 w-full z-50 px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between transition-all duration-300 ${
+        scrolled
+          ? "bg-white text-black shadow-md border-b border-black/10"
+          : "bg-white/20 backdrop-blur-md text-white border-b border-white/30"
+      }`}
+    >
       <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
 
       {/* Desktop Navigation */}
@@ -63,7 +82,7 @@ export default function Header() {
               {item.title}
             </NavLink>
             {hovered === idx && item.dropdown.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-[300px] max-h-[300px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-1 gap-2 z-20">
+              <div className="absolute top-full left-0 mt-2 w-[300px] max-h-[300px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-1 gap-2 z-30">
                 {item.dropdown.map((option, i) => (
                   <div
                     key={i}
@@ -79,25 +98,45 @@ export default function Header() {
       </ul>
 
       {/* Icons */}
-      {/* Icons */}
       <div className="hidden lg:flex items-center gap-6 text-lg relative">
-        <FiSearch className="cursor-pointer hover:text-orange-500 transition duration-300" />
+        {/* Search */}
+        <div className="relative">
+          {showSearch ? (
+            <input
+              type="text"
+              placeholder="Search..."
+              autoFocus
+              className="absolute top-0 right-0 bg-white text-black border px-3 py-1 rounded-md w-48 text-sm shadow-md"
+              onBlur={() => setShowSearch(false)}
+            />
+          ) : (
+            <FiSearch
+              className="cursor-pointer hover:text-orange-500 transition duration-300"
+              onClick={() => setShowSearch(true)}
+            />
+          )}
+        </div>
+
         <FiUser className="cursor-pointer hover:text-orange-500 transition duration-300" />
 
         {/* Favorites */}
         <NavLink to="/favoritespage" className="relative">
           <FiHeart className="cursor-pointer hover:text-red-500 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            {favorites.length}
-          </span>
+          {favorites.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              {favorites.length}
+            </span>
+          )}
         </NavLink>
 
         {/* Cart */}
         <NavLink to="/cartpage" className="relative">
           <FiShoppingCart className="cursor-pointer hover:text-red-500 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            {cartItems.length}
-          </span>
+          {cartItems.length > 0 && (
+            <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              {cartItems.length}
+            </span>
+          )}
         </NavLink>
       </div>
 
@@ -111,7 +150,7 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       <div
-        className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-50 transform ${
+        className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-[999] transform ${
           mobileOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform duration-500 ease-in-out`}
       >
