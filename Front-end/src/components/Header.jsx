@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+
 import {
   FiSearch,
   FiUser,
@@ -25,7 +26,7 @@ const navItems = [
   },
   {
     title: "BLOG",
-    path: "/blog",
+    path: "./page/",
     dropdown: ["Blog List", "Blog Grid", "Blog Modern"],
   },
   { title: "PAGE", path: "/page", dropdown: [] },

@@ -96,10 +96,10 @@ export default function HeroScroll() {
 
   return (
     <div className="font-sans">
-      <div className="relative w-full overflow-hidden pt-[80px]">
+      <div className="relative w-full overflow-hidden ">
         <div
           ref={containerRef}
-          className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
+          className="h-screen flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
         >
           {panels.map((panel, idx) => (
             <div
