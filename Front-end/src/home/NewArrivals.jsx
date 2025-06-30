@@ -4,12 +4,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
 import { toast } from "react-hot-toast";
-import {
-  ShoppingCart,
-  Eye,
-  Heart,
-  RefreshCcw,
-} from "lucide-react";
+import { Eye, Heart, RefreshCcw } from "lucide-react";
 
 const NewArrivals = () => {
   const [expandedCategories, setExpandedCategories] = useState([]);
@@ -43,16 +38,15 @@ const NewArrivals = () => {
         const visibleItems = showAll ? items : items.slice(0, 4);
 
         return (
-          <div key={category} className="mb-12 mt-10">  
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div key={category} className="mb-12 mt-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
               {visibleItems.map((product) => (
                 <div
                   key={product.id}
-                  className="relative group bg-white overflow-hidden rounded-xl shadow hover:shadow-xl transition-all"
+                  className="relative bg-white overflow-hidden shadow transition-all"
                 >
-                  {/* Product Images with Hover Transition */}
-                  <div className="relative overflow-hidden w-full h-72">
+                  {/* Image Hover Group */}
+                  <div className="relative overflow-hidden w-full h-100 group">
                     <img
                       src={product.images[0]}
                       alt={product.title}
@@ -65,53 +59,52 @@ const NewArrivals = () => {
                         className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:scale-105"
                       />
                     )}
+
                     <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
                       Hot
                     </div>
 
-                    {/* Animated Hover Buttons */}
-                    <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col items-center space-y-2 z-10">
-                      {/* Button 1 - Add to Cart */}
-                      <button
-                        onClick={() => {
-                          addToCart(product);
-                          toast.success("Added to Cart");
-                        }}
-                        className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-100"
-                      >
-                        <ShoppingCart size={16} className="text-gray-600" />
-                      </button>
-
-                      {/* Button 2 - View */}
+                    {/* Hover Buttons */}
+                    <div className="absolute top-1/2 right-4 -translate-y-1/1 flex flex-col items-center space-y-2 z-10">
                       <Link
                         to={`/product/${product.id}`}
-                        className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-200"
+                        className="bg-white w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-200"
                       >
-                        <Eye size={16} className="text-gray-600" />
+                        <Eye size={18} />
                       </Link>
 
-                      {/* Button 3 - Favorite */}
                       <button
                         onClick={() => {
                           addToFavorites(product);
                           toast.success("Added to Favorites");
                         }}
-                        className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-300"
+                        className="bg-white w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-200"
                       >
-                        <Heart size={16} className="text-gray-600" />
+                        <Heart size={16} />
                       </button>
 
-                      {/* Button 4 - Refresh/Compare */}
+                      <button className="bg-white w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-200">
+                        <RefreshCcw size={16} />
+                      </button>
+                    </div>
+
+                    {/* Add to Cart Button */}
+                    <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                       <button
-                        className="bg-white p-2 rounded-full shadow hover:bg-gray-100 transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-400"
+                        onClick={() => {
+                          addToCart(product);
+                          toast.success("Added to Cart");
+                        }}
+                        className="w-full h-15 relative overflow-hidden px-6 py-2 text-white font-bold z-10 bg-[#d75a3c] group/button"
                       >
-                        <RefreshCcw size={16} className="text-gray-600" />
+                        <span className="absolute inset-0 bg-[#c44b2e] transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
+                        <span className="relative z-10">Add to Cart</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Product Text Info */}
-                  <div className="px-4 py-5">
+                  {/* Product Info (No Hover Effect) */}
+                  <div className="px-4 py-2">
                     <p className="text-xs uppercase text-gray-400 tracking-widest">
                       {product.subcategory || "Handmade"}
                     </p>
@@ -133,3 +126,5 @@ const NewArrivals = () => {
 };
 
 export default NewArrivals;
+
+

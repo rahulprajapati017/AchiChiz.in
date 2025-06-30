@@ -8,4 +8,17 @@ export { default as ShopByCategory } from "./home/Shopbycategory";
 export { default as NewTrending } from "./home/NewTrending";
 export {default as Home} from "./pages/Home";
 export { default as Layout } from "./components/Layout";
+export {default as  Reviews  } from "./pages/Reviews";
+export {default as  PromoSection  } from "./home/PromoSection";
+export {default as  ReviewSummary} from "./components/ReviewSummary";
+export {default as  ReviewCard  } from "./components/ReviewCard";
+export {default as  RatingStars } from "./components/RatingStars";
+export {default as  Dashboard  } from "./pages/userdashboard";
+export {default as  AccountDashboard } from "./components/accountdashboard";
+export {default as  AccountInformation } from "./components/accountInfo";
+export {default as  AddressBook } from "./components/addressbook";
+export {default as  MyOrders } from "./components/myOrder";
+
+
+
 

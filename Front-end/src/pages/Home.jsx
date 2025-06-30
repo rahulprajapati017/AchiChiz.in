@@ -1,5 +1,5 @@
 import React from 'react'
-import { Customizeproduct,Customerreview,Followus,NewArrivals,Scrollbar,ShopByCategory,NewTrending } from '../index';
+import { Customizeproduct,Customerreview, PromoSection ,Followus,NewArrivals,Scrollbar,ShopByCategory,NewTrending } from '../index';
 function Home() {
   return (
     <div>
@@ -7,6 +7,7 @@ function Home() {
       <ShopByCategory />
       <Customerreview />
       <Followus /> 
+      < PromoSection />
       <NewArrivals />
       <Customizeproduct />
       <NewTrending />

@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { ChevronDown, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
+
 /**
  * @param {Object} props
  * @param {number} props.rating - Average rating value (e.g., 4.3)

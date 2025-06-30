@@ -41,34 +41,136 @@ export const products = [
     { stars: 2, percentage: 3 },
     { stars: 1, percentage: 2 },
   ],  
-     reviews: [
-      {
-        id: 101,
-        author: "Aarav",
-        rating: 5,
-        date: "2024-12-01",
-        title: "Beautiful Craftsmanship",
-        content: "Absolutely loved the detailing and quality. Worth every penny!",
-        verified: true,
-        helpful: 12,
-        notHelpful: 1,
-        images: [
-          
-        ]
-      },
-      {
-        id: 102,
-        author: "Meera",
-        rating: 4,
-        date: "2024-11-20",
-        title: "Looks Elegant",
-        content: "Looks great, but delivery was a little slow.",
-        verified: true,
-        helpful: 4,
-        notHelpful: 0,
-        images: []
-      }
-    ],
+   ratingData: [
+  { stars: 5, percentage: 65 },
+  { stars: 4, percentage: 20 },
+  { stars: 3, percentage: 8 },
+  { stars: 2, percentage: 5 },
+  { stars: 1, percentage: 2 },
+],
+reviews: [
+  {
+    id: 101,
+    author: "Aarav",
+    rating: 5,
+    date: "2024-12-01",
+    title: "Beautiful Craftsmanship",
+    content: "Absolutely loved the detailing and quality. Worth every penny!",
+    verified: true,
+    helpful: 12,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 102,
+    author: "Meera",
+    rating: 4,
+    date: "2024-11-20",
+    title: "Looks Elegant",
+    content: "Looks great, but delivery was a little slow.",
+    verified: true,
+    helpful: 4,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 103,
+    author: "Kabir",
+    rating: 5,
+    date: "2025-01-10",
+    title: "Exceeds Expectations",
+    content: "The finishing is superb. It even looks better than the pictures.",
+    verified: true,
+    helpful: 8,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 104,
+    author: "Sanya",
+    rating: 3,
+    date: "2024-10-14",
+    title: "Decent but not perfect",
+    content: "Product is okay. Quality could have been better for the price.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 105,
+    author: "Rohan",
+    rating: 2,
+    date: "2024-09-05",
+    title: "Disappointed",
+    content: "Looks good but arrived damaged. Packaging needs improvement.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 3,
+    images: []
+  },
+  {
+    id: 106,
+    author: "Divya",
+    rating: 4,
+    date: "2024-12-28",
+    title: "Elegant & Useful",
+    content: "Really elegant piece. Great for gifting. My mom loved it!",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 107,
+    author: "Amit",
+    rating: 5,
+    date: "2025-02-02",
+    title: "Perfect for my home",
+    content: "Blends beautifully with my decor. High quality materials.",
+    verified: true,
+    helpful: 10,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 108,
+    author: "Neha",
+    rating: 1,
+    date: "2024-11-03",
+    title: "Not worth it",
+    content: "Expected much better. Poor quality and bad smell.",
+    verified: false,
+    helpful: 0,
+    notHelpful: 4,
+    images: []
+  },
+  {
+    id: 109,
+    author: "Raj",
+    rating: 3,
+    date: "2024-10-22",
+    title: "Average product",
+    content: "It’s okay for the price, but not something I’d reorder.",
+    verified: true,
+    helpful: 2,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 110,
+    author: "Priya",
+    rating: 5,
+    date: "2025-01-15",
+    title: "Loved it!",
+    content: "Got this as a gift. So pretty and well-made. Highly recommend!",
+    verified: true,
+    helpful: 9,
+    notHelpful: 0,
+    images: []
+  }
+]
+,
     faqs: [
       { question: "Is this waterproof?", answer: "Not completely, but water-resistant." },
       { question: "Can I use it for rotis?", answer: "Yes, ideal for dry food." }
@@ -109,9 +211,128 @@ export const products = [
   { stars: 2, percentage: 1 },
   { stars: 1, percentage: 1 },
 ],
-    reviews: [
-      { id: 1, author: "Kiran", rating: 5, comment: "Perfect for storing toys." }
-    ],
+     reviews: [
+  {
+    id: 111,
+    author: "Ishaan",
+    rating: 4,
+    date: "2025-01-20",
+    title: "Nice Product",
+    content: "Very good quality. Size is slightly smaller than expected though.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 112,
+    author: "Tanvi",
+    rating: 5,
+    date: "2024-12-22",
+    title: "Perfect Gift",
+    content: "Gifted to my sister — she absolutely loved it! Packaging was premium.",
+    verified: true,
+    helpful: 7,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 113,
+    author: "Dev",
+    rating: 2,
+    date: "2024-11-17",
+    title: "Not like photos",
+    content: "Looks very different from the pictures. Colors are dull.",
+    verified: false,
+    helpful: 1,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 114,
+    author: "Pooja",
+    rating: 3,
+    date: "2024-09-12",
+    title: "Just okay",
+    content: "Workmanship is decent, but not as finely crafted as I hoped.",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 115,
+    author: "Yash",
+    rating: 5,
+    date: "2024-12-05",
+    title: "Impressive Detailing",
+    content: "Really impressed with the handmade detailing. Adds charm to the space.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 116,
+    author: "Sneha",
+    rating: 4,
+    date: "2025-02-12",
+    title: "Beautiful, but late delivery",
+    content: "Loved the item but delivery took more than a week.",
+    verified: true,
+    helpful: 4,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 117,
+    author: "Ravi",
+    rating: 1,
+    date: "2024-08-30",
+    title: "Broken on arrival",
+    content: "Disappointed. Product was broken when I opened the package.",
+    verified: true,
+    helpful: 0,
+    notHelpful: 6,
+    images: []
+  },
+  {
+    id: 118,
+    author: "Kriti",
+    rating: 5,
+    date: "2025-01-05",
+    title: "Must-buy!",
+    content: "Highly recommended for home decor lovers. Super aesthetic!",
+    verified: true,
+    helpful: 11,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 119,
+    author: "Zoya",
+    rating: 3,
+    date: "2024-10-10",
+    title: "Good, but not great",
+    content: "Craftsmanship is good but pricing could be better.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 120,
+    author: "Ayaan",
+    rating: 5,
+    date: "2025-02-20",
+    title: "Delighted!",
+    content: "Unique product. Loved the personal touch of the artisan. 👏",
+    verified: true,
+    helpful: 9,
+    notHelpful: 0,
+    images: []
+  }
+],
     faqs: [
       { question: "Can I wash it?", answer: "Dry clean only." }
     ]
@@ -145,21 +366,128 @@ export const products = [
       Color: "Natural",
       Care: "Spot clean only."
     },
-    ratingData: [
-  { stars: 5.0, percentage: 38 },
-  { stars: 4.5, percentage: 16 },
-  { stars: 4.0, percentage: 14 },
-  { stars: 3.5, percentage: 9 },
-  { stars: 3.0, percentage: 7 },
-  { stars: 2.5, percentage: 5 },
-  { stars: 2.0, percentage: 4 },
-  { stars: 1.5, percentage: 3 },
-  { stars: 1.0, percentage: 3 },
-  { stars: 0.5, percentage: 1 },
-],
     reviews: [
-      { id: 1, author: "Priya", rating: 4, comment: "Looks good in hallway." }
-    ],
+  {
+    id: 121,
+    author: "Manvi",
+    rating: 5,
+    date: "2025-02-10",
+    title: "Absolutely stunning!",
+    content: "Mujhe itna sundar item expected hi nahi tha! Totally worth it ❤️",
+    verified: true,
+    helpful: 10,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/img1.jpg"]
+  },
+  {
+    id: 122,
+    author: "Kabir",
+    rating: 2,
+    date: "2024-11-03",
+    title: "Not satisfied",
+    content: "Quality is below average. Not what I expected from handmade work.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 4,
+    images: []
+  },
+  {
+    id: 123,
+    author: "Harleen",
+    rating: 4,
+    date: "2025-01-18",
+    title: "Delightful piece",
+    content: "Loved the packaging. Design is unique. Could be more polished though.",
+    verified: false,
+    helpful: 3,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 124,
+    author: "Kunal",
+    rating: 5,
+    date: "2024-12-25",
+    title: "Festive ready!",
+    content: "Bought it for Diwali decor and it totally uplifted the vibe. 🔥",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/img2.jpg", "https://example.com/reviews/img3.jpg"]
+  },
+  {
+    id: 125,
+    author: "Ritika",
+    rating: 3,
+    date: "2024-10-15",
+    title: "Looks good, feels okay",
+    content: "Bahar se toh achha lagta hai, par material thoda halki quality ka laga.",
+    verified: true,
+    helpful: 2,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 126,
+    author: "Samar",
+    rating: 1,
+    date: "2024-09-30",
+    title: "Terrible experience",
+    content: "Received wrong item. No response from customer service. Poor handling.",
+    verified: true,
+    helpful: 0,
+    notHelpful: 7,
+    images: []
+  },
+  {
+    id: 127,
+    author: "Ayesha",
+    rating: 5,
+    date: "2025-02-22",
+    title: "True Art!",
+    content: "This is a masterpiece. Reminds me of traditional Rajasthani designs.",
+    verified: true,
+    helpful: 8,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/img4.jpg"]
+  },
+  {
+    id: 128,
+    author: "Pranav",
+    rating: 4,
+    date: "2025-01-30",
+    title: "Good but pricey",
+    content: "Bahut achha hai, lekin thoda mehenga laga. Still, happy with it.",
+    verified: false,
+    helpful: 4,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 129,
+    author: "Mitali",
+    rating: 5,
+    date: "2024-12-10",
+    title: "Beautiful Handcrafted Feel",
+    content: "Bohot accha laga. Feels authentic and unique. Will buy again.",
+    verified: true,
+    helpful: 9,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 130,
+    author: "Omkar",
+    rating: 3,
+    date: "2025-03-02",
+    title: "Average product",
+    content: "Design is fine but finishing could be much better.",
+    verified: true,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  }
+],
     faqs: [
       { question: "Is it soft?", answer: "Medium firmness." }
     ]
@@ -193,9 +521,128 @@ export const products = [
       Color: "Beige + Brown",
       Care: "Dry cloth wipe recommended."
     },
-    reviews: [
-      { id: 1, author: "Asha", rating: 5, comment: "Looks fabulous on white walls!" }
-    ],
+    reviews:[
+  {
+    id: 131,
+    author: "Tanvi",
+    rating: 5,
+    date: "2025-03-18",
+    title: "Perfect gift item 🎁",
+    content: "Gave it to my friend on her housewarming. She loved it!",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/gift1.jpg"]
+  },
+  {
+    id: 132,
+    author: "Aditya",
+    rating: 4,
+    date: "2025-03-12",
+    title: "Crafted with care",
+    content: "Nice design and packaging. Thoda aur sturdy hota toh perfect hota.",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 133,
+    author: "Neha",
+    rating: 2,
+    date: "2025-02-27",
+    title: "Disappointed",
+    content: "The product was chipped at the corner. Very sad, it looked nice otherwise.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 4,
+    images: ["https://example.com/reviews/damage1.jpg"]
+  },
+  {
+    id: 134,
+    author: "Raj",
+    rating: 5,
+    date: "2025-01-14",
+    title: "Traditional touch!",
+    content: "Handmade essence truly shines. Great for ethnic decor.",
+    verified: false,
+    helpful: 6,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 135,
+    author: "Shrishti",
+    rating: 3,
+    date: "2025-03-01",
+    title: "Mixed feelings",
+    content: "Looks beautiful, but finishing thoda better ho sakta tha. Still usable.",
+    verified: true,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 136,
+    author: "Rohit",
+    rating: 5,
+    date: "2025-02-10",
+    title: "Looks premium!",
+    content: "Didn't expect this level of quality at this price. Really happy with the finish and feel.",
+    verified: true,
+    helpful: 9,
+    notHelpful: 1,
+    images: ["https://example.com/reviews/finish1.jpg"]
+  },
+  {
+    id: 137,
+    author: "Divya",
+    rating: 4,
+    date: "2025-01-25",
+    title: "Subtle and elegant",
+    content: "Matches my aesthetic perfectly. Got compliments from guests too.",
+    verified: false,
+    helpful: 3,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 138,
+    author: "Imran",
+    rating: 1,
+    date: "2025-02-03",
+    title: "Poor packaging",
+    content: "Product looked used and had dust. Packaging was not up to the mark.",
+    verified: true,
+    helpful: 0,
+    notHelpful: 6,
+    images: ["https://example.com/reviews/badpackaging1.jpg"]
+  },
+  {
+    id: 139,
+    author: "Sneha",
+    rating: 3,
+    date: "2025-02-17",
+    title: "Okayish",
+    content: "Average. Doesn't really look like the image shown. But okay for the price.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 140,
+    author: "Kunal",
+    rating: 5,
+    date: "2025-01-19",
+    title: "Exactly what I wanted",
+    content: "The dimensions and color are spot on. Gives a rich handmade vibe.",
+    verified: true,
+    helpful: 7,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/perfectfit1.jpg"]
+  }
+],
     faqs: [
       { question: "How to hang?", answer: "Includes hook loops." }
     ]
@@ -230,8 +677,127 @@ export const products = [
       Care: "Keep away from moisture."
     },
     reviews: [
-      { id: 1, author: "Vikram", rating: 4, comment: "Nice center table piece." }
-    ],
+     {
+    id: 141,
+    author: "Megha",
+    rating: 2,
+    date: "2025-03-10",
+    title: "Below average",
+    content: "The product feels flimsy. Not satisfied with the build quality.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 5,
+    images: []
+  },
+  {
+    id: 142,
+    author: "Vikas",
+    rating: 4,
+    date: "2025-03-02",
+    title: "Good product, late delivery",
+    content: "Would’ve rated 5 but it took 8 days to arrive. Otherwise beautiful.",
+    verified: true,
+    helpful: 4,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 143,
+    author: "Ananya",
+    rating: 5,
+    date: "2025-01-30",
+    title: "Superb value for money",
+    content: "Crafted so well. Already ordered two more as gifts.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/valueformoney1.jpg"]
+  },
+  {
+    id: 144,
+    author: "Tushar",
+    rating: 3,
+    date: "2025-02-20",
+    title: "Average experience",
+    content: "Customer support was slow to respond. Product is decent though.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 145,
+    author: "Priya",
+    rating: 4,
+    date: "2025-03-05",
+    title: "Nice handcrafted touch",
+    content: "You can tell it's handmade. Each piece is slightly different, which I love.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/handmadefeel1.jpg"]
+  },
+  {
+    id: 146,
+    author: "Neha",
+    rating: 5,
+    date: "2025-03-12",
+    title: "Absolutely loved it!",
+    content: "Looks even better in real life. Very happy with the detailing and finish.",
+    verified: true,
+    helpful: 10,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/lovedit1.jpg"]
+  },
+  {
+    id: 147,
+    author: "Sandeep",
+    rating: 2,
+    date: "2025-03-01",
+    title: "Disappointed",
+    content: "Received a damaged piece. Not what I expected after seeing the images.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 6,
+    images: ["https://example.com/reviews/damageditem.jpg"]
+  },
+  {
+    id: 148,
+    author: "Pooja",
+    rating: 4,
+    date: "2025-02-25",
+    title: "Great but slightly overpriced",
+    content: "The craftsmanship is top-notch but price could be slightly lower.",
+    verified: false,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 149,
+    author: "Arjun",
+    rating: 3,
+    date: "2025-03-10",
+    title: "Good product, average packaging",
+    content: "Product is fine but packaging needs to improve for gifting purposes.",
+    verified: true,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 150,
+    author: "Ishita",
+    rating: 5,
+    date: "2025-02-16",
+    title: "Perfect for gifting!",
+    content: "Gifted it to a friend and they loved it. Classy and ethnic.",
+    verified: true,
+    helpful: 7,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/gifteditem.jpg"]
+  },
+],
     faqs: [
       { question: "Can I put water?", answer: "Not recommended." }
     ]
@@ -265,7 +831,128 @@ export const products = [
       Color: "Orange",
       Care: "Handle with care; Fragile."
     },
-    reviews: [],
+    reviews: [
+      {
+    id: 151,
+    author: "Rahul",
+    rating: 4,
+    date: "2025-02-18",
+    title: "Looks good on my shelf",
+    content: "It’s a lovely accent piece. Adds character to my decor.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 152,
+    author: "Kriti",
+    rating: 1,
+    date: "2025-03-11",
+    title: "Low quality material",
+    content: "Feels very fragile. Broke within a week of use.",
+    verified: true,
+    helpful: 0,
+    notHelpful: 8,
+    images: ["https://example.com/reviews/brokenitem.jpg"]
+  },
+  {
+    id: 153,
+    author: "Jay",
+    rating: 5,
+    date: "2025-02-22",
+    title: "Stunning details!",
+    content: "The carvings are incredibly precise. Shows true Indian craftsmanship.",
+    verified: false,
+    helpful: 6,
+    notHelpful: 1,
+    images: ["https://example.com/reviews/carvings.jpg"]
+  },
+  {
+    id: 154,
+    author: "Manisha",
+    rating: 4,
+    date: "2025-03-08",
+    title: "Nice but small",
+    content: "Product is great but I expected it to be a bit larger.",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 155,
+    author: "Yash",
+    rating: 3,
+    date: "2025-03-05",
+    title: "Not bad",
+    content: "Decent piece but not very sturdy. Needs careful handling.",
+    verified: true,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 156,
+    author: "Tanvi",
+    rating: 5,
+    date: "2025-03-14",
+    title: "Authentic and aesthetic",
+    content: "Very unique. Adds a vintage charm to my space.",
+    verified: true,
+    helpful: 8,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/vintagecharm.jpg"]
+  },
+  {
+    id: 157,
+    author: "Deepak",
+    rating: 4,
+    date: "2025-02-27",
+    title: "Good but a bit pricey",
+    content: "No doubt about the quality, but slightly over budget for me.",
+    verified: false,
+    helpful: 1,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 158,
+    author: "Rhea",
+    rating: 5,
+    date: "2025-03-13",
+    title: "Love the finish!",
+    content: "The wood has a smooth matte texture. Looks exactly like photos.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/woodfinish.jpg"]
+  },
+  {
+    id: 159,
+    author: "Varun",
+    rating: 2,
+    date: "2025-03-03",
+    title: "Inconsistent color",
+    content: "Ordered two, and both had different color tones. Not happy.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 3,
+    images: ["https://example.com/reviews/colormismatch.jpg"]
+  },
+  {
+    id: 160,
+    author: "Ankita",
+    rating: 5,
+    date: "2025-03-15",
+    title: "A piece of art",
+    content: "Truly mesmerizing. Feels like owning a little slice of heritage.",
+    verified: true,
+    helpful: 9,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/heritagepiece.jpg"]
+  }
+    ],
     faqs: [
       { question: "Is it breakable?", answer: "Yes, handle gently." },
       { question: "Can I use this with oil and wick?", answer: "Yes! It's a real functional diya – traditional and safe for light use." },
@@ -302,7 +989,128 @@ export const products = [
       Color: "Off-White",
       Care: "Dust with soft brush."
     },
-    reviews: [],
+    reviews: [
+       {
+    id: 161,
+    author: "Amit",
+    rating: 5,
+    date: "2025-03-17",
+    title: "Exceptional quality",
+    content: "Exactly what I wanted. Beautiful, durable and authentic. Great value!",
+    verified: true,
+    helpful: 12,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/exceptional.jpg"]
+  },
+  {
+    id: 162,
+    author: "Sneha",
+    rating: 4,
+    date: "2025-03-10",
+    title: "Delicate & Elegant",
+    content: "Craftsmanship is great. It’s delicate, so handle with care.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 163,
+    author: "Rajat",
+    rating: 3,
+    date: "2025-03-05",
+    title: "Okay product",
+    content: "Not too impressed. Finishing could be better. Just okay for the price.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 164,
+    author: "Divya",
+    rating: 5,
+    date: "2025-03-02",
+    title: "Authentic feel",
+    content: "Feels like a real handmade piece. Great to support local artists.",
+    verified: true,
+    helpful: 10,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/authentic.jpg"]
+  },
+  {
+    id: 165,
+    author: "Nikhil",
+    rating: 1,
+    date: "2025-03-01",
+    title: "Poor packaging",
+    content: "Product was good but received broken due to bad packaging.",
+    verified: true,
+    helpful: 0,
+    notHelpful: 8,
+    images: ["https://example.com/reviews/brokenpiece.jpg"]
+  },
+  {
+    id: 166,
+    author: "Palak",
+    rating: 5,
+    date: "2025-03-14",
+    title: "Elegant design",
+    content: "Minimal yet traditional. Blends well in my modern home.",
+    verified: true,
+    helpful: 7,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/minimal.jpg"]
+  },
+  {
+    id: 167,
+    author: "Karan",
+    rating: 2,
+    date: "2025-02-26",
+    title: "Too small",
+    content: "Product is way smaller than it looks in the picture.",
+    verified: false,
+    helpful: 1,
+    notHelpful: 5,
+    images: []
+  },
+  {
+    id: 168,
+    author: "Ridhi",
+    rating: 5,
+    date: "2025-02-18",
+    title: "Adds charm to my room",
+    content: "Placed it on my study desk. Brings calm vibes. Loved it!",
+    verified: true,
+    helpful: 4,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 169,
+    author: "Deepansh",
+    rating: 4,
+    date: "2025-02-15",
+    title: "Good value for money",
+    content: "Happy with the quality and delivery speed. Good job!",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 170,
+    author: "Ritika",
+    rating: 3,
+    date: "2025-02-10",
+    title: "Mixed feelings",
+    content: "Craft is good but looks slightly different in real than photos.",
+    verified: false,
+    helpful: 1,
+    notHelpful: 2,
+    images: []
+  },
+    ],
     faqs: [
       { question: "Does it come with a pot or just the hanger?", answer: " This listing includes only the macramé hanger, no pot included." },
       { question: "Weight capacity?", answer: "Up to 1.5kg pot." },
@@ -339,7 +1147,128 @@ export const products = [
       Color: "Natural Wood",
       Care: "Wipe clean with dry cloth."
     },
-    reviews: [],
+    reviews: [
+       {
+    id: 171,
+    author: "Ajay",
+    rating: 5,
+    date: "2025-02-05",
+    title: "Superb detailing",
+    content: "Each line and cut is very precise. Shows excellent skill.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/detail.jpg"]
+  },
+  {
+    id: 172,
+    author: "Lavanya",
+    rating: 4,
+    date: "2025-01-28",
+    title: "Very ethnic",
+    content: "Looks like something straight from a Rajasthani fair!",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 173,
+    author: "Imran",
+    rating: 5,
+    date: "2025-01-24",
+    title: "Great for gifts",
+    content: "Bought as a wedding return gift. People appreciated it a lot.",
+    verified: true,
+    helpful: 9,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/giftuse.jpg"]
+  },
+  {
+    id: 174,
+    author: "Shalini",
+    rating: 2,
+    date: "2025-01-20",
+    title: "Not worth the price",
+    content: "Expected something better for the amount I paid.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 3,
+    images: []
+  },
+  {
+    id: 175,
+    author: "Zaid",
+    rating: 4,
+    date: "2025-01-15",
+    title: "Rustic charm",
+    content: "Very raw and earthy. Loved the hand-finished look.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 176,
+    author: "Aastha",
+    rating: 5,
+    date: "2025-01-12",
+    title: "Aesthetic and calming",
+    content: "I placed it near my window and it's now my favorite corner!",
+    verified: true,
+    helpful: 7,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/windowcorner.jpg"]
+  },
+  {
+    id: 177,
+    author: "Saurabh",
+    rating: 3,
+    date: "2025-01-08",
+    title: "Decent but not stunning",
+    content: "A fair product. Not wow but decent enough.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 178,
+    author: "Naina",
+    rating: 5,
+    date: "2025-01-03",
+    title: "Best purchase of the month",
+    content: "I keep getting compliments about this from visitors!",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/compliments.jpg"]
+  },
+  {
+    id: 179,
+    author: "Siddharth",
+    rating: 4,
+    date: "2024-12-29",
+    title: "Worth every rupee",
+    content: "Looks much more expensive than it is. Totally worth it.",
+    verified: true,
+    helpful: 4,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 180,
+    author: "Prachi",
+    rating: 1,
+    date: "2024-12-25",
+    title: "Extremely fragile",
+    content: "Broke just while cleaning. Avoid if you have kids around.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 7,
+    images: ["https://example.com/reviews/fragile.jpg"]
+  }
+    ],
     faqs: [
       { question: "Safe for babies?", answer: "Yes, 100% non-toxic." },
       { question: " Is it safe for toddlers?", answer: "Yes! No sharp edges, no small choking parts, and non-toxic colors." },
@@ -376,7 +1305,116 @@ export const products = [
       Color: "Green Beige",
       Care: "Keep away from wet areas."
     },
-    reviews: [],
+    reviews: [
+       {
+    id: 181,
+    author: "Neha",
+    rating: 5,
+    date: "2025-03-12",
+    title: "Super fine finishing!",
+    content: "You can really see the craftsmanship. Very happy with the purchase.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/finish.jpg"]
+  },
+  {
+    id: 182,
+    author: "Yash",
+    rating: 4,
+    date: "2025-03-10",
+    title: "Looks vintage",
+    content: "Beautiful and unique, fits great with my wooden interiors.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 183,
+    author: "Priya",
+    rating: 3,
+    date: "2025-03-08",
+    title: "Colors faded slightly",
+    content: "The colors aren’t as vibrant after a few days in the sun.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 184,
+    author: "Ankur",
+    rating: 5,
+    date: "2025-03-06",
+    title: "Gifted to my mom",
+    content: "She absolutely loved it. Came with beautiful wrapping too.",
+    verified: true,
+    helpful: 7,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/gift.jpg"]
+  },
+  {
+    id: 185,
+    author: "Tanya",
+    rating: 2,
+    date: "2025-03-03",
+    title: "Not as pictured",
+    content: "The actual product differs slightly in design and shade.",
+    verified: false,
+    helpful: 1,
+    notHelpful: 4,
+    images: []
+  },
+  {
+    id: 186,
+    author: "Kishore",
+    rating: 5,
+    date: "2025-03-01",
+    title: "Good value combo",
+    content: "Combo deal was perfect. I got two for gifting purposes.",
+    verified: true,
+    helpful: 4,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 187,
+    author: "Rupal",
+    rating: 4,
+    date: "2025-02-27",
+    title: "Very unique",
+    content: "My guests keep asking where I got this from!",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 188,
+    author: "Varun",
+    rating: 5,
+    date: "2025-02-24",
+    title: "Loved the wood work",
+    content: "Beautiful natural texture. Feels so earthy and warm.",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/wood.jpg"]
+  },
+  {
+    id: 189,
+    author: "Bhavna",
+    rating: 3,
+    date: "2025-02-20",
+    title: "A bit overpriced",
+    content: "Design is nice but I expected something larger at this price.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 3,
+    images: []
+  },
+    ],
     faqs: [
        { question: "an it hold makeup brushes?", answer: " Yes, it's great for brushes, pens, and even spoons or markers!" },
         { question: " Is it washable?", answer: "Gently dust it or wipe with a dry cloth. Avoid water to maintain shape" },
@@ -412,7 +1450,140 @@ export const products = [
       Color: "Red & White",
       Care: "Machine wash gentle."
     },
-    reviews: [],
+    reviews: [
+      {
+    id: 190,
+    author: "Arvind",
+    rating: 1,
+    date: "2025-02-17",
+    title: "Very fragile",
+    content: "Broke during unboxing. Customer service was not responsive.",
+    verified: true,
+    helpful: 0,
+    notHelpful: 6,
+    images: ["https://example.com/reviews/damaged2.jpg"]
+  },
+  {
+    id: 191,
+    author: "Kritika",
+    rating: 5,
+    date: "2025-02-12",
+    title: "Mind-blowing quality",
+    content: "It exceeded my expectations. I’ll be buying more from this site.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 192,
+    author: "Raghav",
+    rating: 4,
+    date: "2025-02-10",
+    title: "Sleek design",
+    content: "Minimalistic and beautifully carved. Good addition to the shelf.",
+    verified: true,
+    helpful: 3,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 193,
+    author: "Nisha",
+    rating: 2,
+    date: "2025-02-06",
+    title: "Late delivery",
+    content: "Took over 10 days to arrive. Missed gifting it on time.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 5,
+    images: []
+  },
+  {
+    id: 194,
+    author: "Rishi",
+    rating: 5,
+    date: "2025-02-01",
+    title: "Highly recommended",
+    content: "This is my second purchase. Very satisfied again!",
+    verified: true,
+    helpful: 4,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 195,
+    author: "Payal",
+    rating: 3,
+    date: "2025-01-28",
+    title: "Mixed experience",
+    content: "Product is okay, but packaging was poor. Could improve.",
+    verified: false,
+    helpful: 2,
+    notHelpful: 2,
+    images: []
+  },
+  {
+    id: 196,
+    author: "Sanjay",
+    rating: 4,
+    date: "2025-01-24",
+    title: "Gorgeous finish",
+    content: "The gloss and polish are top-notch. Very premium feel.",
+    verified: true,
+    helpful: 3,
+    notHelpful: 1,
+    images: []
+  },
+  {
+    id: 197,
+    author: "Avantika",
+    rating: 5,
+    date: "2025-01-20",
+    title: "Real handcrafted beauty",
+    content: "Looks like it was made by an artist. So intricate and raw.",
+    verified: true,
+    helpful: 6,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/intricate.jpg"]
+  },
+  {
+    id: 198,
+    author: "Dinesh",
+    rating: 2,
+    date: "2025-01-16",
+    title: "Misleading dimensions",
+    content: "Expected it to be bigger. Please mention actual size properly.",
+    verified: true,
+    helpful: 1,
+    notHelpful: 4,
+    images: []
+  },
+  {
+    id: 199,
+    author: "Nandini",
+    rating: 4,
+    date: "2025-01-12",
+    title: "Adorable piece",
+    content: "Such a cute design! I placed it on my study table.",
+    verified: true,
+    helpful: 4,
+    notHelpful: 0,
+    images: []
+  },
+  {
+    id: 200,
+    author: "Rohit",
+    rating: 5,
+    date: "2025-01-10",
+    title: "Perfect for home decor",
+    content: "Elevated my living room aesthetics. Glad I got it!",
+    verified: true,
+    helpful: 5,
+    notHelpful: 0,
+    images: ["https://example.com/reviews/livingroom.jpg"]
+  }
+    ],
     faqs: [
       { question: "Color fades?", answer: "Colorfast in cold wash." },
       { question: " Is it suitable for daily use?", answer: " Yes, it’s durable enough for everyday meals and elegant enough for occasions." },

@@ -8,55 +8,25 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoriteContext";
 
 const navItems = [
   { title: "HOME", path: "/", dropdown: [] },
   {
     title: "SHOP",
     path: "/shop",
-    dropdown: [
-      "Shop Style", "Shop Standard", "Shop Full", "Shop Only Categories",
-      "Shop Icon Categories", "Shop Image Categories", "Shop Image Categories 2",
-      "Shop Sub Categories", "Shop List", "Filter Layout", "Sidebar",
-      "Filter Side Out", "Filter Dropdown", "Filter On Top", "Filter Drawer",
-      "Woo Pages", "Order Tracking", "Login", "Wishlist", "Compare",
-      "Hover Style", "Icons On Hover", "Quick View Button", "Add to cart Button",
-      "Wishlists Icon", "Quick Shop Light", "Add to Basket", "Shop Loader",
-      "Shop Pagination", "Shop Infinity", "Shop Load More", "Mini Cart",
-      "Side Out Light", "Side Out Dark", "Dropdown", "Cart Page",
-      "Checkout Style", "Checkout Classic", "Checkout Mordern"
-    ]
+    dropdown: ["Shop Style", "Shop Standard", "Shop Full", "Shop List"],
   },
   {
     title: "PRODUCTS",
     path: "/products",
-    dropdown: [
-      "Product Featured", "Sticky add to cart", "Video Inner", "Video Popup", "360 Degree",
-      "Countdown", "Buy Together", "Notify Me", "Real Time Visitor",
-      "Products Recently Viewed", "Trust Badge", "Pre-order Product",
-      "Low Stock Notice", "Product Type", "Simple Product", "Simple Slider",
-      "Group Product", "Variable Color Product", "Variable Image Product",
-      "Variant Group Image", "External & Affiliate Product", "Sold Out", "Zoom Effect",
-      "Autozoom", "Lens zoom", "Magic zoom", "Product Gallery", "Gird Sticky",
-      "Gird Mix", "One Column", "Grid 2 Columns", "Slider", "Lagre Gallery",
-      "Left Thumbnail", "Right Thumbnail", "Bottom Thumbnail", "Outside Thumbnail",
-      "Product Styles", "Clean", "Modern", "Full Width", "Background Color",
-      "Description Style", "Description Tab", "Description Accordion",
-      "Description Full Content", "Description Vertical"
-    ]
+    dropdown: ["Simple Product", "Variable Product", "Zoom Effect"],
   },
   {
     title: "BLOG",
     path: "/blog",
-    dropdown: [
-      "Blog layout", "Blog Left Sidebar", "Blog Right Sidebar", "Blog Without Sidebar",
-      "Blog style", "Blog List", "Blog Grid", "Blog Card", "Blog Modern", "Blog Standar",
-      "Blog format", "Post format gallery", "Post format video", "Post format audio",
-      "Post layout", "Sidebar", "One Column", "Prallax Image", "Simple Title",
-      "Sticky Title", "Recent Post", "Choosing Handcrafted Over Mass-Produced",
-      "April 3, 2024", "Celebrating the Artistry of Handicrafts",
-      "April 2, 2024", "Handmade Marvels for a Personal Touch", "March 8, 2024"
-    ]
+    dropdown: ["Blog List", "Blog Grid", "Blog Modern"],
   },
   { title: "PAGE", path: "/page", dropdown: [] },
 ];
@@ -65,13 +35,14 @@ export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const { cartItems } = useCart();
+  const { favorites } = useFavorites();
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-transparent text-white px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between backdrop-blur-xs border-b border-white/30">
-      
-      {/* Logo */}
       <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
 
-      {/* Desktop Nav */}
+      {/* Desktop Navigation */}
       <ul className="hidden lg:flex items-center gap-10 relative">
         {navItems.map((item, idx) => (
           <li
@@ -93,11 +64,11 @@ export default function Header() {
 
             {/* Dropdown */}
             {hovered === idx && item.dropdown.length > 0 && (
-              <div className="absolute top-full left-0 mt-2 w-[600px] max-h-[400px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 transition-all duration-1000 z-20">
+              <div className="absolute top-full left-0 mt-2 w-[300px] max-h-[300px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-1 gap-2 z-20">
                 {item.dropdown.map((option, i) => (
                   <div
                     key={i}
-                    className="hover:text-orange-600 cursor-pointer text-sm transition duration-1000"
+                    className="hover:text-orange-600 cursor-pointer text-sm transition duration-300"
                   >
                     {option}
                   </div>
@@ -108,30 +79,37 @@ export default function Header() {
         ))}
       </ul>
 
-      {/* Right icons */}
+      {/* Icons */}
       <div className="hidden lg:flex items-center gap-6 text-lg relative">
         <FiSearch className="cursor-pointer hover:text-orange-500 transition duration-300" />
         <FiUser className="cursor-pointer hover:text-orange-500 transition duration-300" />
-        <div className="relative">
-          <FiHeart className="cursor-pointer hover:text-orange-500 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-orange-500 text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            0
+
+        {/* Favorites */}
+        <NavLink to="/favoritespage" className="relative">
+          <FiHeart className="cursor-pointer hover:text-red-500 transition duration-300" />
+          <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+            {favorites.length}
           </span>
-        </div>
-        <div className="relative">
-          <FiShoppingCart className="cursor-pointer hover:text-orange-500 transition duration-300" />
-          <span className="absolute -top-2 -right-2 bg-orange-500 text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-            0
+        </NavLink>
+
+        {/* Cart */}
+        <NavLink to="/cartpage" className="relative">
+          <FiShoppingCart className="cursor-pointer hover:text-red-500 transition duration-300" />
+          <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+            {cartItems.length}
           </span>
-        </div>
+        </NavLink>
       </div>
 
-      {/* Mobile menu icon */}
-      <div className="lg:hidden text-2xl cursor-pointer" onClick={() => setMobileOpen(!mobileOpen)}>
+      {/* Mobile Menu Toggle */}
+      <div
+        className="lg:hidden text-2xl cursor-pointer"
+        onClick={() => setMobileOpen(!mobileOpen)}
+      >
         {mobileOpen ? <FiX /> : <FiMenu />}
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile Drawer */}
       <div
         className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-50 transform ${
           mobileOpen ? "translate-x-0" : "translate-x-full"
@@ -139,7 +117,10 @@ export default function Header() {
       >
         <div className="flex justify-between items-center p-4 border-b">
           <div className="text-xl font-bold">ACHICHIZ</div>
-          <FiX className="text-2xl cursor-pointer" onClick={() => setMobileOpen(false)} />
+          <FiX
+            className="text-2xl cursor-pointer"
+            onClick={() => setMobileOpen(false)}
+          />
         </div>
 
         <ul className="flex flex-col gap-4 p-6">
@@ -154,8 +135,11 @@ export default function Header() {
               </NavLink>
               {item.dropdown.length > 0 && (
                 <ul className="mt-2 pl-4 space-y-1 text-sm text-gray-700">
-                  {item.dropdown.slice(0, 6).map((sub, i) => (
-                    <li key={i} className="hover:text-orange-500 transition duration-1000">
+                  {item.dropdown.map((sub, i) => (
+                    <li
+                      key={i}
+                      className="hover:text-orange-500 transition duration-300"
+                    >
                       {sub}
                     </li>
                   ))}
