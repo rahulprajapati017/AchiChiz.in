@@ -5,6 +5,7 @@ function Home() {
     <div>
       <Scrollbar />
       <ShopByCategory />
+      <Customizeproduct />
       <Customerreview />
       <Followus /> 
       < PromoSection />

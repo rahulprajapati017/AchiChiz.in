@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FiSearch,
@@ -7,6 +7,7 @@ import {
   FiShoppingCart,
   FiMenu,
   FiX,
+  FiChevronDown,
 } from "react-icons/fi";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
@@ -48,8 +49,8 @@ export default function Header() {
           <li
             key={idx}
             className="relative"
-            onMouseEnter={() => setHovered(idx)}
-            onMouseLeave={() => setHovered(null)}
+            onMouseEnter={() => handleMouseEnter(idx)}
+            onMouseLeave={handleMouseLeave}
           >
             <NavLink
               to={item.path}
@@ -61,8 +62,6 @@ export default function Header() {
             >
               {item.title}
             </NavLink>
-
-            {/* Dropdown */}
             {hovered === idx && item.dropdown.length > 0 && (
               <div className="absolute top-full left-0 mt-2 w-[300px] max-h-[300px] overflow-y-auto bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-1 gap-2 z-20">
                 {item.dropdown.map((option, i) => (
@@ -79,6 +78,7 @@ export default function Header() {
         ))}
       </ul>
 
+      {/* Icons */}
       {/* Icons */}
       <div className="hidden lg:flex items-center gap-6 text-lg relative">
         <FiSearch className="cursor-pointer hover:text-orange-500 transition duration-300" />
