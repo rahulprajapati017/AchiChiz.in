@@ -26,7 +26,7 @@ const navItems = [
   },
   {
     title: "BLOG",
-    path: "./page/",
+    path: "/blog",
     dropdown: ["Blog List", "Blog Grid", "Blog Modern"],
   },
   { title: "PAGE", path: "/page", dropdown: [] },
