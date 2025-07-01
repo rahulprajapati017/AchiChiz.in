@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-=======
-import React, { useState, useRef, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-
->>>>>>> refs/remotes/origin/main
 import {
   FiSearch,
   FiUser,
@@ -70,8 +64,7 @@ export default function Header() {
 
       {/* Navbar */}
       <nav
-        className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300
-        ${
+        className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
           glassEffect
             ? "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
             : "bg-white text-black shadow-md border-b border-black/10"
