@@ -48,7 +48,7 @@ const ProductPage = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-white text-[#1e1e1e] px-6 lg:px-12 py-10 space-y-10 font-sans">
+    <div className="min-h-screen w-full bg-white text-[#1e1e1e] mt-15 px-6 lg:px-12 py-10 space-y-10 font-sans">
       {/* Title */}
       <div className="bg-white p-6 shadow-xl">
         <h1 className="text-4xl font-bold mb-6 text-center text-[#0f2c5c] drop-shadow">

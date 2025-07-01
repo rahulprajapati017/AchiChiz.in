@@ -23,6 +23,8 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
+  Authpage,
+  Aboutus
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -54,9 +56,11 @@ function App() {
               <Route path="reviews/:id" element={< Reviews/>} />
               <Route path="dashboard" element={<  Dashboard/>} />
               <Route path="myorders" element={<  MyOrders/>} />
+              <Route path="authpage" element={<  Authpage/>} />
               <Route path="account-dashboard" element={<  AccountDashboard/>} />
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
+              <Route path="about-us" element={<  Aboutus/>} />
               <Route path="blog" element={<  Blog/>} />
             </Route>
           </Routes>

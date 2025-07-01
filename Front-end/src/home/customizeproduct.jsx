@@ -11,7 +11,7 @@ const Customizeproduct = () => {
 
   return (
     <div
-      className="relative w-full h-[100vh] transition-all duration-500"
+      className="relative w-full h-[60vh] transition-all duration-500 "
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

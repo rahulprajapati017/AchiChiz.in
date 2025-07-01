@@ -26,3 +26,26 @@
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
+
+
+
+
+/* Fix for mobile viewport height */
+:root {
+  --vh: 100%;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --vh: 100vh;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.full-screen-mobile {
+  height: calc(var(--vh, 100vh));
+}

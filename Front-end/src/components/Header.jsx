@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-=======
-import React, { useState, useRef, useEffect } from "react";
-import { NavLink } from "react-router-dom";
-
->>>>>>> refs/remotes/origin/main
 import {
   FiSearch,
   FiUser,
@@ -14,26 +8,45 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext";
+import AuthPage from "./Auth/AuthPage";
+
+// Dummy cart/fav context (replace with actual)
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
 
+// Modern dropdown navItems
 const navItems = [
   { title: "HOME", path: "/", dropdown: [] },
   {
     title: "SHOP",
     path: "/shop",
-    dropdown: ["Shop Style", "Shop Standard", "Shop Full", "Shop List"],
+    dropdown: [
+      {
+        title: "Style",
+        items: ["Classic", "Minimal", "Contemporary"],
+      },
+      {
+        title: "Layouts",
+        items: ["Standard", "Full Width", "List View"],
+      },
+    ],
   },
   {
     title: "PRODUCTS",
     path: "/products",
-    dropdown: ["Simple Product", "Variable Product", "Zoom Effect"],
+    dropdown: [
+      {
+        title: "Product Types",
+        items: ["Simple Product", "Variable Product", "Grouped Product"],
+      },
+      {
+        title: "Features",
+        items: ["Zoom", "Image Slider", "Custom Tabs"],
+      },
+    ],
   },
-  {
-    title: "BLOG",
-    path: "/blog",
-    dropdown: ["Blog List", "Blog Grid", "Blog Modern"],
-  },
+  { title: "BLOG", path: "/blog", dropdown: [] },
   { title: "PAGE", path: "/page", dropdown: [] },
 ];
 
@@ -41,11 +54,13 @@ export default function Header() {
   const [hovered, setHovered] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { pathname } = useLocation();
 
+  const { pathname } = useLocation();
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,11 +70,11 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleMouseEnter = (index) => setHovered(index);
-  const handleMouseLeave = () => setHovered(null);
-
   const isHome = pathname === "/";
   const glassEffect = isHome && !scrolled;
+
+  const handleMouseEnter = (index) => setHovered(index);
+  const handleMouseLeave = () => setHovered(null);
 
   return (
     <>
@@ -98,14 +113,25 @@ export default function Header() {
               >
                 {item.title}
               </NavLink>
+
+              {/* Modern Dropdown */}
               {hovered === idx && item.dropdown.length > 0 && (
-                <div className="absolute top-full left-0 mt-2 w-[260px] bg-white text-black shadow-xl rounded-md p-4 grid grid-cols-1 gap-2 z-30">
-                  {item.dropdown.map((option, i) => (
-                    <div
-                      key={i}
-                      className="hover:text-orange-600 cursor-pointer text-sm transition duration-300"
-                    >
-                      {option}
+                <div className="absolute top-full left-0 mt-2 w-[280px] bg-white text-black shadow-xl rounded-md p-4 z-30">
+                  {item.dropdown.map((section, secIdx) => (
+                    <div key={secIdx} className="mb-3">
+                      <h4 className="text-sm font-semibold text-gray-700">
+                        {section.title}
+                      </h4>
+                      <ul className="pl-2 mt-1 space-y-1">
+                        {section.items.map((sub, subIdx) => (
+                          <li
+                            key={subIdx}
+                            className="text-sm text-gray-600 hover:text-orange-600 cursor-pointer"
+                          >
+                            {sub}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   ))}
                 </div>
@@ -118,7 +144,7 @@ export default function Header() {
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
           <div className="relative">
             <FiSearch
-              className="cursor-pointer hover:text-orange-500 transition duration-300"
+              className="cursor-pointer hover:text-orange-500"
               onClick={() => setShowSearch(!showSearch)}
             />
             {showSearch && (
@@ -134,10 +160,33 @@ export default function Header() {
             )}
           </div>
 
-          <FiUser className="cursor-pointer hover:text-orange-500 transition duration-300" />
+          {/* Auth logic */}
+          {user ? (
+            <div className="relative group">
+              <span className="cursor-pointer hover:text-orange-500 font-medium">
+                {user.name}
+              </span>
+              <div className="absolute top-6 right-0 hidden group-hover:block bg-white shadow-md border p-3 w-40 rounded-md z-50">
+                <div
+                  className="text-sm hover:text-orange-500 cursor-pointer"
+                  onClick={logout}
+                >
+                  Logout
+                </div>
+                <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
+                  Profile
+                </div>
+              </div>
+            </div>
+          ) : (
+            <FiUser
+              className="cursor-pointer hover:text-orange-500"
+              onClick={() => setShowAuthPopup(true)}
+            />
+          )}
 
           <NavLink to="/favoritespage" className="relative">
-            <FiHeart className="cursor-pointer hover:text-red-500 transition duration-300" />
+            <FiHeart className="cursor-pointer hover:text-red-500" />
             {favorites.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {favorites.length}
@@ -146,7 +195,7 @@ export default function Header() {
           </NavLink>
 
           <NavLink to="/cartpage" className="relative">
-            <FiShoppingCart className="cursor-pointer hover:text-red-500 transition duration-300" />
+            <FiShoppingCart className="cursor-pointer hover:text-red-500" />
             {cartItems.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {cartItems.length}
@@ -223,14 +272,16 @@ export default function Header() {
                 </NavLink>
                 {item.dropdown.length > 0 && (
                   <ul className="mt-2 pl-4 space-y-1 text-sm text-gray-700">
-                    {item.dropdown.map((sub, i) => (
-                      <li
-                        key={i}
-                        className="hover:text-orange-500 transition duration-300"
-                      >
-                        {sub}
-                      </li>
-                    ))}
+                    {item.dropdown.flatMap((section) =>
+                      section.items.map((sub, i) => (
+                        <li
+                          key={i}
+                          className="hover:text-orange-500 transition duration-300"
+                        >
+                          {sub}
+                        </li>
+                      ))
+                    )}
                   </ul>
                 )}
               </li>
@@ -238,6 +289,21 @@ export default function Header() {
           </ul>
         </div>
       </nav>
+
+      {/* Auth Popup Modal */}
+      {showAuthPopup && (
+        <div className="fixed inset-0 z-[999] bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative">
+            <button
+              className="absolute top-2 right-2 text-gray-700 hover:text-black"
+              onClick={() => setShowAuthPopup(false)}
+            >
+              ✕
+            </button>
+            <AuthPage onSuccess={() => setShowAuthPopup(false)} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
