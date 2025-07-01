@@ -19,7 +19,7 @@ const CartPage = () => {
   return (
     <div className="text-[#1e1e1e] font-sans mt-30 px-4 py-10 max-w-7xl mx-auto relative">
       {/* Heading */}
-      <h1 className="text-4xl font-bold mb-8 text-center text-[#0f2c5c]">
+      <h1 className="text-4xl font-bold mt-20 mb-8 text-center text-[#0f2c5c]">
         🧺 Your Cart
       </h1>
 
