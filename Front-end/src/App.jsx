@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import ProductPage from "./pages/productpage";
+import AdminRoutes from "./routes/AdminRoutes";
 import {
   Layout,
   PromoSection ,
@@ -56,6 +57,7 @@ function App() {
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
             </Route>
+             <Route path="/*" element={<AdminRoutes />} />
           </Routes>
           <Toaster position="top-right" />
         </>

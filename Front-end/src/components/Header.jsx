@@ -39,6 +39,15 @@ export default function Header() {
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
 
+  // ✅ Define missing event handlers
+  const handleMouseEnter = (index) => {
+    setHovered(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(null);
+  };
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-transparent text-white px-6 sm:px-12 py-4 h-[80px] flex items-center justify-between backdrop-blur-xs border-b border-white/30">
       <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
@@ -78,7 +87,6 @@ export default function Header() {
         ))}
       </ul>
 
-      {/* Icons */}
       {/* Icons */}
       <div className="hidden lg:flex items-center gap-6 text-lg relative">
         <FiSearch className="cursor-pointer hover:text-orange-500 transition duration-300" />

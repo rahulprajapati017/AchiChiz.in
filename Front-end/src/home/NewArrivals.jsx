@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { products } from "../data/products";
-import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
 import { toast } from "react-hot-toast";
 import { Eye, Heart, RefreshCcw } from "lucide-react";
+import Quickviews from "../pages/Quickviews";
+import { Link } from "react-router-dom";
 
 const NewArrivals = () => {
   const [expandedCategories, setExpandedCategories] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showQuickView, setShowQuickView] = useState(false);
   const { addToCart } = useCart();
   const { addToFavorites } = useFavorites();
 
@@ -17,12 +20,6 @@ const NewArrivals = () => {
     acc[key].push(product);
     return acc;
   }, {});
-
-  const toggleCategory = (cat) => {
-    setExpandedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
-    );
-  };
 
   return (
     <div className="max-w-8xl mx-auto mb-3 px-4 py-10 font-sans bg-white min-h-screen">
@@ -34,44 +31,49 @@ const NewArrivals = () => {
       </div>
 
       {Object.entries(groupedByCategory).map(([category, items]) => {
-        const showAll = expandedCategories.includes(category);
-        const visibleItems = showAll ? items : items.slice(0, 4);
+        const visibleItems = expandedCategories.includes(category)
+          ? items
+          : items.slice(0, 4);
 
         return (
           <div key={category} className="mb-12 mt-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
               {visibleItems.map((product) => (
                 <div
                   key={product.id}
                   className="relative bg-white overflow-hidden shadow transition-all"
                 >
-                  {/* Image Hover Group */}
                   <div className="relative overflow-hidden w-full h-100 group">
-                    <img
-                      src={product.images[0]}
-                      alt={product.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0 group-hover:scale-105"
-                    />
-                    {product.images[1] && (
+                    {/* ✅ Image links to product page */}
+                    <Link to={`/product/${product.id}`}>
                       <img
-                        src={product.images[1]}
+                        src={product.images[0]}
                         alt={product.title}
-                        className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-0 group-hover:scale-105"
                       />
-                    )}
+                      {product.images[1] && (
+                        <img
+                          src={product.images[1]}
+                          alt={product.title}
+                          className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:scale-105"
+                        />
+                      )}
+                    </Link>
 
                     <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
                       Hot
                     </div>
 
-                    {/* Hover Buttons */}
                     <div className="absolute top-1/2 right-4 -translate-y-1/1 flex flex-col items-center space-y-2 z-10">
-                      <Link
-                        to={`/product/${product.id}`}
+                      <button
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setShowQuickView(true);
+                        }}
                         className="bg-white w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition transform opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 duration-300 delay-200"
                       >
                         <Eye size={18} />
-                      </Link>
+                      </button>
 
                       <button
                         onClick={() => {
@@ -88,7 +90,6 @@ const NewArrivals = () => {
                       </button>
                     </div>
 
-                    {/* Add to Cart Button */}
                     <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                       <button
                         onClick={() => {
@@ -103,7 +104,6 @@ const NewArrivals = () => {
                     </div>
                   </div>
 
-                  {/* Product Info (No Hover Effect) */}
                   <div className="px-4 py-2">
                     <p className="text-xs uppercase text-gray-400 tracking-widest">
                       {product.subcategory || "Handmade"}
@@ -121,10 +121,19 @@ const NewArrivals = () => {
           </div>
         );
       })}
+
+      {/* ✅ Quickview Modal */}
+      {showQuickView && selectedProduct && (
+        <Quickviews
+          product={selectedProduct}
+          onClose={() => {
+            setShowQuickView(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 };
 
 export default NewArrivals;
-
-
