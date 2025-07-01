@@ -1,98 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-const categories = [
-  {
-      name: "Bamboo",
-      image: "https://img.freepik.com/free-photo/tropical-green-bamboo-forest_23-2149011457.jpg?semt=ais_items_boosted&w=740",
-    },
-    {
-      name: "Bar Soap",
-      image: "https://img.freepik.com/premium-photo/cultivated-traditional-bamboo-crafts-isolated-white-background_787273-8551.jpg?ga=GA1.1.648111341.1750933740&semt=ais_items_boosted&w=740",
-    },
-    {
-      name: "Ceramics",
-      image: "https://img.freepik.com/free-photo/tropical-green-bamboo-forest_23-2149011457.jpg?semt=ais_items_boosted&w=740",
-    },
-    {
-      name: "Candle",
-      image: "https://img.freepik.com/premium-photo/cultivated-traditional-bamboo-crafts-isolated-white-background_787273-8551.jpg?ga=GA1.1.648111341.1750933740&semt=ais_items_boosted&w=740",
-    },
-];
+const CategorySliderSection = ({
+  title = 'Shop by Category',
+  autoRotate = true,
+  rotateInterval = 4000,
+}) => {
+  const [activeIndex, setActiveIndex] = useState(0);
 
-export default function CategorySlider() {
-  const [current, setCurrent] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const categories = [
+    { name: 'Bamboo', image: 'https://www.re-thinkingthefuture.com/wp-content/uploads/2022/07/A7341-Traditional-Crafts-of-India-Bamboo-Handicrafts-Image-1.jpg' },
+    { name: 'Bar Soap', image: 'https://tse2.mm.bing.net/th/id/OIP.3NJ92vRCxdAWA3WKVoOdOgHaHa' },
+    { name: 'Ceramics', image: 'https://2.bp.blogspot.com/--TEGBCh9a8g/UrAfFZu4LXI/AAAAAAAAOvo/dYuwYbu0UAo/s1600/pottery+goa.jpg' },
+    { name: 'Candle', image: 'https://craftlipi.com/wp-content/uploads/2023/08/CDT-DYA-MC3-12-c.jpg' },
+    { name: 'Textiles', image: 'https://d36tnp772eyphs.cloudfront.net/blogs/1/2018/08/Handmade-skirt-with-embroidery-and-mirror-work.jpg' },
+    { name: 'Skincare', image: 'https://tse2.mm.bing.net/th/id/OIP.nbho2LZVcWzVW4dZj8RQ7AHaHa' },
+    { name: 'Jewelry', image: 'https://tse4.mm.bing.net/th/id/OIP.0CPeho1n8muNWWhKzEkjNAHaJ4' },
+    { name: 'Home Decor', image: 'https://tse3.mm.bing.net/th/id/OIP.RMdP1_1b2GfHbgPcEhAalQHaE7' },
+  ];
 
-  // Auto-slide logic
   useEffect(() => {
+    if (!autoRotate) return;
     const interval = setInterval(() => {
-      setAnimating(true);
-      setTimeout(() => {
-        setCurrent((prev) => (prev + 1) % categories.length);
-        setAnimating(false);
-      }, 500); // Animation duration
-    }, 4000);
+      setActiveIndex((prev) => (prev + 1) % categories.length);
+    }, rotateInterval);
     return () => clearInterval(interval);
-  }, []);
-
-  // Handle category click
-  const handleCategory = (idx) => {
-    setAnimating(true);
-    setTimeout(() => {
-      setCurrent(idx);
-      setAnimating(false);
-    }, 500);
-  };
+  }, [autoRotate, rotateInterval]);
 
   return (
-    <div className="w-full flex items-center justify-center min-h-screen bg-[#f6f3ed]">
-      <div className="flex w-[80%]">
-        {/* Image with slide animation */}
-        <div className="relative w-[800px] h-[500px] overflow-hidden">
-          <img
-            src={categories[current].image}
-            alt={categories[current].name}
-            className={`absolute w-full h-full object-cover transition-transform duration-500 ${
-              animating ? "translate-x-full animate-slide-in" : ""
-            }`}
-            style={{ backgroundColor: "#e25a2e", mixBlendMode: "multiply" }}
-          />
-          {/* Tailwind custom animation */}
-          <style>
-            {`
-              @keyframes slide-in {
-                0% { transform: translateX(100%); opacity: 0; }
-                100% { transform: translateX(0); opacity: 1; }
-              }
-              .animate-slide-in {
-                animation: slide-in 0.5s forwards;
-              }
-            `}
-          </style>
-        </div>
-        {/* Category List */}
-        <div className="bg-white p-8 ml-[-60px] shadow-lg w-[450px] z-2">
-          <h4 className="uppercase text-md tracking-widest mb-4 text-gray-700">Shop by category</h4>
-          <ul>
-            {categories.map((cat, idx) => (
-              <li
-                key={cat.name}
-                onClick={() => handleCategory(idx)}
-                className={`flex  items-center justify-between cursor-pointer py-2 border-b border-gray-200 transition-colors ${
-                  idx === current
-                    ? "text-[#e25a2e] font-semibold"
-                    : "text-black hover:text-[#e25a2e]"
-                }`}
-              >
-                {cat.name}
-                {idx === current && (
-                  <span className="ml-2 text-[#e25a2e]">&rarr;</span>
-                )}
-              </li>
-            ))}
-          </ul>
+    <section className="w-full flex flex-col py-20 md:flex-row items-start justify-center bg-[#f5f2ed] p-0 m-0 overflow-hidden">
+      {/* Left Image Section */}
+      <div className="w-full  md:w-1/2 h-[700px]">
+        <img
+          src={categories[activeIndex].image}
+          alt={categories[activeIndex].name}
+          className="ml-30 h-full object-cover shadow-md translate-y-[15px]"
+        />
+      </div>
+
+      {/* Right Text Section */}
+      <div className="w-full md:w-1/2 h-[650px] bg-white p-10 my-10 md:p-14 shadow-lg mr-30 flex flex-col z-10 justify-center">
+        <h2 className="text-sm uppercase text-gray-700 tracking-widest mb-6">
+          {title}
+        </h2>
+        <div className="divide-y divide-gray-200">
+          {categories.map((cat, i) => (
+            <div
+              key={i}
+              onMouseEnter={() => setActiveIndex(i)}
+              className="flex justify-between items-center py-4 cursor-pointer group"
+            >
+              <span className={`text-lg md:text-xl transition-colors duration-300 tracking-wide font-[serif] ${i === activeIndex ? 'text-[#c74b2c]' : 'text-black'} group-hover:text-[#c74b2c]`}>
+                {cat.name.toUpperCase()}
+              </span>
+              <span className={`text-2xl transition-all duration-300 ${i === activeIndex ? 'opacity-100 translate-x-0 text-[#c74b2c]' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#c74b2c]'}`}>
+                →
+              </span>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default CategorySliderSection;

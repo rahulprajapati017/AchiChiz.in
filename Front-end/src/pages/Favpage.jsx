@@ -35,7 +35,7 @@ const FavoriteItems = () => {
   };
 
   return (
-    <div className="space-y-6 mx-3 my-4">
+    <div className="space-y-6 mt-30">
       <div className="flex justify-center items-center">
         <h2 className="text-2xl font-bold text-gray-800">My Favorite</h2>
         <div className="ml-7 text-sm text-gray-600">
@@ -129,7 +129,7 @@ const FavoriteItems = () => {
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Your wishlist is empty</h3>
           <p className="text-gray-600 mb-6">Start adding items you love to your wishlist!</p>
-          <a href="/all-products">
+          <a href="/">
             <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
               Browse Products
             </button>

@@ -23,6 +23,8 @@ import {
   Scrollbar,
   ShopByCategory,
   NewTrending,
+  Blog,
+
 } from "./index";
 import { Toaster } from "react-hot-toast";
 import FavoritesPage from "./pages/Favpage"; 
@@ -56,6 +58,7 @@ function App() {
               <Route path="account-dashboard" element={<  AccountDashboard/>} />
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
+              <Route path="blog" element={<  Blog/>} />
             </Route>
              <Route path="/*" element={<AdminRoutes />} />
           </Routes>

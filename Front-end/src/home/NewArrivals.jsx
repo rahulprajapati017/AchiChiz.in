@@ -22,12 +22,9 @@ const NewArrivals = () => {
   }, {});
 
   return (
-    <div className="max-w-8xl mx-auto mb-3 px-4 py-10 font-sans bg-white min-h-screen">
-      <div className="flex items-center justify-between px-4 py-2">
-        <h2 className="text-5xl font-bold text-[#0f2c5c]">New Arrivals</h2>
-        <button className="text-blue-600 hover:underline text-sm font-medium">
-          Shop Now →
-        </button>
+    <div className="max-w-8xl  mx-5 px-4 py-10 font-sans bg-white min-h-screen">
+      <div className="flex items-center justify-center px-4 py-2">
+        <h2 className="text-5xl font-serif text-[#000000]">New Arrivals</h2>
       </div>
 
       {Object.entries(groupedByCategory).map(([category, items]) => {
@@ -41,7 +38,7 @@ const NewArrivals = () => {
               {visibleItems.map((product) => (
                 <div
                   key={product.id}
-                  className="relative bg-white overflow-hidden shadow transition-all"
+                  className="relative bg-white overflow-hidden transition-all"
                 >
                   <div className="relative overflow-hidden w-full h-100 group">
                     {/* ✅ Image links to product page */}
@@ -60,7 +57,7 @@ const NewArrivals = () => {
                       )}
                     </Link>
 
-                    <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+                    <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-4xl shadow-md">
                       Hot
                     </div>
 
@@ -91,15 +88,17 @@ const NewArrivals = () => {
                     </div>
 
                     <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    {/* Add to Cart Button */}
+                    <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                       <button
                         onClick={() => {
                           addToCart(product);
                           toast.success("Added to Cart");
                         }}
-                        className="w-full h-15 relative overflow-hidden px-6 py-2 text-white font-bold z-10 bg-[#d75a3c] group/button"
+                        className="w-[90%] h-12 relative overflow-hidden px-2 py-2 text-white  font-bold z-10 bg-[#d75a3c] group/button"
                       >
-                        <span className="absolute inset-0 bg-[#c44b2e] transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
-                        <span className="relative z-10">Add to Cart</span>
+                        <span className="absolute inset-0 bg-[#ffffff]  transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
+                        <span className="relative text-black z-10">Add to Cart</span>
                       </button>
                     </div>
                   </div>
