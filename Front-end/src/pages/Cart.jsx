@@ -7,9 +7,9 @@ const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   useEffect(() => {
-    document.body.style.backgroundColor = "#ffffff";
+    document.body.style.backgroundColor = "#fef4e8";
     return () => {
-      document.body.style.backgroundColor = " ";
+      document.body.style.backgroundColor = "";
     };
   }, []);
 
@@ -62,7 +62,7 @@ const CartPage = () => {
                       {item.title}
                     </h2>
 
-                    {/* Optional rating summary (replace with your review component if needed) */}
+                    {/* Optional rating summary */}
                     <HoverReview
                       rating={item.rating}
                       reviewCount={item.reviews?.length || 0}
@@ -74,7 +74,13 @@ const CartPage = () => {
                         <p className="text-sm font-semibold">Qty</p>
                         <div className="flex items-center bg-white rounded-xl mt-1 w-24 shadow-inner">
                           <button
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() => {
+                              if (item.quantity <= 1) {
+                                removeFromCart(item.id);
+                              } else {
+                                updateQuantity(item.id, -1);
+                              }
+                            }}
                             className="px-3 py-1 font-bold text-xl hover:scale-125 transition"
                           >
                             -
