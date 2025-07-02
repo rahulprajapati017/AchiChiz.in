@@ -6,6 +6,10 @@ export const products = [
     price: 1299,
     discount: 20,
     rating: 4.5,
+     stock: 8,
+  maxStock: 20,
+  sku: "HV001",
+  categories: ["Home", "Decor"],
     images: [
       "https://img.freepik.com/free-vector/wicker-baskets-vector-design-element-set-remixed-artworks-by-various-artists_53876-116295.jpg?ga=GA1.1.791330827.1733070054&semt=ais_items_boosted&w=740",
        "https://img.freepik.com/free-psd/3d-png-element-with-wooden-texture-sao-joao-brazilian-party_314999-3271.jpg?ga=GA1.1.791330827.1733070054&semt=ais_items_boosted&w=740",

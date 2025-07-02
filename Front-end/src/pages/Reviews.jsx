@@ -95,7 +95,7 @@ const Reviews = () => {
   });
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
+    <div className="max-w-6xl mx-auto mt-20 px-6 py-10">
       <h2 className="text-3xl font-bold mb-2">Customer Reviews</h2>
       <p className="text-gray-600 mb-4">
         Read what customers said about <strong>{product.title}</strong>

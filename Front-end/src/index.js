@@ -20,6 +20,8 @@ export {default as  AddressBook } from "./components/addressbook";
 export {default as  MyOrders } from "./components/myOrder";
 export {default as  Blog } from "./home/blog";
 export {default as  Category } from "./pages/Category";
+export { default as Authpage } from "./components/Auth/Authpage";
+export { default as Aboutus } from "./pages/About";
 
 
 

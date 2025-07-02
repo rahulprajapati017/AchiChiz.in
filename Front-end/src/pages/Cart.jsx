@@ -7,9 +7,9 @@ const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   useEffect(() => {
-    document.body.style.backgroundColor = "#ffffff";
+    document.body.style.backgroundColor = "#fef4e8";
     return () => {
-      document.body.style.backgroundColor = " ";
+      document.body.style.backgroundColor = "";
     };
   }, []);
 
@@ -19,7 +19,7 @@ const CartPage = () => {
   return (
     <div className="text-[#1e1e1e] font-sans mt-30 px-4 py-10 max-w-7xl mx-auto relative">
       {/* Heading */}
-      <h1 className="text-4xl font-bold mb-8 text-center text-[#0f2c5c]">
+      <h1 className="text-4xl font-bold mt-20 mb-8 text-center text-[#0f2c5c]">
         🧺 Your Cart
       </h1>
 
@@ -62,7 +62,7 @@ const CartPage = () => {
                       {item.title}
                     </h2>
 
-                    {/* Optional rating summary (replace with your review component if needed) */}
+                    {/* Optional rating summary */}
                     <HoverReview
                       rating={item.rating}
                       reviewCount={item.reviews?.length || 0}
@@ -74,7 +74,13 @@ const CartPage = () => {
                         <p className="text-sm font-semibold">Qty</p>
                         <div className="flex items-center bg-white rounded-xl mt-1 w-24 shadow-inner">
                           <button
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() => {
+                              if (item.quantity <= 1) {
+                                removeFromCart(item.id);
+                              } else {
+                                updateQuantity(item.id, -1);
+                              }
+                            }}
                             className="px-3 py-1 font-bold text-xl hover:scale-125 transition"
                           >
                             -

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import * as LucideIcons from "lucide-react";
+import { Heart, Share2 } from "lucide-react";
 import { products } from "../data/products";
 import HoverReview from "../components/card";
 import { useCart } from "../context/CartContext";
@@ -8,36 +9,25 @@ import toast from "react-hot-toast";
 
 const ProductPage = () => {
   const { id } = useParams();
-  const product = products.find((item) => item.id === id);
+  const product = products.find((item) => item.id.toString() === id); // id match safely
   const [selectedImage, setSelectedImage] = useState(0);
   const [zoomPos, setZoomPos] = useState({ x: "50%", y: "50%" });
   const [isHoveringImage, setIsHoveringImage] = useState(false);
   const intervalRef = useRef(null);
-
   const { addToCart } = useCart();
 
-  // Calculate rating distribution for HoverReview
-  const ratingData = [5, 4, 3, 2, 1].map((stars) => {
-    const count = product?.reviews?.filter((r) => r.rating === stars).length || 0;
-    return {
-      stars,
-      percentage:
-        product?.reviews?.length > 0
-          ? Math.round((count / product.reviews.length) * 100)
-          : 0,
-    };
-  });
-
-  // Auto-switch image
   useEffect(() => {
-    if (!isHoveringImage) {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (!isHoveringImage && product?.images?.length > 0) {
       intervalRef.current = setInterval(() => {
         setSelectedImage((prev) => (prev + 1) % product.images.length);
       }, 3000);
     }
-
     return () => clearInterval(intervalRef.current);
-  }, [isHoveringImage, product.images.length]);
+  }, [isHoveringImage, product?.images?.length]);
 
   if (!product) {
     return (
@@ -47,20 +37,38 @@ const ProductPage = () => {
     );
   }
 
+  const ratingData = [5, 4, 3, 2, 1].map((stars) => {
+    const count = product.reviews?.filter((r) => r.rating === stars).length || 0;
+    return {
+      stars,
+      percentage: product.reviews?.length
+        ? Math.round((count / product.reviews.length) * 100)
+        : 0,
+    };
+  });
+
+  const relatedProducts = products
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 4);
+
   return (
-    <div className="min-h-screen w-full bg-white text-[#1e1e1e] px-6 lg:px-12 py-10 space-y-10 font-sans">
+<<<<<<< HEAD
+    <div className="min-h-screen w-full bg-white text-[#1e1e1e] mt-15 px-6 lg:px-12 py-10 space-y-10 font-sans">
       {/* Title */}
+=======
+    <div className="min-h-screen w-full mt-20 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
+      {/* Main Section */}
+>>>>>>> 9a4e97b2ae8e91dc6e79eb5958640464823da42c
       <div className="bg-white p-6 shadow-xl">
-        <h1 className="text-4xl font-bold mb-6 text-center text-[#0f2c5c] drop-shadow">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-[#0f2c5c] drop-shadow">
           🧺 {product.title}
         </h1>
 
-        {/* Image + Overview */}
         <div className="lg:flex gap-10">
           {/* Image Section */}
           <div className="lg:w-1/2 relative">
             <div
-              className="group aspect-square overflow-hidden shadow-[inset_8px_8px_15px_#d4d4d4,inset_-8px_-8px_15px_#ffffff] relative"
+              className="group aspect-[4/5] overflow-hidden shadow-[inset_8px_8px_15px_#d4d4d4,inset_-8px_-8px_15px_#ffffff] relative rounded-xl"
               onMouseEnter={() => setIsHoveringImage(true)}
               onMouseLeave={() => {
                 setIsHoveringImage(false);
@@ -83,7 +91,6 @@ const ProductPage = () => {
               <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
 
-            {/* Thumbnails */}
             <div className="mt-4 flex justify-center gap-2">
               {product.images.map((_, i) => (
                 <button
@@ -99,25 +106,21 @@ const ProductPage = () => {
             </div>
           </div>
 
-          {/* Product Details */}
-          <div className="lg:w-1/2 space-y-4">
-            <h2 className="text-3xl font-semibold text-[#0f2c5c]">
+          {/* Details Section */}
+          <div className="lg:w-1/2 space-y-4 mt-10 lg:mt-0">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#0f2c5c]">
               {product.title}
             </h2>
-
-            {/* Hover Review */}
             <HoverReview
               rating={product.rating}
               reviewCount={product.reviews.length}
               productId={product.id}
               ratingData={ratingData}
             />
-
-            <p className="text-2xl font-bold text-green-800">
+            <p className="text-xl sm:text-2xl font-bold text-green-800">
               ₹ {product.price}
             </p>
             <p className="text-gray-600">{product.discount}% off</p>
-
             <p className="text-[#333] leading-relaxed text-md border-t border-dashed pt-3">
               {product.description}
             </p>
@@ -130,22 +133,48 @@ const ProductPage = () => {
               <li>📦 Secure Packaging Guaranteed</li>
             </ul>
 
-            <div className="flex gap-4 mt-6">
-              <button
-                onClick={() => {
-                  addToCart(product);
-                  toast.success(`${product.title} added to cart!`);
-                }}
-                className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300"
-              >
-                <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
-                <span className="relative z-10">Add To Cart</span>
-              </button>
+            <div className="flex flex-col gap-3 mt-6">
+              <div className="flex gap-4">
+                <button
+                  onClick={() => {
+                    addToCart(product);
+                    toast.success(`${product.title} added to cart!`);
+                  }}
+                  className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded"
+                >
+                  <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
+                  <span className="relative z-10">Add To Cart</span>
+                </button>
 
-              <button className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300">
-                <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
-                <span className="relative z-10">Buy Now</span>
-              </button>
+                <button className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded">
+                  <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
+                  <span className="relative z-10">Buy Now</span>
+                </button>
+              </div>
+
+              <div className="flex gap-4 justify-evenly mt-2">
+                <button
+                  onClick={() => toast.success("Added to Wishlist!")}
+                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-red-600 hover:border-red-600 transition"
+                >
+                  <Heart size={16} /> Wishlist
+                </button>
+
+                <button
+                  onClick={() => {
+                    navigator.share
+                      ? navigator.share({
+                          title: product.title,
+                          text: "Check out this amazing product!",
+                          url: window.location.href,
+                        })
+                      : toast("Sharing not supported in your browser.");
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-blue-600 hover:border-blue-600 transition"
+                >
+                  <Share2 size={16} /> Share
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -156,10 +185,7 @@ const ProductPage = () => {
         {product.features.map((f, i) => {
           const Icon = LucideIcons[f.icon] || LucideIcons.HelpCircle;
           return (
-            <div
-              key={i}
-              className="bg-white p-6 shadow-md text-center hover:scale-105"
-            >
+            <div key={i} className="bg-white p-6 shadow-md text-center hover:scale-105 rounded">
               <Icon className="h-8 w-8 mx-auto text-indigo-600" />
               <p className="mt-3 font-medium text-[#0f2c5c]">{f.title}</p>
             </div>
@@ -168,10 +194,8 @@ const ProductPage = () => {
       </div>
 
       {/* Specifications */}
-      <div className="bg-white p-6 shadow hover:scale-105">
-        <h2 className="text-2xl font-bold mb-3 text-[#0f2c5c]">
-          Specifications
-        </h2>
+      <div className="bg-white p-6 shadow hover:scale-105 rounded">
+        <h2 className="text-2xl font-bold mb-3 text-[#0f2c5c]">Specifications</h2>
         <table className="w-full text-left border-collapse">
           <tbody>
             {Object.entries(product.specs).map(([key, val], i) => (
@@ -197,6 +221,26 @@ const ProductPage = () => {
         ) : (
           <p className="text-gray-500">No FAQs added.</p>
         )}
+      </div>
+
+     
+      <div className="space-y-6 border-y-2 py-3 mt-10">
+        <h2 className="text-2xl font-bold text-[#0f2c5c]">Related Products</h2>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {relatedProducts.map((item) => (
+            <Link to={`/product/${item.id}`} key={item.id}>
+              <div className="bg-white p-4 shadow hover:shadow-md transition rounded">
+                <img
+                  src={item.images[0]}
+                  alt={item.title}
+                  className="w-full h-48 object-cover rounded"
+                />
+                <h3 className="mt-2 font-medium text-[#333] truncate">{item.title}</h3>
+                <p className="text-sm text-green-700 font-bold">₹{item.price}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

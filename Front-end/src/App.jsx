@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import ProductPage from "./pages/productpage";
+
 import {
   Layout,
   PromoSection ,
@@ -24,6 +25,8 @@ import {
   NewTrending,
   Blog,
   Category,
+  Authpage,
+  Aboutus
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -55,9 +58,11 @@ function App() {
               <Route path="reviews/:id" element={< Reviews/>} />
               <Route path="dashboard" element={<  Dashboard/>} />
               <Route path="myorders" element={<  MyOrders/>} />
+              <Route path="authpage" element={<  Authpage/>} />
               <Route path="account-dashboard" element={<  AccountDashboard/>} />
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
+              <Route path="about-us" element={<  Aboutus/>} />
               <Route path="blog" element={<  Blog/>} />
               <Route path="category" element={<  Category/>} />
             </Route>

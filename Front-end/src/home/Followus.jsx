@@ -47,7 +47,7 @@ function Followus() {
   ];
 
   return (
-    <div className="followus-layout grid grid-cols-6 grid-rows-2 gap-2 w-full max-w-7xl px-5 py-6">
+    <div className="followus-layout h-[60vh] grid grid-cols-6 grid-rows-2  gap-2 w-full px-10 py-2">
       {images.map((img, index) => (
         <div
           key={index}
@@ -58,7 +58,7 @@ function Followus() {
         >
           <img
             src={img}
-            alt={`Image ${index}`}
+            alt={`Image ${index}`} 
             className="w-full h-full object-cover"
           />
 
@@ -75,7 +75,7 @@ function Followus() {
            {/* ✅ "Follow Us" Text for center image */}
            
           {index === 2 && (
-            <div className="  w-[60%] h-[60%] absolute left-23 top-25 inset-0 flex items-center justify-center bg-white bg-opacity-40 text-black text-2xl font-semibold">
+            <div className="  w-[50%] h-[50%] absolute left-[25%] top-[25%] inset-0 flex items-center justify-center bg-white bg-opacity-40 text-black text-2xl font-semibold">
               Follow Us
             </div>
           )}

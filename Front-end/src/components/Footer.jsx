@@ -10,7 +10,6 @@ import {
 const Footer = () => {
   const [showButton, setShowButton] = useState(false);
 
-  // Show scroll-to-top button on scroll
   useEffect(() => {
     const handleScroll = () => {
       setShowButton(window.scrollY > 200);
@@ -27,15 +26,15 @@ const Footer = () => {
     <footer
       className="bg-black text-white relative flex flex-col items-center justify-center py-12"
       style={{
-        backgroundImage: "url('/your-bg-image.png')", 
+        backgroundImage: "url('/your-bg-image.png')",
         backgroundSize: "contain",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center center",
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-10 w-full">
         {/* Contact Us */}
-        <div>
+        <div className="text-left">
           <h2 className="font-semibold text-lg mb-4">CONTACT US</h2>
           <p className="text-sm">
             <span className="text-red-500">Mon – Fri:</span> 10AM – 5PM
@@ -53,16 +52,16 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Sign up */}
+        {/* Sign up and social */}
         <div className="text-center">
           <h2 className="text-2xl font-semibold mb-4">SIGN UP FOR 10% OFF</h2>
-          <div className="flex max-w-md mx-auto ">
+          <div className="flex flex-col sm:flex-row items-center max-w-md mx-auto">
             <input
               type="email"
               placeholder="Enter your email..."
-              className="w-full p-3 text-white bg-gray-800 border border-gray-700 rounded-l-md  "
+              className="w-full sm:flex-1 p-3 text-white bg-gray-800 border border-gray-700 rounded-md sm:rounded-r-none sm:rounded-l-md"
             />
-            <button className="bg-white text-black px-6 font-bold">
+            <button className="bg-white text-black px-6 py-3 mt-2 sm:mt-0 sm:rounded-r-md font-bold">
               SEND
             </button>
           </div>
@@ -83,7 +82,7 @@ const Footer = () => {
         </div>
 
         {/* Customer Care */}
-        <div className="text-right">
+        <div className="text-left md:text-right">
           <h2 className="font-semibold text-lg mb-4">CUSTOMER CARE</h2>
           <ul className="space-y-2 text-sm">
             <li><a href="#">Store Locator</a></li>
@@ -97,9 +96,9 @@ const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-700 py-4 px-6 flex flex-col md:flex-row justify-between items-center text-sm">
+      <div className="border-t border-gray-700 py-4 px-4 md:px-6 w-full text-sm flex flex-col md:flex-row justify-between items-center gap-4">
         <p>Copyright © 2024. All Rights Reserved.</p>
-        <div className="flex gap-2 mt-2 md:mt-0">
+        <div className="flex gap-2 flex-wrap justify-center">
           <img src="/amex.png" alt="Amex" className="h-6" />
           <img src="/mastercard.png" alt="Mastercard" className="h-6" />
           <img src="/visa.png" alt="Visa" className="h-6" />
@@ -109,16 +108,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Scroll to Top */}
-      {showButton && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-5 right-5 bg-red-700 hover:bg-red-600 p-3 rounded-full text-white shadow-lg transition"
-          aria-label="Scroll to top"
-        >
-          <FaArrowUp />
-        </button>
-      )}
     </footer>
   );
 };
