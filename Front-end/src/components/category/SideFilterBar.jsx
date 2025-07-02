@@ -1,16 +1,18 @@
 import React from 'react';
 
 const categories = ['Sneakers & Sports Shoes', 'T-Shirts', 'Shorts & Skirts', 'Flip Flop & Slippers', 'Track Pants'];
-const prices = ['Below ₹500', '₹500–1000', '₹1000–1500', '₹1500–2000', '₹2000–2500'];
 const brands = ['SUTIE', 'COPPER', 'BANDQIT', 'ALFINE', 'CERE', 'DONNA RICCO'];
 const colors = ['#7b2cbf', '#1e3a8a', '#16a34a', '#ca8a04', '#e11d48', '#000000', '#cccccc'];
 const sizes = ['XS', 'S', 'M', 'L', '2XL'];
+
+const PRICE = [0 , 5000];
+
 
 const SideFilterBar = ({ filters, onFilterChange, onReset }) => {
   return (
     <div className="md:w-64  p-5 border-r border-gray-200 min-h-screen">
       <div className="flex justify-between items-center mb-6 w-full bg-white">
-        <h2 className="text-xl font-semibold text-gray-800">Refine By</h2>
+        <h2 className="text-xl font-semibold text-gray-800">Filter By</h2>
         <button
           onClick={onReset}
           className="text-sm text-blue-700 hover:underline"
@@ -34,23 +36,22 @@ const SideFilterBar = ({ filters, onFilterChange, onReset }) => {
         ))}
         <button className="text-xs text-blue-700 mt-1">More</button>
       </div>
-      {/* Price Range */}
+      {/* Price Range Single Slider */}
       <div className="mb-6">
         <h3 className="font-bold text-sm mb-2">Price Range</h3>
-        <div className="flex gap-2 mt-2">
+        <div className="flex flex-col gap-2 mt-2">
+          <div className="flex justify-between text-xs text-gray-600 mb-1">
+            <span>₹{PRICE[0]}</span>
+            <span>to</span>
+            <span>₹{filters.priceMax || PRICE[1]}</span>
+          </div>
           <input
-            type="number"
-            placeholder="Min"
-            className="w-1/2 border text-sm px-2 py-1 rounded"
-            value={filters.priceMin}
-            onChange={e => onFilterChange('priceMin', e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Max"
-            className="w-1/2 border text-sm px-2 py-1 rounded"
-            value={filters.priceMax}
+            type="range"
+            min={PRICE[0]}
+            max={PRICE[1]}
+            value={filters.priceMax || PRICE[1]}
             onChange={e => onFilterChange('priceMax', e.target.value)}
+            className="w-full accent-orange-500"
           />
         </div>
       </div>
