@@ -29,11 +29,11 @@ const CategorySliderSection = ({
   return (
     <section className="w-full flex flex-col py-20 md:flex-row items-start justify-center bg-[#f5f2ed] p-0 m-0 overflow-hidden">
       {/* Left Image Section */}
-      <div className="w-full  md:w-1/2 h-[700px]">
+      <div className="w-full  md:w-1/2 md:h-[700px]">
         <img
           src={categories[activeIndex].image}
           alt={categories[activeIndex].name}
-          className="ml-30 h-full object-cover shadow-md translate-y-[15px]"
+          className="md:ml-30 md:h-full h-[50vh] object-cover shadow-md translate-y-[15px]"
         />
       </div>
 

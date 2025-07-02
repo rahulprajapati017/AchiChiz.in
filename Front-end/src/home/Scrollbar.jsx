@@ -10,6 +10,7 @@ const textMotion = {
     transition: { duration: 1.5, ease: "easeOut" },
   },
 };
+
 const imageMotion = {
   hidden: { opacity: 0, x: 100 },
   show: {
@@ -26,10 +27,8 @@ const panels = [
     description:
       "Explore a wide range of handmade ceramics from cups, mugs, etc. from premium materials, traditional & modern blend.",
     button: "SHOP COLLECTION",
-    image:
-      "https://images.pexels.com/photos/18295443/pexels-photo-18295443.jpeg",
-    blurredBackground:
-      "https://images.pexels.com/photos/18295445/pexels-photo-18295445.jpeg",
+    image: "https://images.pexels.com/photos/18295443/pexels-photo-18295443.jpeg",
+    blurredBackground: "https://images.pexels.com/photos/18295445/pexels-photo-18295445.jpeg",
   },
   {
     subtitle: "SUSTAINABLE ARTISTRY",
@@ -37,10 +36,8 @@ const panels = [
     description:
       "Discover eco-friendly materials and craftsmanship that lasts for generations.",
     button: "EXPLORE NOW",
-    image:
-      "https://images.pexels.com/photos/10560635/pexels-photo-10560635.jpeg",
-    blurredBackground:
-      "https://images.pexels.com/photos/10560623/pexels-photo-10560623.jpeg",
+    image: "https://images.pexels.com/photos/10560635/pexels-photo-10560635.jpeg",
+    blurredBackground: "https://images.pexels.com/photos/10560623/pexels-photo-10560623.jpeg",
   },
   {
     subtitle: "MODERN RUSTIC TOUCH",
@@ -48,10 +45,8 @@ const panels = [
     description:
       "Minimalist yet soulful. Give your home a rustic yet refined style.",
     button: "BROWSE PIECES",
-    image:
-      "https://images.pexels.com/photos/18295442/pexels-photo-18295442.jpeg",
-    blurredBackground:
-      "https://images.pexels.com/photos/18295444/pexels-photo-18295444.jpeg",
+    image: "https://images.pexels.com/photos/18295442/pexels-photo-18295442.jpeg",
+    blurredBackground: "https://images.pexels.com/photos/18295444/pexels-photo-18295444.jpeg",
   },
   {
     subtitle: "CULTURAL HERITAGE",
@@ -59,17 +54,15 @@ const panels = [
     description:
       "Each product carries a piece of legacy through timeless design and handcrafted beauty.",
     button: "VIEW COLLECTION",
-    image:
-      "https://images.pexels.com/photos/14218757/pexels-photo-14218757.jpeg",
-    blurredBackground:
-      "https://images.pexels.com/photos/18295441/pexels-photo-18295441.jpeg",
+    image: "https://images.pexels.com/photos/14218757/pexels-photo-14218757.jpeg",
+    blurredBackground: "https://images.pexels.com/photos/18295441/pexels-photo-18295441.jpeg",
   },
 ];
 
 export default function HeroScroll() {
   const containerRef = useRef();
   const [index, setIndex] = useState(0);
-  const [animateKey, setAnimateKey] = useState(0); // trigger animation every slide
+  const [animateKey, setAnimateKey] = useState(0);
 
   const scrollToPanel = (i) => {
     containerRef.current?.scrollTo({
@@ -79,17 +72,17 @@ export default function HeroScroll() {
   };
 
   const next = () => {
-    const i = (index + 1) % panels.length;
-    setIndex(i);
-    scrollToPanel(i);
-    setAnimateKey(prev => prev + 1);
+    const nextIndex = (index + 1) % panels.length;
+    setIndex(nextIndex);
+    scrollToPanel(nextIndex);
+    setAnimateKey((prev) => prev + 1);
   };
 
   const prev = () => {
-    const i = (index - 1 + panels.length) % panels.length;
-    setIndex(i);
-    scrollToPanel(i);
-    setAnimateKey(prev => prev + 1);
+    const prevIndex = (index - 1 + panels.length) % panels.length;
+    setIndex(prevIndex);
+    scrollToPanel(prevIndex);
+    setAnimateKey((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -97,9 +90,36 @@ export default function HeroScroll() {
     return () => clearInterval(timer);
   }, [index]);
 
+  // Loop scroll detection
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const visibleIndex = parseInt(entry.target.dataset.index);
+            setIndex(visibleIndex);
+            setAnimateKey((prev) => prev + 1);
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.6,
+      }
+    );
+
+    const children = container.querySelectorAll(".panel");
+    children.forEach((child) => observer.observe(child));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="font-sans">
-      <div className="relative w-full overflow-hidden h-screen">
+      <div className="relative w-full overflow-hidden full-screen-mobile">
         <div
           ref={containerRef}
           className="flex overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide h-full"
@@ -107,7 +127,8 @@ export default function HeroScroll() {
           {panels.map((panel, idx) => (
             <div
               key={idx}
-              className="w-screen h-screen flex-shrink-0 relative snap-start"
+              data-index={idx}
+              className="panel w-screen full-screen-mobile flex-shrink-0 relative snap-start"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center z-0"
@@ -115,10 +136,10 @@ export default function HeroScroll() {
               />
               <div className="absolute inset-0 bg-black/60 z-0" />
 
-              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center h-full px-8 md:px-24 py-16 gap-10">
+              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center h-full px-8 md:px-24 pt-[120px] md:pt-16 pb-16 gap-10">
                 {/* Text Section */}
                 <motion.div
-                  key={animateKey} // ensures re-animation on slide
+                  key={animateKey}
                   initial="hidden"
                   animate="show"
                   variants={textMotion}
@@ -140,11 +161,11 @@ export default function HeroScroll() {
 
                 {/* Image Section */}
                 <motion.div
-                  key={"img-" + animateKey} // ensures re-animation
+                  key={"img-" + animateKey}
                   initial="hidden"
                   animate="show"
                   variants={imageMotion}
-                  className="relative w-full mt-25 md:w-1/2 flex justify-center"
+                  className="relative w-full mt-8 md:w-1/2 flex justify-center"
                 >
                   <div className="relative hover:scale-105 transition-transform duration-500">
                     <img
@@ -172,7 +193,7 @@ export default function HeroScroll() {
               onClick={() => {
                 setIndex(i);
                 scrollToPanel(i);
-                setAnimateKey(prev => prev + 1);
+                setAnimateKey((prev) => prev + 1);
               }}
               className={`w-3 h-3 rounded-full ${
                 index === i ? "bg-white" : "bg-gray-500"
@@ -181,19 +202,21 @@ export default function HeroScroll() {
           ))}
         </div>
 
-        {/* Arrows */}
-        <button
-          onClick={prev}
-          className="absolute top-1/2 left-2 md:left-4 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/60 z-20"
-        >
-          <FaChevronLeft size={20} />
-        </button>
-        <button
-          onClick={next}
-          className="absolute top-1/2 right-2 md:right-4 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/60 z-20"
-        >
-          <FaChevronRight size={20} />
-        </button>
+        {/* Arrows (Desktop Only) */}
+        <div className="hidden md:block">
+          <button
+            onClick={prev}
+            className="absolute top-1/2 left-2 md:left-4 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/60 z-20"
+          >
+            <FaChevronLeft size={20} />
+          </button>
+          <button
+            onClick={next}
+            className="absolute top-1/2 right-2 md:right-4 -translate-y-1/2 bg-black/40 text-white p-2 md:p-3 rounded-full hover:bg-black/60 z-20"
+          >
+            <FaChevronRight size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
