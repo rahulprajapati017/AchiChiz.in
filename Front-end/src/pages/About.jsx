@@ -1,139 +1,120 @@
 import React from "react";
 
-const features = [
-  {
-    title: "CULTURALLY RICH",
-    description:
-      "The product has both practical value and the mark of the craftsman and the of a certain countryside.",
-    icon: "🧱",
-  },
-  {
-    title: "HIGH AESTHETICS",
-    description:
-      "Each handicraft product is a work of art, both of high practical value and aesthetic value.",
-    icon: "🎨",
-  },
-  {
-    title: "INDIVIDUALITY",
-    description:
-      "Each handicraft has its own unique character and style of each unique craft village.",
-    icon: "🥣",
-  },
-  {
-    title: "DIVERSITY",
-    description:
-      "Diversity is shown in the method and materials used to make the product.",
-    icon: "🪡",
-  },
-];
+const AboutPage = () => {
+  const stats = [
+    { value: "60+", label: "Years of Excellence" },
+    { value: "500+", label: "Happy Customers" },
+    { value: "1000+", label: "Pieces Created" },
+    { value: "3", label: "Generations" },
+  ];
 
-const AboutUs = () => {
   return (
-    <div className="text-gray-800 font-sans">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 overflow-hidden">
       {/* Hero Section */}
-      <div className="relative">
-        <img
-          src="https://moria.wpbingosite.com/wp-content/uploads/2023/05/about.jpg"
-          alt="about-hero"
-          className="w-full h-[400px] object-cover"
-        />
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center bg-black bg-opacity-40">
-          <h1 className="text-4xl font-bold">ABOUT US</h1>
-          <p className="text-sm mt-2">HOME / ABOUT US</p>
-        </div>
-      </div>
+      <div className="text-center mb-12">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800">
+          Our Story of
+          <span className="block text-orange-600"> Handcrafted Excellence</span>
+        </h1>
+        <p className="mt-4 text-gray-600 max-w-2xl mx-auto text-sm sm:text-base">
+          For over three generations, we've been preserving the art of
+          traditional handicrafts, creating beautiful pieces that bridge the gap
+          between heritage and modern living.
+        </p>
 
-      {/* Feature Icons Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6 py-12 bg-white text-center">
-        {features.map((item, index) => (
-          <div key={index} className="px-4">
-            <div className="text-4xl mb-3">{item.icon}</div>
-            <h3 className="text-red-600 font-bold mb-2">{item.title}</h3>
-            <p className="text-sm text-gray-700">{item.description}</p>
+        <div className="mt-10 relative">
+          <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
+            <img
+              src="./image.png"
+              alt="About Us"
+              className="w-full h-full object-cover"
+            />
           </div>
-        ))}
+          <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent rounded-2xl"></div>
+        </div>
       </div>
 
-      {/* Timeless Appeal Section */}
-      <div className="flex flex-col lg:flex-row items-center gap-10 px-6 py-12">
-        <div className="lg:w-1/2">
-          <h2 className="text-3xl font-bold mb-4">
-            THE TIMELESS APPEAL OF HANDMADE GOODS
+      {/* Story Section */}
+      <section className="py-16 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto grid gap-12 items-center lg:grid-cols-2">
+          {/* Left Column */}
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-amber-900 mb-6">
+              Where Tradition Meets Innovation
+            </h2>
+            <div className="space-y-4 text-amber-800 text-base sm:text-lg leading-relaxed">
+              <p>
+                Our journey began in 1962 when my grandmother, Maria, started creating
+                beautiful pottery pieces in her small workshop. What started as a
+                passion project soon became a family legacy that would span generations.
+              </p>
+              <p>
+                Today, we continue her tradition while embracing modern techniques and
+                designs. Each piece we create tells a story - not just of its creation,
+                but of the hands that shaped it and the family heritage it represents.
+              </p>
+              <p>
+                We believe that in our fast-paced digital world, there's something deeply
+                meaningful about owning something made by human hands, crafted with
+                intention and love.
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="grid grid-cols-2 gap-4">
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                className="bg-white border border-orange-300 rounded-lg p-6 text-center shadow-sm hover:shadow-md transition"
+              >
+                <div className="text-xl sm:text-3xl font-bold text-orange-600">{stat.value}</div>
+                <div className="text-orange-700 mt-1 text-sm sm:text-base">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Vision */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16 px-4 sm:px-6">
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl sm:text-2xl font-bold text-orange-600 mb-2">
+            Our Mission
           </h2>
-          <p className="mb-6 text-gray-700">
-            Handmade items (also known as handicrafts) are items made by hand from available
-            materials, through the meticulousness and...
+          <p className="text-gray-600 text-sm sm:text-base">
+            To empower local artisans by offering a platform that values
+            tradition and craft, while delivering sustainable, ethical, and
+            beautiful handmade products to the world.
           </p>
-          <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded">
-            SHOP COLLECTION
-          </button>
         </div>
-        <div className="lg:w-1/2 relative">
-          <img
-            src="https://moria.wpbingosite.com/wp-content/uploads/2023/05/about-3.jpg"
-            alt="basket"
-            className="w-3/4 rounded-tr-[50px] shadow-lg"
-          />
-          <img
-            src="https://moria.wpbingosite.com/wp-content/uploads/2023/05/about-4.jpg"
-            alt="candles"
-            className="absolute bottom-0 right-0 w-2/3 shadow-md"
-          />
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl sm:text-2xl font-bold text-orange-600 mb-2">
+            Our Vision
+          </h2>
+          <p className="text-gray-600 text-sm sm:text-base">
+            To become a globally trusted brand that celebrates craftsmanship and
+            keeps heritage alive through modern design, quality, and community.
+          </p>
         </div>
       </div>
 
-      {/* Testimonial Section */}
-      <div className="bg-gray-50 py-12 text-center px-6">
-        <h3 className="text-xl font-semibold mb-6">TESTIMONIAL</h3>
-        <p className="italic max-w-3xl mx-auto text-gray-700">
-          “I am extremely happy with my purchases from this lovely handcrafted store! The
-          craftsmanship is exceptional, and you can see the care and passion in every item.
-          The staff was friendly and knowledgeable, making the shopping experience even more
-          enjoyable. Highly recommend!”
+      {/* Team or Banner */}
+      <div className="text-center px-4">
+        <h3 className="text-base sm:text-xl font-semibold text-gray-700">
+          Crafted with ❤️ by artisans across India
+        </h3>
+        <p className="text-gray-500 mt-2 max-w-2xl mx-auto text-sm sm:text-base">
+          Every product tells a story — of culture, care, and community. By
+          shopping with us, you're helping preserve centuries of handmade
+          excellence.
         </p>
       </div>
-
-      {/* Featured Products Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-6 py-12">
-        <div>
-          <img
-            src="https://moria.wpbingosite.com/wp-content/uploads/2023/05/about-5.jpg"
-            alt="crafted with care"
-            className="w-full mb-3"
-          />
-          <h4 className="font-semibold">CRAFTED WITH CARE</h4>
-          <p className="text-sm text-gray-600">Handmade items (also known as handicrafts)</p>
-          <a href="#" className="text-sm underline mt-2 inline-block">
-            DISCOVER MORE
-          </a>
-        </div>
-        <div className="text-center bg-black text-white p-6">
-          <img
-            src="https://moria.wpbingosite.com/wp-content/uploads/2023/05/about-6.jpg"
-            alt="wax candles"
-            className="w-full mb-4"
-          />
-          <h4 className="text-xl font-bold">NATURAL WAX CANDLES</h4>
-          <p className="text-sm mt-2">
-            Handmade items (also known as handicrafts) are
-          </p>
-          <button className="bg-white text-black px-4 py-1 mt-4">SHOP NOW</button>
-        </div>
-        <div>
-          <img
-            src="https://moria.wpbingosite.com/wp-content/uploads/2023/05/about-7.jpg"
-            alt="art object"
-            className="w-full mb-3"
-          />
-          <h4 className="font-semibold">MASTERING THE ART OF</h4>
-          <p className="text-sm text-gray-600">Handmade items (also known as handicrafts)</p>
-          <a href="#" className="text-sm underline mt-2 inline-block">
-            DISCOVER MORE
-          </a>
-        </div>
+      <div>
+        
       </div>
     </div>
   );
 };
 
-export default AboutUs;
+export default AboutPage;

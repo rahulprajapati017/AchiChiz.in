@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink , useLocation} from "react-router-dom";
 
-=======
-import React, { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
->>>>>>> refs/remotes/origin/main
 import {
   FiSearch,
   FiUser,
@@ -26,11 +21,9 @@ const navItems = [
   { title: "HOME", path: "/", dropdown: [] },
   {
     title: "SHOP",
-<<<<<<< HEAD
-    path: "category",
+    path: "/category",
     dropdown: ["Shop Style", "Shop Standard", "Shop Full", "Shop List"],
-=======
-    path: "/shop",
+    path: "/category",
     dropdown: [
       {
         title: "Style",
@@ -41,7 +34,6 @@ const navItems = [
         items: ["Standard", "Full Width", "List View"],
       },
     ],
->>>>>>> refs/remotes/origin/main
   },
   {
     title: "PRODUCTS",
@@ -58,7 +50,7 @@ const navItems = [
     ],
   },
   { title: "BLOG", path: "/blog", dropdown: [] },
-  { title: "PAGE", path: "/page", dropdown: [] },
+  { title: "PAGE", path: "/about-us", dropdown: [] },
 ];
 
 export default function Header() {

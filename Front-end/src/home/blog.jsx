@@ -27,25 +27,22 @@ const BlogSection = () => {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      {/* Categories */}
-      <div className="flex space-x-3 mb-6">
-        <button className="px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300">Ceramic</button>
-        <button className="px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300">Handmade</button>
-        <button className="px-3 py-1 bg-gray-200 text-sm rounded hover:bg-gray-300">Storage Tray</button>
+    <section className="max-w-6xl mx-auto px-4 py-10 pt-[150px]">
+      {/* Blog Section Title */}
+      <h2 className="text-3xl font-bold text-center mb-10 text-orange-600 tracking-tight">From Our Blog</h2>
+      {/* Responsive Blog Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {blogData.map((blog, index) => (
+          <BlogCard
+            key={index}
+            image={blog.image}
+            date={blog.date}
+            title={blog.title}
+            description={blog.description}
+          />
+        ))}
       </div>
-
-      {/* All Blogs */}
-      {blogData.map((blog, index) => (
-        <BlogCard
-          key={index}
-          image={blog.image}
-          date={blog.date}
-          title={blog.title}
-          description={blog.description}
-        />
-      ))}
-    </div>
+    </section>
   );
 };
 

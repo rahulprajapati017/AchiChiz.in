@@ -101,9 +101,9 @@ function Category() {
   }, [filters, sort]);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-[#f9f9f9] pt-[110px]">
+    <div className="flex flex-col md:flex-row min-h-screen pt-[110px]">
       {/* Sidebar */}
-      <aside className="md:w-64 border-r border-gray-200 bg-[#fdf6ec]">
+      <aside className="md:w-64 border-r border-gray-200 ">
         <SideFilterBar
           filters={filters}
           onFilterChange={handleFilterChange}

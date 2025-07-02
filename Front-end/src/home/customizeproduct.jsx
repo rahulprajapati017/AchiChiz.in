@@ -11,11 +11,7 @@ const Customizeproduct = () => {
 
   return (
     <div
-<<<<<<< HEAD
-      className="relative w-full h-[100vh] transition-all duration-500 "
-=======
       className="relative w-full h-[60vh] transition-all duration-500 "
->>>>>>> refs/remotes/origin/main
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
