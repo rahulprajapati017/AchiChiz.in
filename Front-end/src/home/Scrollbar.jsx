@@ -154,7 +154,7 @@ export default function HeroScroll() {
                   <p className="text-sm sm:text-base md:text-lg text-gray-200 leading-relaxed">
                     {panel.description}
                   </p>
-                  <button className="mt-4 bg-orange-600 px-6 py-2 sm:px-8 sm:py-3 text-sm sm:text-lg font-bold uppercase text-white hover:bg-orange-500 transition">
+                  <button className="mt-4 bg-[#AC604F] px-6 py-2 sm:px-8 sm:py-3 text-sm sm:text-lg font-bold uppercase text-white hover:bg-orange-500 transition">
                     {panel.button}
                   </button>
                 </motion.div>
@@ -165,7 +165,7 @@ export default function HeroScroll() {
                   initial="hidden"
                   animate="show"
                   variants={imageMotion}
-                  className="relative w-full mt-8 md:w-1/2 flex justify-center"
+                  className="relative w-full md:mt-15 md:w-1/2 flex justify-center"
                 >
                   <div className="relative hover:scale-105 transition-transform duration-500">
                     <img

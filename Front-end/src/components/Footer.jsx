@@ -6,6 +6,7 @@ import {
   FaPinterestP,
   FaArrowUp,
 } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   const [showButton, setShowButton] = useState(false);
@@ -35,7 +36,9 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-10 w-full">
         {/* Contact Us */}
         <div className="text-left">
-          <h2 className="font-semibold text-lg mb-4">CONTACT US</h2>
+          <NavLink
+            to="/contact-us">
+          <h2 className="font-semibold text-lg mb-4">CONTACT US</h2></NavLink>
           <p className="text-sm">
             <span className="text-red-500">Mon – Fri:</span> 10AM – 5PM
           </p>
@@ -90,7 +93,10 @@ const Footer = () => {
             <li><a href="#">Shipping and Promo Info</a></li>
             <li><a href="#">Check Gift Card Balance</a></li>
             <li><a href="#">Wholesale</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+            <NavLink
+            to ="/privacy-policy">
+            <li><a href="#">Privacy Policy</a></li></NavLink>
+            
           </ul>
         </div>
       </div>

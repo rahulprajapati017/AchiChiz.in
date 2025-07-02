@@ -9,7 +9,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-import AuthPage from "./Auth/AuthPage";
+// import AuthPage from "../components/Auth/AuthPage";
 
 // Dummy cart/fav context (replace with actual)
 import { useCart } from "../context/CartContext";
@@ -47,7 +47,7 @@ const navItems = [
     ],
   },
   { title: "BLOG", path: "/blog", dropdown: [] },
-  { title: "PAGE", path: "/page", dropdown: [] },
+  { title: "PAGE", path: "/about-us", dropdown: [] },
 ];
 
 export default function Header() {
@@ -105,8 +105,8 @@ export default function Header() {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `uppercase text-sm font-semibold transition duration-300 ${
-                    isActive ? "text-orange-500" : "hover:text-orange-400"
+                  `uppercase text-sm font-bold transition duration-300 ${
+                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"
                   }`
                 }
               >

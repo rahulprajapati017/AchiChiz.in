@@ -24,8 +24,13 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
-  Authpage,
-  Aboutus
+  Outhpage,
+  Aboutus,
+  ContactUs,
+  Policy,
+  Checkout,
+  CheckoutPage,
+  productdetails
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -57,12 +62,17 @@ function App() {
               <Route path="reviews/:id" element={< Reviews/>} />
               <Route path="dashboard" element={<  Dashboard/>} />
               <Route path="myorders" element={<  MyOrders/>} />
-              <Route path="authpage" element={<  Authpage/>} />
+              <Route path="authpage" element={<  Outhpage/>} />
               <Route path="account-dashboard" element={<  AccountDashboard/>} />
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
               <Route path="about-us" element={<  Aboutus/>} />
+              <Route path="contact-us" element={<  ContactUs/>} />
+              <Route path="privacy-policy" element={<  Policy/>} />
               <Route path="blog" element={<  Blog/>} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout-page" element={<CheckoutPage />} />
+              <Route path="/productdetails/:id" element={<productdetails />} />
             </Route>
           </Routes>
           <Toaster position="top-right" />
