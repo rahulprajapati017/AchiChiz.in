@@ -23,6 +23,7 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
+  Category,
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -58,6 +59,7 @@ function App() {
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
               <Route path="blog" element={<  Blog/>} />
+              <Route path="category" element={<  Category/>} />
             </Route>
           </Routes>
           <Toaster position="top-right" />
