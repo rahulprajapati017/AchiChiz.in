@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import ProductPage from "./pages/productpage";
+import NotFound from "./components/NotFound";
 
 import {
   Layout,
@@ -59,6 +60,7 @@ function App() {
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
               <Route path="blog" element={<  Blog/>} />
+              <Route path="notfound" element={<  NotFound/>} />
             </Route>
           </Routes>
           <Toaster position="top-right" />
