@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import * as LucideIcons from "lucide-react";
 import { Heart, Share2 } from "lucide-react";
 import { products } from "../data/products";
 import HoverReview from "../components/card";
-import ProductCard from "../components/ProductCard"; // Reusable card
+import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
 import toast from "react-hot-toast";
 
 const ProductPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const product = products.find((item) => item.id.toString() === id);
   const [selectedImage, setSelectedImage] = useState(0);
   const [zoomPos, setZoomPos] = useState({ x: "50%", y: "50%" });
@@ -63,7 +64,6 @@ const ProductPage = () => {
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Image Section */}
           <div className="w-full lg:w-1/2 flex flex-col-reverse lg:flex-row">
-            {/* Thumbnails */}
             <div className="flex flex-row lg:flex-col gap-2 justify-center lg:pr-4 mt-4 lg:mt-0 overflow-hidden">
               {product.images.map((img, i) => (
                 <button
@@ -80,7 +80,6 @@ const ProductPage = () => {
               ))}
             </div>
 
-            {/* Main Image */}
             <div
               className="relative w-full aspect-[5/5] overflow-hidden shadow-[inset_8px_8px_15px_#d4d4d4,inset_-8px_-8px_15px_#ffffff]"
               onMouseEnter={() => setIsHoveringImage(true)}
@@ -142,7 +141,15 @@ const ProductPage = () => {
                   <span className="relative z-10">Add To Cart</span>
                 </button>
 
-                <button className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded">
+                {/* ✅ Updated Buy Now Button */}
+                <button
+                  onClick={() =>
+                    navigate("/checkout", {
+                      state: { product, quantity: 1 },
+                    })
+                  }
+                  className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded"
+                >
                   <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
                   <span className="relative z-10">Buy Now</span>
                 </button>
@@ -219,7 +226,7 @@ const ProductPage = () => {
         )}
       </div>
 
-      {/* ✅ Related Products using ProductCard */}
+      {/* Related Products */}
       <div className="space-y-6 border-y-2 py-3 mt-10">
         <h2 className="text-2xl font-bold text-[#0f2c5c]">Related Products</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

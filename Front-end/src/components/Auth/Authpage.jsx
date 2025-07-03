@@ -5,6 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 const AuthPage = ({ onSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = (e) => {
@@ -13,17 +14,25 @@ const AuthPage = ({ onSuccess }) => {
     if (onSuccess) onSuccess();
   };
 
+  const handleGoogleLogin = () => {
+    // Replace with actual Google OAuth logic
+    login("Google User");
+    if (onSuccess) onSuccess();
+  };
+
   return (
-    <div className="p-6 w-full max-w-md">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+    <div className="p-6 w-full max-w-md mx-auto">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">
         {isSignup ? "SIGN UP" : "SIGN IN"}
       </h2>
+
       <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Name*"
           className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
+
         {isSignup && (
           <input
             type="email"
@@ -31,6 +40,7 @@ const AuthPage = ({ onSuccess }) => {
             className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         )}
+
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -45,11 +55,35 @@ const AuthPage = ({ onSuccess }) => {
           </div>
         </div>
 
+        {isSignup && (
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password*"
+              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+            <div
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+            </div>
+          </div>
+        )}
+
         <button
           type="submit"
           className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold"
         >
           {isSignup ? "SIGN UP" : "SIGN IN"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 font-semibold"
+        >
+          {isSignup ? "Sign up with Google" : "Sign in with Google"}
         </button>
       </form>
 
@@ -75,6 +109,16 @@ const AuthPage = ({ onSuccess }) => {
             </button>
           </>
         )}
+      </p>
+
+      <p className="text-center text-sm mt-2 text-gray-700">
+        Want to sell on ACHICHIZ?{" "}
+        <button
+          onClick={() => alert("Switch to Seller Login")}
+          className="text-orange-700 underline"
+        >
+          Switch to Seller Login
+        </button>
       </p>
     </div>
   );

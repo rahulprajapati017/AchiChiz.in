@@ -27,3 +27,8 @@ export { default as Policy } from "./pages/Policy";
 export { default as Checkout } from "./pages/Checkout";
 export { default as CheckoutPage } from "./pages/Checkout";
 export { default as productdetails } from "./pages/ProductDetail";
+export { default as OrderPage } from './pages/OrderPage';
+export { default as OrderDetailsPage } from './pages/OrderDetailsPage';
+export { default as ReturnRefundPage } from './pages/ReturnRefundPage';
+export { default as TrackOrderPage } from './pages/TrackOrderPage';
+export { default as ReturnRefundPolicy } from './pages/RetunRefundPolicy';

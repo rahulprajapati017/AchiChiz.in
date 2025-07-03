@@ -32,7 +32,12 @@ import {
   Policy,
   Checkout,
   CheckoutPage,
-  productdetails
+  productdetails,
+OrderPage,
+  OrderDetailsPage,
+  ReturnRefundPage,
+  TrackOrderPage,
+  ReturnRefundPolicy
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -77,6 +82,11 @@ function App() {
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
               <Route path="/product/:id" element={< productdetails />} />
+               <Route path="/order-page" element={<OrderPage />} />
+  <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
+  <Route path="/return-refund" element={<ReturnRefundPage />} />
+  <Route path="/track-order" element={<TrackOrderPage />} />
+  <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
             </Route>
           </Routes>
           <Toaster position="top-right" />

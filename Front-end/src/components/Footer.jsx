@@ -89,13 +89,11 @@ const Footer = () => {
           <h2 className="font-semibold text-lg mb-4">CUSTOMER CARE</h2>
           <ul className="space-y-2 text-sm">
             <li><a href="#">Store Locator</a></li>
-            <li><a href="#">Returns</a></li>
+            <li><a href="/return-refund-policy">Returns</a></li>
             <li><a href="#">Shipping and Promo Info</a></li>
             <li><a href="#">Check Gift Card Balance</a></li>
             <li><a href="#">Wholesale</a></li>
-            <NavLink
-            to ="/privacy-policy">
-            <li>Privacy Policy</li></NavLink>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
             
           </ul>
         </div>
