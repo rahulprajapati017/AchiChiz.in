@@ -1,21 +1,37 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+import OTPPage from "./OtpPage"; // ✅ adjust path if needed
 
 const AuthPage = ({ onSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+
   const { login } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (isSignup) {
+      // ✅ Signup flow → go to OTP page
+      setShowOtp(true);
+    } else {
+      // ✅ Login flow → directly login
+      login("John Doe");
+      if (onSuccess) onSuccess();
+    }
+  };
+
+  const handleOtpVerify = (otpCode) => {
+    console.log("OTP Verified:", otpCode);
     login("John Doe");
+    setShowOtp(false);
     if (onSuccess) onSuccess();
   };
 
   const handleGoogleLogin = () => {
-    // Replace with actual Google OAuth logic
     login("Google User");
     if (onSuccess) onSuccess();
   };
@@ -73,7 +89,7 @@ const AuthPage = ({ onSuccess }) => {
 
         <button
           type="submit"
-          className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold"
+          className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold rounded"
         >
           {isSignup ? "SIGN UP" : "SIGN IN"}
         </button>
@@ -81,7 +97,7 @@ const AuthPage = ({ onSuccess }) => {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 font-semibold"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 font-semibold rounded"
         >
           {isSignup ? "Sign up with Google" : "Sign in with Google"}
         </button>
@@ -120,6 +136,24 @@ const AuthPage = ({ onSuccess }) => {
           Switch to Seller Login
         </button>
       </p>
+
+      {/* ✅ OTP MODAL shown only after signup */}
+      {showOtp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative p-4">
+            <button
+              onClick={() => setShowOtp(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
+            >
+              ×
+            </button>
+            <OTPPage
+              onVerify={handleOtpVerify}
+              onResend={() => console.log("Resend OTP clicked")}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
