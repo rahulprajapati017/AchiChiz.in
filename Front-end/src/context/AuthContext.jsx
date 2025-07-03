@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState,useEffect } from "react";
 
 const AuthContext = createContext();
 
@@ -32,7 +32,7 @@ const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
         if(response.ok){
           const mydata=await response.json()
           const {userdata}=mydata
-          setuser(userdata)
+          setuserdata(userdata)
          
           
 
@@ -53,7 +53,7 @@ userauthentication()
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout,userdata,setuserdata,usertoken,setusertoken,logoutuser }}>
       {children}
     </AuthContext.Provider>
   );

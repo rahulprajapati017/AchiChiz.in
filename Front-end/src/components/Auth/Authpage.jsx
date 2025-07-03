@@ -60,8 +60,9 @@ const AuthPage = ({ onSuccess }) => {
         if (!response.ok) throw new Error("Signup failed");
 
         const result = await response.json();
-        
+
         login(result.name || "John Doe");
+        console.log(result)
 
         alert("Signup successful!");
         setFormData({
