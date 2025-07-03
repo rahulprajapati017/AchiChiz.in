@@ -60,6 +60,7 @@ const AuthPage = ({ onSuccess }) => {
         if (!response.ok) throw new Error("Signup failed");
 
         const result = await response.json();
+        
         login(result.name || "John Doe");
 
         alert("Signup successful!");
@@ -87,6 +88,7 @@ const AuthPage = ({ onSuccess }) => {
         if (!response.ok) throw new Error("Login failed");
 
         const result = await response.json();
+        console.log("login result ",result)
         login(result.name || "John Doe");
 
         alert("Login successful!");

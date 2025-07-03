@@ -7,6 +7,7 @@ export const auth={
  
 }
 export const product={
-    APPROVED_PRODUCTS_FOR_HOME:BASE_URL+"/fileUpload/getAllProductsforHome"
+    APPROVED_PRODUCTS_FOR_HOME:BASE_URL+"/fileUpload/getAllProductsforHome",
+    GET_SINGLE_PRODUCT:BASE_URL+"/fileUpload/getSingleProductById"
 }
 
