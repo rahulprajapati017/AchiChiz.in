@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink , useLocation} from "react-router-dom";
+
 import {
   FiSearch,
   FiUser,
@@ -20,7 +21,9 @@ const navItems = [
   { title: "HOME", path: "/", dropdown: [] },
   {
     title: "SHOP",
-    path: "/shop",
+    path: "/category",
+    dropdown: ["Shop Style", "Shop Standard", "Shop Full", "Shop List"],
+    path: "/category",
     dropdown: [
       {
         title: "Style",

@@ -4,11 +4,13 @@ const BlogCard = ({ image, date, title, description }) => {
   return (
     <div className="mb-10">
       {/* Blog Image */}
-      <img
-        src={image}
-        alt={title}
-        className="w-full h-auto object-cover rounded"
-      />
+      <div className="w-full aspect-video overflow-hidden rounded bg-gray-100">
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full object-cover object-center"
+        />
+      </div>
 
       {/* Blog Content */}
       <div className="mt-4">

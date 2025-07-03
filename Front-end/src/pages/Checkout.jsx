@@ -52,15 +52,18 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = () => {
-    // Simulate payment gateway success callback
-    alert('Payment successful! Redirecting to product page...');
     const productId = cartItems[0]?.id;
-    navigate(`/product/${productId}`);
+    navigate(`/product/${productId}`, {
+      state: {
+        formData: form,
+        cartItem: cartItems[0],
+      },
+    });
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-[120px] pb-10">
-      {/* Coupon */}
+      {/* Coupon Section */}
       <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm">
         <p className="text-sm font-medium">
           Have a coupon?{' '}

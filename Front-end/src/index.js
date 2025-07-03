@@ -19,11 +19,11 @@ export {default as  AccountInformation } from "./components/accountInfo";
 export {default as  AddressBook } from "./components/addressbook";
 export {default as  MyOrders } from "./components/myOrder";
 export {default as  Blog } from "./home/blog";
-export { default as Outhpage } from "./components/Auth/Authpage";
+export {default as  Category } from "./pages/Category";
+export {default as Authpage } from "./components/Auth/Authpage";
 export { default as Aboutus } from "./pages/About";
 export { default as ContactUs } from "./pages/ContactUs";
 export { default as Policy } from "./pages/Policy";
 export { default as Checkout } from "./pages/Checkout";
 export { default as CheckoutPage } from "./pages/Checkout";
 export { default as productdetails } from "./pages/ProductDetail";
-

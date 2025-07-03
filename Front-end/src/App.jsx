@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import ProductPage from "./pages/productpage";
+import NotFound from "./components/NotFound";
 
 import {
   Layout,
@@ -24,7 +25,8 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
-  Outhpage,
+  Category,
+  Authpage,
   Aboutus,
   ContactUs,
   Policy,
@@ -62,7 +64,7 @@ function App() {
               <Route path="reviews/:id" element={< Reviews/>} />
               <Route path="dashboard" element={<  Dashboard/>} />
               <Route path="myorders" element={<  MyOrders/>} />
-              <Route path="authpage" element={<  Outhpage/>} />
+              <Route path="authpage" element={<  Authpage/>} />
               <Route path="account-dashboard" element={<  AccountDashboard/>} />
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
@@ -70,9 +72,11 @@ function App() {
               <Route path="contact-us" element={<  ContactUs/>} />
               <Route path="privacy-policy" element={<  Policy/>} />
               <Route path="blog" element={<  Blog/>} />
+              <Route path="category" element={<  Category/>} />
+              <Route path="notfound" element={<  NotFound/>} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
-              <Route path="/productdetails/:id" element={<productdetails />} />
+              <Route path="/product/:id" element={< productdetails />} />
             </Route>
           </Routes>
           <Toaster position="top-right" />

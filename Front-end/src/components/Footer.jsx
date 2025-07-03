@@ -95,7 +95,7 @@ const Footer = () => {
             <li><a href="#">Wholesale</a></li>
             <NavLink
             to ="/privacy-policy">
-            <li><a href="#">Privacy Policy</a></li></NavLink>
+            <li>Privacy Policy</li></NavLink>
             
           </ul>
         </div>
