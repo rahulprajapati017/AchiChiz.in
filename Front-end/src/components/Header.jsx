@@ -9,7 +9,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
-import AuthPage from "./Auth/AuthPage";
+import AuthPage from "./Auth/Authpage";
 
 // Dummy cart/fav context (replace with actual)
 import { useCart } from "../context/CartContext";
