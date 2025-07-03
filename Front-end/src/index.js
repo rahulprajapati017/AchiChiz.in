@@ -32,3 +32,4 @@ export { default as OrderDetailsPage } from './pages/OrderDetailsPage';
 export { default as ReturnRefundPage } from './pages/ReturnRefundPage';
 export { default as TrackOrderPage } from './pages/TrackOrderPage';
 export { default as ReturnRefundPolicy } from './pages/RetunRefundPolicy';
+export { default as OtpPage } from './components/Auth/OtpPage';

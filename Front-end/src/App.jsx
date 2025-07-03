@@ -37,7 +37,8 @@ OrderPage,
   OrderDetailsPage,
   ReturnRefundPage,
   TrackOrderPage,
-  ReturnRefundPolicy
+  ReturnRefundPolicy,
+  OtpPage
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -87,6 +88,7 @@ function App() {
   <Route path="/return-refund" element={<ReturnRefundPage />} />
   <Route path="/track-order" element={<TrackOrderPage />} />
   <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
+              <Route path="/otp" element={<OtpPage />} />
             </Route>
           </Routes>
           <Toaster position="top-right" />

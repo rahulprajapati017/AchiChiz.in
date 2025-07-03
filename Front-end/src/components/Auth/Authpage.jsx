@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
+<<<<<<< HEAD
 import { auth } from "../../data/allapi";
+=======
+import OTPPage from "./OtpPage"; // ✅ adjust path if needed
+>>>>>>> refs/remotes/origin/main
 
 const AuthPage = ({ onSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -41,76 +47,24 @@ const AuthPage = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      let response;
-      if (isSignup) {
-        if (formData.password !== formData.confirmPassword) {
-          alert("Passwords do not match.");
-          return;
-        }
-
-        response = await fetch(auth.SIGNUP_BY_EMAIL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        });
-
-        if (!response.ok) throw new Error("Signup failed");
-
-        const result = await response.json();
-
-        login(result.name || "John Doe");
-        console.log(result)
-
-        alert("Signup successful!");
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          accountType: "",
-        });
-
-        if (onSuccess) onSuccess();
-      } else {
-        response = await fetch(auth.LOGIN_BY_EMAIL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-          }),
-        });
-
-        if (!response.ok) throw new Error("Login failed");
-
-        const result = await response.json();
-        console.log("login result ",result)
-        login(result.name || "John Doe");
-
-        alert("Login successful!");
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          accountType: "",
-        });
-
-        if (onSuccess) onSuccess();
-      }
-    } catch (error) {
-      console.error(error.message);
-      alert("Error: " + error.message);
+    if (isSignup) {
+      // ✅ Signup flow → go to OTP page
+      setShowOtp(true);
+    } else {
+      // ✅ Login flow → directly login
+      login("John Doe");
+      if (onSuccess) onSuccess();
     }
   };
 
+  const handleOtpVerify = (otpCode) => {
+    console.log("OTP Verified:", otpCode);
+    login("John Doe");
+    setShowOtp(false);
+    if (onSuccess) onSuccess();
+  };
+
   const handleGoogleLogin = () => {
-    // Replace with actual Google OAuth logic
     login("Google User");
     if (onSuccess) onSuccess();
   };
@@ -212,7 +166,7 @@ const AuthPage = ({ onSuccess }) => {
 
         <button
           type="submit"
-          className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold"
+          className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold rounded"
         >
           {isSignup ? "SIGN UP" : "SIGN IN"}
         </button>
@@ -220,7 +174,7 @@ const AuthPage = ({ onSuccess }) => {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 font-semibold"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 font-semibold rounded"
         >
           {isSignup ? "Sign up with Google" : "Sign in with Google"}
         </button>
@@ -261,6 +215,24 @@ const AuthPage = ({ onSuccess }) => {
           Switch to Seller Login
         </button>
       </p>
+
+      {/* ✅ OTP MODAL shown only after signup */}
+      {showOtp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative p-4">
+            <button
+              onClick={() => setShowOtp(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
+            >
+              ×
+            </button>
+            <OTPPage
+              onVerify={handleOtpVerify}
+              onResend={() => console.log("Resend OTP clicked")}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
