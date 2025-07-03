@@ -27,7 +27,17 @@ import {
   Blog,
   Category,
   Authpage,
-  Aboutus
+  Aboutus,
+  ContactUs,
+  Policy,
+  Checkout,
+  CheckoutPage,
+  productdetails,
+OrderPage,
+  OrderDetailsPage,
+  ReturnRefundPage,
+  TrackOrderPage,
+  ReturnRefundPolicy
 
 } from "./index";
 import { Toaster } from "react-hot-toast";
@@ -64,9 +74,19 @@ function App() {
               <Route path="account-information" element={<  AccountInformation/>} />
               <Route path="address-book" element={<  AddressBook/>} />
               <Route path="about-us" element={<  Aboutus/>} />
+              <Route path="contact-us" element={<  ContactUs/>} />
+              <Route path="privacy-policy" element={<  Policy/>} />
               <Route path="blog" element={<  Blog/>} />
               <Route path="category" element={<  Category/>} />
               <Route path="notfound" element={<  NotFound/>} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout-page" element={<CheckoutPage />} />
+              <Route path="/product/:id" element={< productdetails />} />
+               <Route path="/order-page" element={<OrderPage />} />
+  <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
+  <Route path="/return-refund" element={<ReturnRefundPage />} />
+  <Route path="/track-order" element={<TrackOrderPage />} />
+  <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
             </Route>
           </Routes>
           <Toaster position="top-right" />
