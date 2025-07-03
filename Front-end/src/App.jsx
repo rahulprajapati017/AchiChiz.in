@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
 import { FavoriteProvider } from "./context/FavoriteContext";
 import ProductPage from "./pages/productpage";
+import NotFound from "./components/NotFound";
 
 import {
   Layout,
@@ -24,6 +25,7 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
+  Category,
   Authpage,
   Aboutus
 
@@ -63,6 +65,8 @@ function App() {
               <Route path="address-book" element={<  AddressBook/>} />
               <Route path="about-us" element={<  Aboutus/>} />
               <Route path="blog" element={<  Blog/>} />
+              <Route path="category" element={<  Category/>} />
+              <Route path="notfound" element={<  NotFound/>} />
             </Route>
           </Routes>
           <Toaster position="top-right" />
