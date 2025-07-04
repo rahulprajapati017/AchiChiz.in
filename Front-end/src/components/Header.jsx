@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+=======
+import React, { useState, useEffect, useRef } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+>>>>>>> refs/remotes/origin/main
 import {
   FiSearch,
   FiUser,
@@ -8,6 +13,7 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
+<<<<<<< HEAD
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
 import AuthPage from "./Auth/AuthPage";
@@ -18,6 +24,54 @@ const Header = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+=======
+
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoriteContext";
+import AuthPage from "../components/Auth/AuthPage";
+
+const navItems = [
+  { title: "HOME", path: "/", dropdown: [] },
+  {
+    title: "SHOP",
+    path: "/category",
+    dropdown: [
+      { title: "Style", items: ["Classic", "Minimal", "Contemporary"] },
+      { title: "Layouts", items: ["Standard", "Full Width", "List View"] },
+    ],
+  },
+  {
+    title: "PRODUCTS",
+    path: "/category",
+    dropdown: [
+      {
+        title: "Product Types",
+        items: ["Simple Product", "Variable Product", "Grouped Product"],
+      },
+      { title: "Features", items: ["Zoom", "Image Slider", "Custom Tabs"] },
+    ],
+  },
+  { title: "BLOG", path: "/blog", dropdown: [] },
+  { title: "PAGE", path: "/about-us", dropdown: [] },
+];
+
+export default function Header() {
+  const [hovered, setHovered] = useState(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchHistory, setSearchHistory] = useState([
+    "Handmade Vase",
+    "Terracotta Lamp",
+    "Wooden Art",
+  ]);
+  const suggestions = ["Brass Decor", "Eco-Friendly Gifts", "Wall Hangings"];
+
+  const searchRef = useRef();
+>>>>>>> refs/remotes/origin/main
 
   const { pathname } = useLocation();
   const { cartItems } = useCart();
@@ -25,9 +79,15 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+<<<<<<< HEAD
     const updateLoginStatus = () => {
       const user = localStorage.getItem("user");
       setIsLoggedIn(!!user);
+=======
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setSearchOpen(false);
+>>>>>>> refs/remotes/origin/main
     };
 
     updateLoginStatus();
@@ -38,9 +98,8 @@ const Header = () => {
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
+<<<<<<< HEAD
   const handleProtectedClick = (path) => {
     const user = localStorage.getItem("user");
     if (!user) {
@@ -66,6 +125,21 @@ const Header = () => {
 
   const isHome = pathname === "/";
   const glassEffect = isHome && !scrolled;
+=======
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+>>>>>>> refs/remotes/origin/main
 
   return (
     <>
@@ -75,9 +149,9 @@ const Header = () => {
 
       <nav
         className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
-          glassEffect
-            ? "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
-            : "bg-white text-black shadow-md border-b border-black/10"
+          scrolled
+            ? "bg-white text-black shadow-md border-b border-black/10"
+            : "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
         }`}
       >
         <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
@@ -88,48 +162,77 @@ const Header = () => {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `uppercase text-sm font-semibold transition duration-300 ${
-                    isActive ? "text-orange-500" : "hover:text-orange-400"
+                  `uppercase text-sm font-bold transition duration-300 ${
+                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"
                   }`
                 }
               >
                 {item.title}
               </NavLink>
+<<<<<<< HEAD
+=======
+
+              {hovered === idx && item.dropdown.length > 0 && (
+                <div className="absolute top-full left-0 mt-2 w-[280px] bg-white text-black shadow-xl rounded-md p-4 z-30">
+                  {item.dropdown.map((section, secIdx) => (
+                    <div key={secIdx} className="mb-3">
+                      <h4 className="text-sm font-semibold text-gray-700">
+                        {section.title}
+                      </h4>
+                      <ul className="pl-2 mt-1 space-y-1">
+                        {section.items.map((sub, subIdx) => (
+                          <li
+                            key={subIdx}
+                            className="text-sm text-gray-600 hover:text-orange-600 cursor-pointer"
+                          >
+                            {sub}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+>>>>>>> refs/remotes/origin/main
             </li>
           ))}
         </ul>
 
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
-          <div className="relative">
-            <FiSearch
-              className="cursor-pointer hover:text-orange-500"
-              onClick={() => setShowSearch(!showSearch)}
-            />
-            {showSearch && (
-              <div className="absolute top-[-7px] right-0 z-40">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  autoFocus
-                  className="bg-white text-black border px-3 py-1 rounded-md w-52 text-sm shadow-lg"
-                  onBlur={() => setShowSearch(false)}
-                />
-              </div>
-            )}
-          </div>
+          <FiSearch
+            className="cursor-pointer hover:text-orange-500"
+            onClick={() => setSearchOpen(!searchOpen)}
+          />
 
+<<<<<<< HEAD
           {isLoggedIn ? (
+=======
+          {user ? (
+>>>>>>> refs/remotes/origin/main
             <div className="relative group">
               <span className="cursor-pointer hover:text-orange-500 font-medium">
                 {JSON.parse(localStorage.getItem("user"))?.name || "User"}
               </span>
+<<<<<<< HEAD
               <div className="absolute top-6 right-0 hidden group-hover:block bg-white text-black shadow-md border p-3 w-40 rounded-md z-50">
+=======
+              <div className="absolute top-6 right-0 hidden group-hover:block bg-white shadow-md border p-3 w-40 rounded-md z-50 text-black">
+>>>>>>> refs/remotes/origin/main
                 <div
                   className="text-sm hover:text-orange-500 cursor-pointer"
                   onClick={handleLogout}
                 >
                   Logout
                 </div>
+<<<<<<< HEAD
+=======
+                <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
+                  <NavLink to="/dashboard">Profile</NavLink>
+                </div>
+                <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
+                  <NavLink to="/Order-page">Order</NavLink>
+                </div>
+>>>>>>> refs/remotes/origin/main
               </div>
             </div>
           ) : (
@@ -167,7 +270,11 @@ const Header = () => {
         <div className="flex lg:hidden items-center gap-4 text-xl">
           <FiSearch
             className="cursor-pointer hover:text-orange-500"
-            onClick={() => setShowSearch(!showSearch)}
+            onClick={() => setSearchOpen(!searchOpen)}
+          />
+          <FiUser
+            className="cursor-pointer hover:text-orange-500"
+            onClick={() => setShowAuthPopup(true)}
           />
           <div
             className="text-2xl cursor-pointer"
@@ -178,9 +285,52 @@ const Header = () => {
         </div>
       </nav>
 
+<<<<<<< HEAD
       {showLoginModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
+=======
+      {/* 🔍 Search Dropdown */}
+      {searchOpen && (
+        <div
+          ref={searchRef}
+          className="absolute top-[108px] left-0 w-full z-40 px-4 sm:px-8 md:px-12"
+        >
+          <div className="max-w-3xl mx-auto bg-white rounded-md shadow-md border border-gray-300">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for products, categories..."
+              className="w-full p-3 outline-none rounded-t-md text-gray-800"
+              autoFocus
+            />
+            {searchQuery.length > 0 &&
+              (searchQuery === "" ? searchHistory : suggestions)
+                .filter((item) =>
+                  item.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={() => {
+                      setSearchQuery(item);
+                      setSearchOpen(false);
+                    }}
+                  >
+                    {item}
+                  </div>
+                ))}
+          </div>
+        </div>
+      )}
+
+      {/* Auth Modal */}
+      {showAuthPopup && (
+        <div className="fixed inset-0 z-[999] bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative">
+>>>>>>> refs/remotes/origin/main
             <button
               onClick={() => setShowLoginModal(false)}
               className="absolute top-3 right-4 text-gray-600 text-xl font-bold"

@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const AboutPage = () => {
   const stats = [
@@ -8,7 +8,7 @@ const AboutPage = () => {
     { value: "3", label: "Generations" },
   ];
 
-  return (
+  return (<>
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 overflow-hidden">
       {/* Hero Section */}
       <div className="text-center mb-12">
@@ -114,6 +114,7 @@ const AboutPage = () => {
         
       </div>
     </div>
+  </>
   );
 };
 

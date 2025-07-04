@@ -22,7 +22,16 @@ export {default as  Blog } from "./home/blog";
 export {default as  Category } from "./pages/Category";
 export {default as Authpage } from "./components/Auth/Authpage";
 export { default as Aboutus } from "./pages/About";
-
-
-
-
+export { default as ContactUs } from "./pages/ContactUs";
+export { default as Policy } from "./pages/Policy";
+export { default as Checkout } from "./pages/Checkout";
+export { default as CheckoutPage } from "./pages/Checkout";
+export { default as productdetails } from "./pages/ProductDetail";
+export { default as OrderPage } from './pages/OrderPage';
+export { default as OrderDetailsPage } from './pages/OrderDetailsPage';
+export { default as ReturnRefundPage } from './pages/ReturnRefundPage';
+export { default as TrackOrderPage } from './pages/TrackOrderPage';
+export { default as ReturnRefundPolicy } from './pages/RetunRefundPolicy';
+export { default as OtpPage } from './components/Auth/OtpPage';
+export { default as PageTopBanner } from './components/Displayimage';
+export { default as Payment } from './pages/Payment';

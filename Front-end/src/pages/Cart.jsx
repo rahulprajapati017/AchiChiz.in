@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import HoverReview from "../components/card";
 import { Trash2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
-
+const navigate = useNavigate();
   useEffect(() => {
     document.body.style.backgroundColor = "#fef4e8";
     return () => {
@@ -123,9 +124,19 @@ const CartPage = () => {
               <div className="text-xl font-bold text-[#0f2c5c] mb-6">
                 Grand Total: ₹ {getTotal()}
               </div>
-              <button className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold hover:from-pink-400 hover:to-orange-500 transition-all shadow-lg hover:scale-105">
-                🛍️ Proceed to Checkout
-              </button>
+              <button
+  onClick={() =>
+    navigate("/checkout", {
+      state: {
+        products: cartItems,
+        from: "cart"
+      }
+    })
+  }
+  className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-400 to-pink-500 text-white font-bold hover:from-pink-400 hover:to-orange-500 transition-all shadow-lg hover:scale-105"
+>
+  🛍️ Proceed to Checkout
+</button>
             </div>
           </div>
 
