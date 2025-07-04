@@ -1,23 +1,12 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-<<<<<<< HEAD
 import { toast } from "react-hot-toast";
-=======
 import { useAuth } from "../../context/AuthContext";
 import OTPPage from "./OtpPage"; // ✅ adjust path if needed
->>>>>>> refs/remotes/origin/main
 
 const AuthPage = ({ onSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-<<<<<<< HEAD
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem("user", JSON.stringify({ name: "John Doe" }));
-    window.dispatchEvent(new Event("storage")); // Force sync for all tabs/components
-    toast.success("Login successful!");
-=======
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
 
@@ -45,7 +34,6 @@ const AuthPage = ({ onSuccess }) => {
 
   const handleGoogleLogin = () => {
     login("Google User");
->>>>>>> refs/remotes/origin/main
     if (onSuccess) onSuccess();
   };
 

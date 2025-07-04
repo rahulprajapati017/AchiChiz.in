@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-=======
 import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useLocation } from "react-router-dom";
->>>>>>> refs/remotes/origin/main
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   FiSearch,
   FiUser,
@@ -13,93 +8,76 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
-<<<<<<< HEAD
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
-import AuthPage from "./Auth/AuthPage";
-
-const Header = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-=======
-
 import { useAuth } from "../context/AuthContext";
-import { useCart } from "../context/CartContext";
-import { useFavorites } from "../context/FavoriteContext";
 import AuthPage from "../components/Auth/AuthPage";
 
 const navItems = [
-  { title: "HOME", path: "/", dropdown: [] },
-  {
-    title: "SHOP",
-    path: "/category",
-    dropdown: [
-      { title: "Style", items: ["Classic", "Minimal", "Contemporary"] },
-      { title: "Layouts", items: ["Standard", "Full Width", "List View"] },
-    ],
-  },
-  {
-    title: "PRODUCTS",
-    path: "/category",
-    dropdown: [
-      {
-        title: "Product Types",
-        items: ["Simple Product", "Variable Product", "Grouped Product"],
-      },
-      { title: "Features", items: ["Zoom", "Image Slider", "Custom Tabs"] },
-    ],
-  },
-  { title: "BLOG", path: "/blog", dropdown: [] },
-  { title: "PAGE", path: "/about-us", dropdown: [] },
+  { title: "HOME", path: "/" },
+  { title: "SHOP", path: "/category" },
+  { title: "PRODUCTS", path: "/products" },
+  { title: "BLOG", path: "/blog" },
+  { title: "PAGE", path: "/about-us" },
 ];
 
-export default function Header() {
-  const [hovered, setHovered] = useState(null);
+const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [showAuthPopup, setShowAuthPopup] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchHistory, setSearchHistory] = useState([
-    "Handmade Vase",
-    "Terracotta Lamp",
-    "Wooden Art",
-  ]);
-  const suggestions = ["Brass Decor", "Eco-Friendly Gifts", "Wall Hangings"];
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hovered, setHovered] = useState(null);
 
   const searchRef = useRef();
->>>>>>> refs/remotes/origin/main
-
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
-  const navigate = useNavigate();
+
+  const searchHistory = ["Handmade Vase", "Terracotta Lamp", "Wooden Art"];
+  const suggestions = ["Brass Decor", "Eco-Friendly Gifts", "Wall Hangings"];
+
+  const isHome = pathname === "/";
+  const glassEffect = isHome && !scrolled;
 
   useEffect(() => {
-<<<<<<< HEAD
-    const updateLoginStatus = () => {
-      const user = localStorage.getItem("user");
-      setIsLoggedIn(!!user);
-=======
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
       setSearchOpen(false);
->>>>>>> refs/remotes/origin/main
     };
 
-    updateLoginStatus();
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+
+    const updateLoginStatus = () => {
+      const user = localStorage.getItem("user");
+      setIsLoggedIn(!!user);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
     window.addEventListener("storage", updateLoginStatus);
-    return () => window.removeEventListener("storage", updateLoginStatus);
+    updateLoginStatus();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("storage", updateLoginStatus);
+    };
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    window.dispatchEvent(new Event("storage"));
+  };
 
-<<<<<<< HEAD
   const handleProtectedClick = (path) => {
     const user = localStorage.getItem("user");
     if (!user) {
@@ -108,38 +86,6 @@ export default function Header() {
       navigate(path);
     }
   };
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    window.dispatchEvent(new Event("storage"));
-  };
-
-  const navItems = [
-    { title: "HOME", path: "/" },
-    { title: "SHOP", path: "/category" },
-    { title: "PRODUCTS", path: "/products" },
-    { title: "BLOG", path: "/blog" },
-    { title: "PAGE", path: "/about-us" },
-  ];
-
-  const isHome = pathname === "/";
-  const glassEffect = isHome && !scrolled;
-=======
-    const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setSearchOpen(false);
-        setSearchQuery("");
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
->>>>>>> refs/remotes/origin/main
 
   return (
     <>
@@ -163,37 +109,11 @@ export default function Header() {
                 to={item.path}
                 className={({ isActive }) =>
                   `uppercase text-sm font-bold transition duration-300 ${
-                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"
-                  }`
+                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"}`
                 }
               >
                 {item.title}
               </NavLink>
-<<<<<<< HEAD
-=======
-
-              {hovered === idx && item.dropdown.length > 0 && (
-                <div className="absolute top-full left-0 mt-2 w-[280px] bg-white text-black shadow-xl rounded-md p-4 z-30">
-                  {item.dropdown.map((section, secIdx) => (
-                    <div key={secIdx} className="mb-3">
-                      <h4 className="text-sm font-semibold text-gray-700">
-                        {section.title}
-                      </h4>
-                      <ul className="pl-2 mt-1 space-y-1">
-                        {section.items.map((sub, subIdx) => (
-                          <li
-                            key={subIdx}
-                            className="text-sm text-gray-600 hover:text-orange-600 cursor-pointer"
-                          >
-                            {sub}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
->>>>>>> refs/remotes/origin/main
             </li>
           ))}
         </ul>
@@ -204,35 +124,24 @@ export default function Header() {
             onClick={() => setSearchOpen(!searchOpen)}
           />
 
-<<<<<<< HEAD
           {isLoggedIn ? (
-=======
-          {user ? (
->>>>>>> refs/remotes/origin/main
             <div className="relative group">
               <span className="cursor-pointer hover:text-orange-500 font-medium">
                 {JSON.parse(localStorage.getItem("user"))?.name || "User"}
               </span>
-<<<<<<< HEAD
-              <div className="absolute top-6 right-0 hidden group-hover:block bg-white text-black shadow-md border p-3 w-40 rounded-md z-50">
-=======
               <div className="absolute top-6 right-0 hidden group-hover:block bg-white shadow-md border p-3 w-40 rounded-md z-50 text-black">
->>>>>>> refs/remotes/origin/main
                 <div
                   className="text-sm hover:text-orange-500 cursor-pointer"
                   onClick={handleLogout}
                 >
                   Logout
                 </div>
-<<<<<<< HEAD
-=======
                 <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
                   <NavLink to="/dashboard">Profile</NavLink>
                 </div>
                 <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
                   <NavLink to="/Order-page">Order</NavLink>
                 </div>
->>>>>>> refs/remotes/origin/main
               </div>
             </div>
           ) : (
@@ -267,6 +176,7 @@ export default function Header() {
           </div>
         </div>
 
+        {/* Mobile Icons */}
         <div className="flex lg:hidden items-center gap-4 text-xl">
           <FiSearch
             className="cursor-pointer hover:text-orange-500"
@@ -274,7 +184,7 @@ export default function Header() {
           />
           <FiUser
             className="cursor-pointer hover:text-orange-500"
-            onClick={() => setShowAuthPopup(true)}
+            onClick={() => setShowLoginModal(true)}
           />
           <div
             className="text-2xl cursor-pointer"
@@ -285,12 +195,7 @@ export default function Header() {
         </div>
       </nav>
 
-<<<<<<< HEAD
-      {showLoginModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 relative">
-=======
-      {/* 🔍 Search Dropdown */}
+      {/* Search Panel */}
       {searchOpen && (
         <div
           ref={searchRef}
@@ -326,11 +231,10 @@ export default function Header() {
         </div>
       )}
 
-      {/* Auth Modal */}
-      {showAuthPopup && (
+      {/* Login Modal */}
+      {showLoginModal && (
         <div className="fixed inset-0 z-[999] bg-black/40 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative">
->>>>>>> refs/remotes/origin/main
             <button
               onClick={() => setShowLoginModal(false)}
               className="absolute top-3 right-4 text-gray-600 text-xl font-bold"
@@ -341,7 +245,7 @@ export default function Header() {
               onSuccess={() => {
                 setShowLoginModal(false);
                 setIsLoggedIn(true);
-                window.dispatchEvent(new Event("storage")); // 🔁
+                window.dispatchEvent(new Event("storage"));
               }}
             />
           </div>

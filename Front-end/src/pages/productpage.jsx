@@ -56,10 +56,7 @@ const ProductPage = () => {
     .slice(0, 4);
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen w-full mt-5 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
-=======
->>>>>>> refs/remotes/origin/main
     <div className="min-h-screen w-full mt-20 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans overflow-hidden">
       {/* Main Section */}
       <div className="bg-white p-6 shadow-xl">
@@ -233,14 +230,8 @@ const ProductPage = () => {
           <p className="text-gray-500">No FAQs added.</p>
         )}
       </div>
-<<<<<<< HEAD
       {/* ✅ Related Products using ProductCard */}
       <div className="space-y-6 border-y-2 py-3 mt-0">
-=======
-
-      {/* Related Products */}
-      <div className="space-y-6 border-y-2 py-3 mt-10">
->>>>>>> refs/remotes/origin/main
         <h2 className="text-2xl font-bold text-[#0f2c5c]">Related Products</h2>
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 
