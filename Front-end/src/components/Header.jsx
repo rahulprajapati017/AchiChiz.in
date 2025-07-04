@@ -168,6 +168,9 @@ export default function Header() {
                 <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
                   <NavLink to="/dashboard">Profile</NavLink>
                 </div>
+                <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
+                  <NavLink to="/Order-page">Order</NavLink>
+                </div>
               </div>
             </div>
           ) : (
