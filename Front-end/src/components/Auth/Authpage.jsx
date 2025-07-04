@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "react-hot-toast";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 import OTPPage from "./OtpPage"; // ✅ adjust path if needed
 
 const AuthPage = ({ onSuccess }) => {
@@ -15,14 +15,10 @@ const AuthPage = ({ onSuccess }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (isSignup) {
-      // ✅ Signup flow → go to OTP page
-      setShowOtp(true);
-    } else {
-      // ✅ Login flow → directly login
-      login("John Doe");
-      if (onSuccess) onSuccess();
-    }
+   localStorage.setItem("user", JSON.stringify({ name: "John Doe" }));
+    window.dispatchEvent(new Event("storage")); // Force sync for all tabs/components
+    toast.success("Login successful!");
+    if (onSuccess) onSuccess();
   };
 
   const handleOtpVerify = (otpCode) => {

@@ -14,25 +14,28 @@ const ProductCard = ({ product }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const { addToCart } = useCart();
-  const { addToFavorites, removeFromFavorites } = useFavorites();
+  const { favorites, addToFavorites, removeFromFavorites } = useFavorites();
 
-  // ✅ Global login detection across all cards
+  // ✅ Sync login status
   useEffect(() => {
     const checkLogin = () => {
       const user = localStorage.getItem("user");
       setIsLoggedIn(!!user);
     };
 
-    checkLogin(); // initial check
-
-    const interval = setInterval(checkLogin, 500); // poll every 0.5s
-    window.addEventListener("storage", checkLogin); // sync across tabs
+    checkLogin();
+    window.addEventListener("storage", checkLogin);
 
     return () => {
-      clearInterval(interval);
       window.removeEventListener("storage", checkLogin);
     };
   }, []);
+
+  // ✅ Sync wishlist from global context
+  useEffect(() => {
+    const ids = favorites.map((fav) => fav.id);
+    setWishlistIds(ids);
+  }, [favorites]);
 
   const handleAddToCart = () => {
     if (!isLoggedIn) {
@@ -50,11 +53,9 @@ const ProductCard = ({ product }) => {
     }
 
     if (wishlistIds.includes(product.id)) {
-      setWishlistIds(wishlistIds.filter((id) => id !== product.id));
       removeFromFavorites(product.id);
       toast.success("Removed from Favorites");
     } else {
-      setWishlistIds([...wishlistIds, product.id]);
       addToFavorites(product);
       toast.success("Added to Favorites");
     }
@@ -64,10 +65,9 @@ const ProductCard = ({ product }) => {
 
   return (
     <>
-      {/* Product Card */}
-      <div className="relative bg-white ml-3  overflow-hidden transition-all group">
-        {/* Image Section */}
-        <div className="relative overflow-hidden w-full   h-50 sm:h-70 md:h-100">
+      <div className="relative bg-white ml-3 overflow-hidden transition-all group">
+        {/* Product Images */}
+        <div className="relative overflow-hidden w-full h-50 sm:h-70 md:h-100">
           <Link to={`/product/${product.id}`}>
             <img
               src={product.images[0]}
@@ -83,15 +83,12 @@ const ProductCard = ({ product }) => {
             )}
           </Link>
 
-        
           <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-4xl shadow-md">
             Hot
           </div>
 
-         
-          <div className="absolute top-1/2 right-2 -translate-y-1/2 pr-2  flex flex-col items-center space-y-2 z-10">
-
-            
+          {/* Action Buttons */}
+          <div className="absolute top-1/2 right-2 -translate-y-1/2 pr-2 flex flex-col items-center space-y-2 z-10">
             <button
               onClick={handleAddToCart}
               className="bg-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition 
@@ -100,7 +97,6 @@ const ProductCard = ({ product }) => {
               <ShoppingCart size={20} />
             </button>
 
-            {/* Quick View */}
             <button
               onClick={() => setShowQuickView(true)}
               className="bg-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition 
@@ -109,23 +105,18 @@ const ProductCard = ({ product }) => {
               <Eye size={20} />
             </button>
 
-            {/* Wishlist */}
             <button
               onClick={toggleWishlist}
               className={`w-10 h-10 flex items-center justify-center rounded-full shadow transition 
                 transform opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 
-                ${
-                  isWishlisted
-                    ? "bg-red-500 text-white"
-                    : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
-                }`}
+                ${isWishlisted ? "bg-red-500 text-white" : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"}`}
             >
               <Heart size={20} />
             </button>
           </div>
         </div>
 
-        {/* Content Section */}
+        {/* Product Info */}
         <div className="mt-2 px-4 py-2 bg-white">
           <p className="text-xs uppercase text-gray-400 tracking-widest">
             {product.subcategory || "Handmade"}
@@ -139,7 +130,7 @@ const ProductCard = ({ product }) => {
         </div>
       </div>
 
-      {/* Quickview Modal */}
+      {/* Quick View Modal */}
       {showQuickView && (
         <Quickviews
           product={product}
@@ -147,7 +138,7 @@ const ProductCard = ({ product }) => {
         />
       )}
 
-      {/* Login Modal with blur background */}
+      {/* Auth/Login Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
@@ -160,8 +151,8 @@ const ProductCard = ({ product }) => {
             <AuthPage
               onSuccess={() => {
                 setShowLoginModal(false);
-                localStorage.setItem("user", JSON.stringify({ name: "John Doe" }));
                 setIsLoggedIn(true);
+                window.dispatchEvent(new Event("storage")); // Let other components know
               }}
             />
           </div>
