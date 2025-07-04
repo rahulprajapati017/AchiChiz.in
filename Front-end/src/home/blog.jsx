@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const blogData = [
   {
@@ -57,9 +58,12 @@ const BlogCard = ({ blog }) => {
         <p className="text-sm text-gray-500">{blog.date}</p>
         <h2 className="text-2xl font-semibold text-gray-900 mt-1">{blog.title}</h2>
         <p className="text-gray-600 mt-2 line-clamp-2">{blog.description}</p>
-        <button className="mt-4 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition">
-          READ MORE
-        </button>
+        <NavLink
+          to="/blogCommentSection"> 
+          <button className="mt-4 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition">
+            READ MORE
+          </button>
+        </NavLink>
       </div>
     </div>
   );

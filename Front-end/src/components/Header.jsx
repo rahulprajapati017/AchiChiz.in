@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   FiSearch,
@@ -20,28 +20,19 @@ const navItems = [
     title: "SHOP",
     path: "/category",
     dropdown: [
-      {
-        title: "Style",
-        items: ["Classic", "Minimal", "Contemporary"],
-      },
-      {
-        title: "Layouts",
-        items: ["Standard", "Full Width", "List View"],
-      },
+      { title: "Style", items: ["Classic", "Minimal", "Contemporary"] },
+      { title: "Layouts", items: ["Standard", "Full Width", "List View"] },
     ],
   },
   {
     title: "PRODUCTS",
-    path: "/products",
+    path: "/category",
     dropdown: [
       {
         title: "Product Types",
         items: ["Simple Product", "Variable Product", "Grouped Product"],
       },
-      {
-        title: "Features",
-        items: ["Zoom", "Image Slider", "Custom Tabs"],
-      },
+      { title: "Features", items: ["Zoom", "Image Slider", "Custom Tabs"] },
     ],
   },
   { title: "BLOG", path: "/blog", dropdown: [] },
@@ -53,6 +44,16 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchHistory, setSearchHistory] = useState([
+    "Handmade Vase",
+    "Terracotta Lamp",
+    "Wooden Art",
+  ]);
+  const suggestions = ["Brass Decor", "Eco-Friendly Gifts", "Wall Hangings"];
+
+  const searchRef = useRef();
 
   const { pathname } = useLocation();
   const { cartItems } = useCart();
@@ -60,9 +61,24 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setSearchOpen(false);
+    };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleMouseEnter = (index) => setHovered(index);
@@ -132,9 +148,10 @@ export default function Header() {
 
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
-          <NavLink to="/searchpage">
-            <FiSearch className="cursor-pointer hover:text-orange-500" />
-          </NavLink>
+          <FiSearch
+            className="cursor-pointer hover:text-orange-500"
+            onClick={() => setSearchOpen(!searchOpen)}
+          />
 
           {user ? (
             <div className="relative group">
@@ -181,15 +198,14 @@ export default function Header() {
 
         {/* Mobile Icons */}
         <div className="flex lg:hidden items-center gap-4 text-xl">
-          <NavLink to="/searchpage">
-            <FiSearch className="cursor-pointer hover:text-orange-500" />
-          </NavLink>
-
+          <FiSearch
+            className="cursor-pointer hover:text-orange-500"
+            onClick={() => setSearchOpen(!searchOpen)}
+          />
           <FiUser
             className="cursor-pointer hover:text-orange-500"
             onClick={() => setShowAuthPopup(true)}
           />
-
           <NavLink to="/favoritespage" className="relative">
             <FiHeart className="cursor-pointer hover:text-red-500" />
             {favorites.length > 0 && (
@@ -198,7 +214,6 @@ export default function Header() {
               </span>
             )}
           </NavLink>
-
           <NavLink to="/cartpage" className="relative">
             <FiShoppingCart className="cursor-pointer hover:text-red-500" />
             {cartItems.length > 0 && (
@@ -207,7 +222,6 @@ export default function Header() {
               </span>
             )}
           </NavLink>
-
           <div
             className="text-2xl cursor-pointer"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -215,87 +229,43 @@ export default function Header() {
             {mobileOpen ? <FiX /> : <FiMenu />}
           </div>
         </div>
+      </nav>
 
-        {/* Mobile Drawer */}
+      {/* 🔍 Search Dropdown */}
+      {searchOpen && (
         <div
-          className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-[999] transform ${
-            mobileOpen ? "translate-x-0" : "translate-x-full"
-          } transition-transform duration-500 ease-in-out`}
+          ref={searchRef}
+          className="absolute top-[108px] left-0 w-full z-40 px-4 sm:px-8 md:px-12"
         >
-          <div className="flex justify-between items-center p-4 border-b">
-            <div className="text-xl pt-3 font-bold">ACHICHIZ</div>
-            <FiX
-              className="text-2xl pt-1 mt-2 cursor-pointer"
-              onClick={() => setMobileOpen(false)}
+          <div className="max-w-3xl mx-auto bg-white rounded-md shadow-md border border-gray-300">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for products, categories..."
+              className="w-full p-3 outline-none rounded-t-md text-gray-800"
+              autoFocus
             />
-          </div>
-
-          <ul className="flex flex-col gap-4 p-6 overflow-y-auto max-h-[calc(100vh-140px)]">
-            {navItems.map((item, idx) => (
-              <li key={idx}>
-                <NavLink
-                  to={item.path}
-                  className="text-lg font-medium text-black hover:text-orange-500"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.title}
-                </NavLink>
-                {item.dropdown.length > 0 && (
-                  <ul className="mt-2 pl-4 space-y-1 text-sm text-gray-700">
-                    {item.dropdown.flatMap((section) =>
-                      section.items.map((sub, i) => (
-                        <li
-                          key={i}
-                          className="hover:text-orange-500 transition duration-300"
-                        >
-                          {sub}
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                )}
-              </li>
-            ))}
-
-            {/* Mobile Profile/Login Section */}
-            {user ? (
-              <div className="mt-6 border-t pt-4">
-                <div className="text-lg font-medium mb-2">Hello, {user.name}</div>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <NavLink
-                      to="/dashboard"
-                      className="hover:text-orange-500"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      Profile
-                    </NavLink>
-                  </li>
-                  <li
-                    className="cursor-pointer hover:text-orange-500"
-                    onClick={() => {
-                      logout();
-                      setMobileOpen(false);
+            {searchQuery.length > 0 &&
+              (searchQuery === "" ? searchHistory : suggestions)
+                .filter((item) =>
+                  item.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={() => {
+                      setSearchQuery(item);
+                      setSearchOpen(false);
                     }}
                   >
-                    Logout
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <div
-                className="mt-4 text-sm text-blue-600 underline cursor-pointer"
-                onClick={() => {
-                  setShowAuthPopup(true);
-                  setMobileOpen(false);
-                }}
-              >
-                Login / Sign Up
-              </div>
-            )}
-          </ul>
+                    {item}
+                  </div>
+                ))}
+          </div>
         </div>
-      </nav>
+      )}
 
       {/* Auth Modal */}
       {showAuthPopup && (
