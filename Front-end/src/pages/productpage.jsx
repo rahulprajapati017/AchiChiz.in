@@ -58,7 +58,7 @@ const ProductPage = () => {
       {/* Main Section */}
       <div className="bg-white p-6 shadow-xl">
         <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-black drop-shadow">
-          🧺 {product.title}
+          {product.title}
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-10">
@@ -145,8 +145,9 @@ const ProductPage = () => {
                 <button
                   onClick={() =>
                     navigate("/checkout", {
-                      state: { product, quantity: 1 },
-                    })
+  state: { products: [{ ...product, quantity: 1 }], from: "product" },
+})
+
                   }
                   className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded"
                 >
