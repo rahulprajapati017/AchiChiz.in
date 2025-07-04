@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const CategorySliderSection = ({
   title = 'Shop by Category',
@@ -50,7 +51,11 @@ const CategorySliderSection = ({
               className="flex justify-between items-center py-4 cursor-pointer group"
             >
               <span className={`text-lg md:text-xl transition-colors duration-300 tracking-wide font-[serif] ${i === activeIndex ? 'text-[#c74b2c]' : 'text-black'} group-hover:text-[#c74b2c]`}>
-                {cat.name.toUpperCase()}
+                <NavLink
+            to="/category"
+            className="hover:text-[#c74b2c] transition-colors duration-300">
+          {cat.name.toUpperCase()}
+          </NavLink>
               </span>
               <span className={`text-2xl transition-all duration-300 ${i === activeIndex ? 'opacity-100 translate-x-0 text-[#c74b2c]' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 text-[#c74b2c]'}`}>
                 →

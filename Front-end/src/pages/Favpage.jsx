@@ -108,7 +108,7 @@ const FavoriteItems = () => {
                   )}
                 </div>
 
-                {/* Enhanced Add to Cart Button */}
+               
                 <motion.button
                   onClick={() => handleAddToCart(item)}
                   whileHover={{ y: -6 }}
@@ -130,7 +130,7 @@ const FavoriteItems = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Your wishlist is empty</h3>
           <p className="text-gray-600 mb-6">Start adding items you love to your wishlist!</p>
           <a href="/">
-            <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+            <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white  hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
               Browse Products
             </button>
           </a>

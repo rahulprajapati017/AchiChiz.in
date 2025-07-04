@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { X, Heart, RefreshCcw, Truck, Clock } from 'lucide-react';
+import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoriteContext";
 
 const Quickviews = ({ product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
@@ -8,12 +10,14 @@ const Quickviews = ({ product, onClose }) => {
   const images = product.images || [];
   const stock = product.stock || 20;
   const maxStock = product.maxStock || 100;
+   const { addToCart } = useCart();
+    const {addToFavorites} = useFavorites();
 
   const nextImage = () => setImageIndex((prev) => (prev + 1) % images.length);
   const prevImage = () => setImageIndex((prev) => (prev - 1 + images.length) % images.length);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+    <div className="fixed inset-0 z-50 flex items-center  justify-center bg-black/60">
       <div className="w-full max-w-5xl  bg-white text-black flex overflow-hidden shadow-lg max-h-[80vh] relative">
        
         <button
@@ -23,7 +27,7 @@ const Quickviews = ({ product, onClose }) => {
           <X size={28} />
         </button>
 
-        {/* 🖼 Left: Full Image Section */}
+        
         <div className="w-1/2 h-[90vh] relative flex items-center justify-center border-r overflow-hidden">
           <img
             src={images[imageIndex]}
@@ -49,7 +53,7 @@ const Quickviews = ({ product, onClose }) => {
           )}
         </div>
 
-        {/* 📝 Right: Product Info */}
+        
         <div className="w-1/2 h-[80vh] overflow-y-auto p-8 bg-gray-50 space-y-5">
           <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
 
@@ -94,9 +98,16 @@ const Quickviews = ({ product, onClose }) => {
               </button>
             </div>
 
-            <button className=" w-70 bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 py-3  shadow transition">
-              ADD TO CART
-            </button>
+            <button
+                  onClick={() => {
+                    addToCart(product);
+                    toast.success(`${product.title} added to cart!`);
+                  }}
+                  className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded"
+                >
+                  <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
+                  <span className="relative z-10">Add To Cart</span>
+                </button>
           </div>
 
           <button className="w-full border border-gray-400 mt-4 py-3 font-semibold hover:bg-gray-100 transition">
@@ -105,10 +116,14 @@ const Quickviews = ({ product, onClose }) => {
 
           <div className="mt-6 space-y-5 text-sm text-gray-700">
             <div className="flex items-center gap-6">
-              <button className="flex items-center gap-2 hover:text-red-500">
-                <Heart className="w-5 h-5" />
-                Add to wishlist
-              </button>
+               <button
+                  onClick={() =>{ addToFavorites(product);
+                    toast.success(`${product.title} added to wishlist!`);}}
+                  className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-red-600 hover:border-red-600 transition"
+                
+                >
+                  <Heart size={16} />add to Wishlist
+                </button>
               <button className="flex items-center gap-2 hover:text-blue-500">
                 <RefreshCcw className="w-5 h-5" />
                 Compare

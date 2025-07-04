@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const ordersData = {
   current: [
@@ -69,9 +71,11 @@ const OrderCard = ({ order }) => {
         return '📦';
     }
   };
-
+  const navigate = useNavigate();
   const handleNavigation = (path) => {
-    alert(`Navigating to ${path}`);
+    navigate(path, {
+      state: {
+        orderId: order.id,}})
   };
 
   return (
@@ -137,14 +141,6 @@ const OrderCard = ({ order }) => {
         >
           <span>📦</span>
           Track Order
-        </button>
-        
-        <button
-          onClick={() => handleNavigation('/return-refund')}
-          className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
-        >
-          <span>🔁</span>
-          Return / Refund
         </button>
       </div>
     </div>

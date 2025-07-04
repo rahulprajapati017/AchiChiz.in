@@ -12,8 +12,11 @@ import {
 } from "react-icons/fa";
 import { SiKlarna } from "react-icons/si";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // Make sure this path is correct
 
 const Footer = () => {
+  const { user } = useAuth(); // Adjust if you use `isLoggedIn` instead
+
   return (
     <footer
       className="bg-black text-white py-5"
@@ -49,17 +52,24 @@ const Footer = () => {
 
           {/* Section 2: Sign Up and Social */}
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4">SIGN UP FOR 10% OFF</h2>
-            <div className="flex flex-col sm:flex-row items-center max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email..."
-                className="w-full sm:flex-1 p-3 text-white bg-gray-800 border border-gray-700 rounded-md sm:rounded-r-none sm:rounded-l-md"
-              />
-              <button className="bg-white text-black px-6 py-3 mt-2 sm:mt-0 sm:rounded-r-md font-bold">
-                SEND
-              </button>
-            </div>
+            {!user ? (
+              <>
+                <h2 className="text-2xl font-semibold mb-4">SIGN UP FOR 10% OFF</h2>
+                <div className="flex flex-col sm:flex-row items-center max-w-md mx-auto">
+                  <input
+                    type="email"
+                    placeholder="Enter your email..."
+                    className="w-full sm:flex-1 p-3 text-white bg-gray-800 border border-gray-700 rounded-md sm:rounded-r-none sm:rounded-l-md"
+                  />
+                  <button className="bg-white text-black px-6 py-3 mt-2 sm:mt-0 sm:rounded-r-md font-bold">
+                    SEND
+                  </button>
+                </div>
+              </>
+            ) : (
+              <h2 className="text-2xl font-semibold mb-4">FOLLOW US ON</h2>
+            )}
+
             <div className="flex justify-center gap-6 mt-4 text-xl">
               <a href="#" aria-label="Twitter" className="hover:text-red-500 transition">
                 <FaTwitter />
@@ -130,17 +140,24 @@ const Footer = () => {
 
           {/* Section 2: Sign Up and Social */}
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4">SIGN UP FOR 10% OFF</h2>
-            <div className="flex flex-col sm:flex-row items-center max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email..."
-                className="w-full sm:flex-1 p-3 text-white bg-gray-800 border border-gray-700 rounded-md sm:rounded-r-none sm:rounded-l-md"
-              />
-              <button className="bg-white text-black px-6 py-3 mt-2 sm:mt-0 sm:rounded-r-md font-bold">
-                SEND
-              </button>
-            </div>
+            {!user ? (
+              <>
+                <h2 className="text-2xl font-semibold mb-4">SIGN UP FOR 10% OFF</h2>
+                <div className="flex flex-col sm:flex-row items-center max-w-md mx-auto">
+                  <input
+                    type="email"
+                    placeholder="Enter your email..."
+                    className="w-full sm:flex-1 p-3 text-white bg-gray-800 border border-gray-700 rounded-md sm:rounded-r-none sm:rounded-l-md"
+                  />
+                  <button className="bg-white text-black px-6 py-3 mt-2 sm:mt-0 sm:rounded-r-md font-bold">
+                    SEND
+                  </button>
+                </div>
+              </>
+            ) : (
+              <h2 className="text-2xl font-semibold mb-4">FOLLOW US ON</h2>
+            )}
+
             <div className="flex justify-center gap-6 mt-4 text-xl">
               <a href="#" aria-label="Twitter" className="hover:text-red-500 transition">
                 <FaTwitter />
