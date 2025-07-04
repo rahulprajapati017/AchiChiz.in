@@ -1,35 +1,86 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import React from "react";
+import { Routes, Route } from "react-router-dom"; 
+import AdminLayout from "./Layout/AdminLayout";
 
-function App() {
-  const [count, setCount] = useState(0)
+import AdminDashboard from "./pages/AdminDashboard";
+import Overview from "./pages/Overview";
+import Orders from "./pages/Orders";
+import Products from "./pages/Products";
+import Customers from "./pages/Customers";
+import Vendors from "./pages/Vendors";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
 
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <AdminLayout>
+            <AdminDashboard />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="overview"
+        element={
+          <AdminLayout>
+            <Overview />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="orders"
+        element={
+          <AdminLayout>
+            <Orders />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="products"
+        element={
+          <AdminLayout>
+            <Products />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="customers"
+        element={
+          <AdminLayout>
+            <Customers />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="vendors"
+        element={
+          <AdminLayout>
+            <Vendors />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="analytics"
+        element={
+          <AdminLayout>
+            <Analytics />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="settings"
+        element={
+          <AdminLayout>
+            <Settings />
+          </AdminLayout>
+        }
+      />
+    </Routes>
+  );
+};
 
-export default App
+export default App;
