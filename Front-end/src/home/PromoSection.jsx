@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const PromoSection = () => {
   return (
@@ -17,7 +18,12 @@ const PromoSection = () => {
           </h2>
           <button className="relative overflow-hidden px-6 py-3 text-white font-medium z-10 bg-[#d75a3c] group">
             <span className="absolute inset-0 bg-[#c44b2e] transition-all duration-500 ease-out transform -translate-x-full group-hover:translate-x-0 z-0"></span>
-            <span className="relative z-10">SHOP NOW</span>
+            <span className="relative z-10">
+              <NavLink
+                to="/category">
+              SHOP NOW
+                </NavLink>
+              </span>
           </button>
         </div>
       </div>
@@ -36,7 +42,10 @@ const PromoSection = () => {
           </h2>
           <button className="relative overflow-hidden px-6 py-3 text-white font-medium z-10 bg-[#d75a3c] group">
             <span className="absolute inset-0 bg-[#c44b2e] transition-all duration-500 ease-out transform -translate-x-full group-hover:translate-x-0 z-0"></span>
-            <span className="relative z-10">SHOP NOW</span>
+            <span className="relative z-10"><NavLink
+                to="/category">
+              SHOP NOW
+                </NavLink></span>
           </button>
         </div>
       </div>

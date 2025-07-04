@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { products } from "../data/products";
 import ProductCard from "../components/ProductCard";
+import { NavLink } from "react-router-dom";
 
 const NewTrending = () => {
   const [expandedCategories, setExpandedCategories] = useState([]);
@@ -29,7 +30,10 @@ const NewTrending = () => {
               key={index}
               className="px-4 py-2 whitespace-nowrap bg-white border border-gray-200 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-orange-100 hover:text-orange-600 transition"
             >
+             <NavLink
+                to="/category">
               {item}
+                </NavLink>
             </button>
           ))}
         </div>
