@@ -33,3 +33,23 @@ export { default as ReturnRefundPage } from './pages/ReturnRefundPage';
 export { default as TrackOrderPage } from './pages/TrackOrderPage';
 export { default as ReturnRefundPolicy } from './pages/RetunRefundPolicy';
 export { default as OtpPage } from './components/Auth/OtpPage';
+
+
+
+//seller dashboard
+export {default as SellerDashboard} from "./components/seller-dashboard/sellerDashboard";
+
+
+
+
+
+// export { default as SellerDashboard } from "./components/seller-panel/sellerDashboard";
+// export { default as ProductList} from "./components/seller-panel/ProductManagement/ProductList";   
+// export { default as AddProductForm } from "./components/seller-panel/ProductManagement/AddProductForm";   
+// export { default as EditProductForm } from "./components/seller-panel/ProductManagement/EditProductForm";     
+// export { default as OrderList } from "./components/seller-panel/OrderManagement/OrderList";
+// export { default as OrderDetails } from "./components/seller-panel/OrderManagement/OrderDetails";
+// export { default as EarningsOverview } from "./components/seller-panel/Earnings/EarningOverview";
+// export { default as PayoutHistory } from "./components/seller-panel/Earnings/EarningOverview";
+
+
