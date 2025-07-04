@@ -6,6 +6,7 @@ import { products } from "../data/products";
 import HoverReview from "../components/card";
 import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoriteContext";
 import toast from "react-hot-toast";
 
 const ProductPage = () => {
@@ -17,6 +18,7 @@ const ProductPage = () => {
   const [isHoveringImage, setIsHoveringImage] = useState(false);
   const intervalRef = useRef(null);
   const { addToCart } = useCart();
+  const {addToFavorites} = useFavorites();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,6 +56,7 @@ const ProductPage = () => {
     .slice(0, 4);
 
   return (
+    <div className="min-h-screen w-full mt-5 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
     <div className="min-h-screen w-full mt-20 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans overflow-hidden">
       {/* Main Section */}
       <div className="bg-white p-6 shadow-xl">
@@ -158,7 +161,8 @@ const ProductPage = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-evenly mt-2">
                 <button
-                  onClick={() => toast.success("Added to Wishlist!")}
+                  onClick={() =>{ addToFavorites(product);
+                    toast.success(`${product.title} added to wishlist!`);}}
                   className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-red-600 hover:border-red-600 transition"
                 >
                   <Heart size={16} /> Wishlist
@@ -226,16 +230,17 @@ const ProductPage = () => {
           <p className="text-gray-500">No FAQs added.</p>
         )}
       </div>
-
-      {/* Related Products */}
-      <div className="space-y-6 border-y-2 py-3 mt-10">
+      {/* ✅ Related Products using ProductCard */}
+      <div className="space-y-6 border-y-2 py-3 mt-0">
         <h2 className="text-2xl font-bold text-[#0f2c5c]">Related Products</h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
           {relatedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };

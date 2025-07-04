@@ -50,27 +50,27 @@ const AddressBook = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+     
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">Address Book</h2>
+        
         <button
           onClick={() => {
             setEditAddress(null);
             setShowAddForm(true);
           }}
-          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+          className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white  hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Address</span>
         </button>
       </div>
 
-      {/* Address Cards */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {addresses.map((address) => {
           const Icon = getAddressIcon(address.type);
           return (
-            <div key={address.id} className="bg-white/30 backdrop-blur-lg rounded-xl p-6 border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div key={address.id} className="bg-white/30 backdrop-blur-lg  p-6 border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300">
               {/* Address Header */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -117,9 +117,9 @@ const AddressBook = () => {
         })}
       </div>
 
-      {/* Add/Edit Form Modal */}
+      
       {showAddForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed mt-40 inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-8 border border-white/40 shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold text-gray-800 mb-6">
               {editAddress ? "Edit Address" : "Add New Address"}
@@ -160,7 +160,7 @@ const AddressBook = () => {
                 setEditAddress(null);
               }}
             >
-              {/* Address Type */}
+            
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Address Type</label>
                 <select
@@ -174,7 +174,7 @@ const AddressBook = () => {
                 </select>
               </div>
 
-              {/* Full Name */}
+             
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
                 <input
@@ -185,7 +185,7 @@ const AddressBook = () => {
                 />
               </div>
 
-              {/* Address */}
+             
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                 <textarea
@@ -196,7 +196,7 @@ const AddressBook = () => {
                 ></textarea>
               </div>
 
-              {/* City & State */}
+             
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
@@ -218,7 +218,7 @@ const AddressBook = () => {
                 </div>
               </div>
 
-              {/* Pincode & Phone */}
+             
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Pincode</label>
@@ -240,7 +240,6 @@ const AddressBook = () => {
                 </div>
               </div>
 
-              {/* Default checkbox */}
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -254,7 +253,7 @@ const AddressBook = () => {
                 </label>
               </div>
 
-              {/* Action Buttons */}
+             
               <div className="flex space-x-4 pt-4">
                 <button
                   type="button"
@@ -262,13 +261,13 @@ const AddressBook = () => {
                     setShowAddForm(false);
                     setEditAddress(null);
                   }}
-                  className="flex-1 px-4 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-colors"
+                  className="flex-1 px-4 py-3 bg-gray-500 text-white hover:bg-gray-600 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white  hover:from-indigo-600 hover:to-purple-700 transition-all duration-300"
                 >
                   {editAddress ? "Update Address" : "Save Address"}
                 </button>

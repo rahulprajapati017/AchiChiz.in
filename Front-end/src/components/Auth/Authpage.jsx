@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-hot-toast";
+// import { useAuth } from "../../context/AuthContext";
 import OTPPage from "./OtpPage"; // ✅ adjust path if needed
 
 const AuthPage = ({ onSuccess }) => {
@@ -14,14 +15,10 @@ const AuthPage = ({ onSuccess }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (isSignup) {
-      // ✅ Signup flow → go to OTP page
-      setShowOtp(true);
-    } else {
-      // ✅ Login flow → directly login
-      login("John Doe");
-      if (onSuccess) onSuccess();
-    }
+   localStorage.setItem("user", JSON.stringify({ name: "John Doe" }));
+    window.dispatchEvent(new Event("storage")); // Force sync for all tabs/components
+    toast.success("Login successful!");
+    if (onSuccess) onSuccess();
   };
 
   const handleOtpVerify = (otpCode) => {
@@ -46,14 +43,16 @@ const AuthPage = ({ onSuccess }) => {
         <input
           type="text"
           placeholder="Name*"
-          className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          className="w-full px-4 py-2 border border-gray-300"
+          required
         />
 
         {isSignup && (
           <input
             type="email"
             placeholder="Email*"
-            className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full px-4 py-2 border border-gray-300"
+            required
           />
         )}
 
@@ -61,7 +60,8 @@ const AuthPage = ({ onSuccess }) => {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password*"
-            className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="w-full px-4 py-2 border border-gray-300"
+            required
           />
           <div
             className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
