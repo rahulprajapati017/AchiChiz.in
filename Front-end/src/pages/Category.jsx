@@ -27,6 +27,7 @@ function Category() {
     size: [],
   });
   const [sort, setSort] = useState('highToLow');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handleFilterChange = (type, value) => {
     setFilters(prev => {
@@ -101,20 +102,59 @@ function Category() {
   }, [filters, sort]);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen pt-[110px]">
-      {/* Sidebar */}
-      <aside className="md:w-64 border-r border-gray-200 ">
+    <div className="flex flex-col md:flex-row min-h-screen pt-[110px] relative">
+      {/* Sidebar for desktop */}
+      <aside className="hidden md:block md:w-64 border-r border-gray-200 ">
         <SideFilterBar
           filters={filters}
           onFilterChange={handleFilterChange}
           onReset={handleReset}
         />
       </aside>
+      {/* Sidebar overlay for mobile */}
+      {isFilterOpen && (
+        <div className="fixed inset-0 z-40 flex">
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30"
+            onClick={() => setIsFilterOpen(false)}
+          />
+          {/* Sidebar */}
+          <div className="relative w-4/5 max-w-xs bg-white h-full shadow-lg animate-slideInLeft z-50">
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+              onClick={() => setIsFilterOpen(false)}
+              aria-label="Close filters"
+            >
+              <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="p-4 pt-10">
+              <SideFilterBar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onReset={handleReset}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       {/* Main Content */}
       <main className="flex-1 flex flex-col">
-        <TopBar totalItems={filteredProducts.length} sort={sort} onSortChange={handleSortChange} />
+        <TopBar totalItems={filteredProducts.length} sort={sort} onSortChange={handleSortChange} onFilterToggle={() => setIsFilterOpen(true)} />
         <AllProducts products={filteredProducts} />
       </main>
+      {/* Add slide-in animation */}
+      <style>{`
+        @keyframes slideInLeft {
+          from { transform: translateX(-100%); }
+          to { transform: translateX(0); }
+        }
+        .animate-slideInLeft {
+          animation: slideInLeft 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+      `}</style>
     </div>
   );
 }

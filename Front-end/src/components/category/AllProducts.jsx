@@ -90,16 +90,7 @@ const AllProducts = ({ products }) => {
                 {/* Add to Cart Button */}
                 <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full flex justify-center 
                 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-10">
-                  <button
-                    onClick={() => {
-                      addToCart && addToCart(product);
-                      toast.success && toast.success("Added to Cart");
-                    }}
-                    className="w-[90%] h-10 sm:h-12 relative overflow-hidden px-2 py-2 text-white font-bold z-10 bg-[#d75a3c] group/button"
-                  >
-                    <span className="absolute inset-0 bg-white transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
-                    <span className="relative text-black z-10">Add to Cart</span>
-                  </button>
+                
                 </div>
               </div>
               {/* Product Info */}
