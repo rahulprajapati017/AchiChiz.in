@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation,NavLink } from 'react-router-dom';
 import {
   FiChevronLeft, FiMail, FiTruck, FiUser, FiLock, FiCheck, FiShield, FiCreditCard
 } from 'react-icons/fi';
@@ -54,7 +54,10 @@ const { products: cartItems = [] } = location.state || {};
           <div className="flex items-center gap-4 mb-6">
             <button className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium">
               <FiChevronLeft className="w-5 h-5" />
+              <NavLink
+                to="/cartpage">
               Back to Shopping Cart
+                  </NavLink>         
             </button>
           </div>
           

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation,NavLink } from 'react-router-dom';
 import { 
   CreditCard, 
   CheckCircle, 
@@ -67,7 +67,9 @@ const Payment = () => {
           <div className="flex items-center gap-4 mb-6">
             <button className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200 font-medium">
               <ArrowLeft className="w-5 h-5" />
+              <NavLink to="/checkout">
               Back to Shipping
+              </NavLink>
             </button>
           </div>
           
