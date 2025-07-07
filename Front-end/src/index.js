@@ -20,6 +20,7 @@ export {default as  AddressBook } from "./components/addressbook";
 export {default as  MyOrders } from "./components/myOrder";
 export {default as  Blog } from "./home/blog";
 export {default as  Category } from "./pages/Category";
+export {default as  BlogCommentSection } from "./home/blogCommentSection";
 export {default as Authpage } from "./components/Auth/Authpage";
 export { default as Aboutus } from "./pages/About";
 export { default as ContactUs } from "./pages/ContactUs";
@@ -35,3 +36,24 @@ export { default as ReturnRefundPolicy } from './pages/RetunRefundPolicy';
 export { default as OtpPage } from './components/Auth/OtpPage';
 export { default as PageTopBanner } from './components/Displayimage';
 export { default as Payment } from './pages/Payment';
+
+
+
+
+//seller dashboard
+export {default as SellerDashboard} from "./components/seller-dashboard/sellerDashboard";
+
+
+
+
+
+// export { default as SellerDashboard } from "./components/seller-panel/sellerDashboard";
+// export { default as ProductList} from "./components/seller-panel/ProductManagement/ProductList";   
+// export { default as AddProductForm } from "./components/seller-panel/ProductManagement/AddProductForm";   
+// export { default as EditProductForm } from "./components/seller-panel/ProductManagement/EditProductForm";     
+// export { default as OrderList } from "./components/seller-panel/OrderManagement/OrderList";
+// export { default as OrderDetails } from "./components/seller-panel/OrderManagement/OrderDetails";
+// export { default as EarningsOverview } from "./components/seller-panel/Earnings/EarningOverview";
+// export { default as PayoutHistory } from "./components/seller-panel/Earnings/EarningOverview";
+
+

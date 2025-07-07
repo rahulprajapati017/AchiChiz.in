@@ -10,7 +10,7 @@ const PRICE = [0 , 5000];
 
 const SideFilterBar = ({ filters, onFilterChange, onReset }) => {
   return (
-    <div className="md:w-64  p-5 border-r border-gray-200 min-h-screen">
+    <div className="md:w-64  p-5 border-r  border-gray-200 min-h-screen">
       <div className="flex justify-between items-center mb-6 w-full bg-white">
         <h2 className="text-xl font-semibold text-gray-800">Filter By</h2>
         <button
@@ -34,7 +34,7 @@ const SideFilterBar = ({ filters, onFilterChange, onReset }) => {
             {item}
           </label>
         ))}
-        <button className="text-xs text-blue-700 mt-1">More</button>
+       
       </div>
       {/* Price Range Single Slider */}
       <div className="mb-6">
@@ -69,7 +69,6 @@ const SideFilterBar = ({ filters, onFilterChange, onReset }) => {
             {brand}
           </label>
         ))}
-        <button className="text-xs text-blue-700 mt-1">More</button>
       </div>
       {/* Color */}
       <div className="mb-6">

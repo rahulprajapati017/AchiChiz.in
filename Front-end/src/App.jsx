@@ -25,6 +25,7 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
+  BlogCommentSection,
   Category,
   Authpage,
   Aboutus,
@@ -32,7 +33,6 @@ import {
   Policy,
   Checkout,
   CheckoutPage,
-  productdetails,
   OrderPage,
   OrderDetailsPage,
   ReturnRefundPage,
@@ -40,12 +40,25 @@ import {
   ReturnRefundPolicy,
   OtpPage,
   PageTopBanner,
-  Payment
+  Payment,
 
+
+  // seller dashboard imports
+  SellerDashboard,
+  // ProductList,
+  // AddProductForm,
+  // EditProductForm,
+  // OrderList,
+  // OrderDetails,
+  // EarningsOverview,
+  // PayoutHistory,
+  // KYCUpload,
 } from "./index";
 import { Toaster } from "react-hot-toast";
 import FavoritesPage from "./pages/Favpage";
 import CartPage from "./pages/Cart";
+import LogOut from "./components/LogOut";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -58,7 +71,6 @@ function App() {
               <Route path="customer-review" element={<Customerreview />} />
               <Route path="customize-product" element={<Customizeproduct />} />
               <Route path="follow-us" element={<Followus />} />
-              <Route path="product/:id" element={<ProductPage />} />
               <Route path="new-arrival" element={<NewArrivals />} />
               <Route path="scrollbar" element={<Scrollbar />} />
               <Route path="favoritespage" element={<FavoritesPage />} />
@@ -80,20 +92,45 @@ function App() {
               <Route path="contact-us" element={<  ContactUs />} />
               <Route path="privacy-policy" element={<  Policy />} />
               <Route path="blog" element={<  Blog />} />
+              <Route path="blogCommentSection" element={<  BlogCommentSection />} />
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
+           
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
-              <Route path="/product/:id" element={< productdetails />} />
+              <Route path="product/:id" element={<ProductPage />} />
               <Route path="/order-page" element={<OrderPage />} />
               <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
               <Route path="/return-refund" element={<ReturnRefundPage />} />
               <Route path="/track-order" element={<TrackOrderPage />} />
               <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
+              {/* <Route path="/product/:id" element={<productdetails />} /> */}
+              <Route path="/order-page" element={<OrderPage />} />
+              <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
+              <Route path="/return-refund" element={<ReturnRefundPage />} />
+              <Route path="/track-order" element={<TrackOrderPage />} />
+              <Route
+                path="/return-refund-policy"
+                element={<ReturnRefundPolicy />}
+              />
               <Route path="/otp" element={<OtpPage />} />
               <Route path="/page-top-banner" element={<PageTopBanner/>} />
               <Route path="/payment" element={<Payment />} />
+
+              <Route path="sellerDashboard" element={<SellerDashboard />} />
+              {/* <Route path ="ProductList" element={<ProductList />} />
+              <Route path="AddProductForm" element={<AddProductForm />} />
+              <Route path="ProductList" element={<ProductList />} />
+              <Route path="AddProductForm" element={<AddProductForm />} />
+              <Route path="EditProductForm " element={<EditProductForm />} />
+              <Route path="EditProductForm" element={<EditProductForm />} />
+              <Route path="OrderList " element={<OrderList />} />
+              <Route path="OrderDetails" element={<OrderDetails />} />
+              <Route path="EarningsOverview" element={<EarningsOverview />} />
+              <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
+              {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
             </Route>
+              <Route path="/logout" element={<LogOut/>}/>
           </Routes>
           <Toaster position="top-right" />
         </>

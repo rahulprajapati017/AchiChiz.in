@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
-    window.location.href = "/login";
+    window.location.href = "/logout";
   };
 
   return (

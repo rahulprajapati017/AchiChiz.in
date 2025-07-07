@@ -1,36 +1,59 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Heart, ShoppingCart, Trash2, Star } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useFavorites } from '../context/FavoriteContext';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { product } from '../data/allapi';
 
 const FavoriteItems = () => {
-  const { favorites, removeFromFavorites } = useFavorites();
+  const { userdata, usertoken } = useContext(AuthContext);
+  const wishlist = userdata?.addtowishlist || [];
   const { cartItems, addToCart } = useCart();
   const navigate = useNavigate();
 
-  const handleAddToCart = (item) => {
-    const alreadyInCart = cartItems.some((cartItem) => cartItem.id === item.id);
-    addToCart({ ...item, quantity: 1 });
-    toast.success(alreadyInCart ? `${item.title} quantity updated!` : `${item.title} added to cart!`);
+  const handleAddToCart = async (id) => {
+  if (!usertoken) {
+    toast.error("Please login to add products to cart.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${product.ADD_TO_CART}/${id}`, {
+      method: "POST",
+      headers: {
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${usertoken}`,
+      },
+      // body: JSON.stringify({ quantity: 1 }),
+    });
+    console.log(response)
+
+    if (!response.ok) {
+      const res = await response.json();
+      throw new Error(res.message || "Failed to add to cart");
+    }
+    
+
+    toast.success("Item added to cart successfully!");
+  } catch (error) {
+    toast.error(error.message || "Something went wrong");
+  }
+};
+
+
+  const handleRemove = (id) => {
+    toast.success('Removed from favorites');
   };
 
   const renderStars = (rating) => {
     const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`full-${i}`} className="h-4 w-4 fill-yellow-400 text-yellow-400" />);
-    }
-    if (hasHalfStar) {
-      stars.push(<Star key="half" className="h-4 w-4 fill-yellow-400 text-yellow-400 opacity-50" />);
-    }
-    for (let i = 0; i < 5 - Math.ceil(rating); i++) {
-      stars.push(<Star key={`empty-${i}`} className="h-4 w-4 text-gray-300" />);
-    }
+    const full = Math.floor(rating);
+    const half = rating % 1 !== 0;
+    for (let i = 0; i < full; i++) stars.push(<Star key={`f${i}`} className="h-4 w-4 fill-yellow-400 text-yellow-400" />);
+    if (half) stars.push(<Star key="half" className="h-4 w-4 fill-yellow-400 text-yellow-400 opacity-50" />);
+    for (let i = 0; i < 5 - Math.ceil(rating); i++) stars.push(<Star key={`e${i}`} className="h-4 w-4 text-gray-300" />);
     return stars;
   };
 
@@ -39,15 +62,15 @@ const FavoriteItems = () => {
       <div className="flex justify-center items-center">
         <h2 className="text-2xl font-bold text-gray-800">My Favorite</h2>
         <div className="ml-7 text-sm text-gray-600">
-          {favorites.length} {favorites.length === 1 ? 'item' : 'items'}
+          {wishlist.length} {wishlist.length === 1 ? 'item' : 'items'}
         </div>
       </div>
 
-      {favorites.length > 0 ? (
+      {wishlist.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {favorites.map((item) => (
+          {wishlist.map(item => (
             <motion.div
-              key={item.id}
+              key={item._id}
               className="relative bg-white/30 backdrop-blur-lg p-6 border border-white/40 shadow-lg group overflow-hidden"
               whileHover={{ scale: 1.03 }}
             >
@@ -56,7 +79,7 @@ const FavoriteItems = () => {
               <div className="relative mb-4">
                 <div className="w-full h-78 bg-gray-200 overflow-hidden flex items-center justify-center">
                   <img
-                    src={item.images?.[0]}
+                    src={item.images?.[0].url}
                     alt={item.title}
                     className="object-cover h-full w-full rounded-lg transition-transform duration-300 group-hover:scale-110"
                   />
@@ -76,16 +99,13 @@ const FavoriteItems = () => {
 
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
                   <button
-                    onClick={() => navigate(`/product/${item.id}`)}
+                    onClick={() => navigate(`/product/${item._id}`)}
                     className="px-3 py-1 text-sm bg-white text-gray-800 rounded-lg shadow hover:bg-gray-200 transition"
                   >
                     Quick View
                   </button>
                   <button
-                    onClick={() => {
-                      removeFromFavorites(item.id);
-                      toast.success('Removed from favorites');
-                    }}
+                    onClick={() => handleRemove(item._id)}
                     className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
@@ -97,20 +117,19 @@ const FavoriteItems = () => {
                 <h3 className="font-semibold text-gray-800 text-lg line-clamp-2">{item.title}</h3>
 
                 <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-1">{renderStars(item.rating)}</div>
+                  <div className="flex items-center space-x-1">{renderStars(item.ratings || 0)}</div>
                   <span className="text-sm text-gray-600">({item.reviews?.length || 0})</span>
                 </div>
 
                 <div className="flex items-center space-x-2">
                   <span className="text-xl font-bold text-gray-800">₹{item.price}</span>
-                  {item.originalPrice && item.originalPrice > item.price && (
+                  {item.originalPrice > item.price && (
                     <span className="text-sm text-gray-500 line-through">₹{item.originalPrice}</span>
                   )}
                 </div>
 
-               
                 <motion.button
-                  onClick={() => handleAddToCart(item)}
+                  onClick={() => handleAddToCart(item._id)}
                   whileHover={{ y: -6 }}
                   transition={{ duration: 0.4, ease: 'easeInOut' }}
                   className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl font-medium bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg transition-all duration-500 hover:shadow-xl"
@@ -129,11 +148,12 @@ const FavoriteItems = () => {
           </div>
           <h3 className="text-xl font-semibold text-gray-800 mb-2">Your wishlist is empty</h3>
           <p className="text-gray-600 mb-6">Start adding items you love to your wishlist!</p>
-          <a href="/">
-            <button className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white  hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-              Browse Products
-            </button>
-          </a>
+          <button
+            onClick={() => navigate('/')}
+            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+          >
+            Browse Products
+          </button>
         </div>
       )}
     </div>

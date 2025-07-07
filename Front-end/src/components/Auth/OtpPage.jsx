@@ -1,51 +1,81 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { auth } from "../../data/allapi";
 
-const OTPPage = ({ onVerify, onResend }) => {
+const OTPPage = ({ onVerify, onResend, email }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
 
-  // Timer countdown
+  // ⏱ Countdown timer effect
   useEffect(() => {
-    let interval = null;
-    if (timer > 0) {
-      interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-    }
+    if (timer === 0) return;
+    const interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
     return () => clearInterval(interval);
   }, [timer]);
 
-  const handleChange = (e, index) => {
+  // 🧠 Handle input change
+  const handleChange = useCallback((e, index) => {
     const value = e.target.value;
     if (/^\d?$/.test(value)) {
       const updatedOtp = [...otp];
       updatedOtp[index] = value;
       setOtp(updatedOtp);
+
       if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
+        inputRefs.current[index + 1]?.focus();
       }
     }
-  };
+  }, [otp]);
 
-  const handleKeyDown = (e, index) => {
+  const handleKeyDown = useCallback((e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+      inputRefs.current[index - 1]?.focus();
     }
-  };
+  }, [otp]);
 
-  const handleResend = () => {
+  const handleResend = useCallback(() => {
     if (timer === 0) {
       setOtp(["", "", "", "", "", ""]);
       setTimer(60);
       onResend && onResend();
     }
-  };
+  }, [timer, onResend]);
 
-  const handleVerify = () => {
+  // 🛜 Verify OTP with POST API
+  const handleVerify = async () => {
     const enteredOtp = otp.join("");
-    if (enteredOtp.length === 6) {
-      onVerify && onVerify(enteredOtp);
-    } else {
+
+    if (enteredOtp.length !== 6) {
       alert("Please enter a complete 6-digit OTP.");
+      return;
+    }
+
+    try {
+      const response = await fetch(auth.VERIFY_OTP, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          otp: enteredOtp,
+        }),
+      });
+
+      const data = await response.json();
+      console.log(data)
+
+      if (response.ok) {
+        alert("OTP Verified Successfully");
+        onVerify && onVerify(enteredOtp); // ✅ callback to parent
+      } else {
+        alert(data.message || "Invalid OTP");
+      }
+    } catch (error) {
+      console.error("OTP verification error:", error);
+      alert("An error occurred during verification.");
     }
   };
 
@@ -53,7 +83,7 @@ const OTPPage = ({ onVerify, onResend }) => {
     <div className="p-6">
       <h2 className="text-xl font-semibold text-center mb-2 text-gray-800">Verify OTP</h2>
       <p className="text-center text-sm text-gray-600 mb-4">
-        Enter the 6-digit code sent to your phone/email.
+        Enter the 6-digit code sent to your email: <span className="font-semibold">{email}</span>
       </p>
 
       <div className="flex justify-center gap-2 mb-6">
