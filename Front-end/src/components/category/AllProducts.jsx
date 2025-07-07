@@ -1,32 +1,65 @@
-import React, { useState } from 'react';
-import { Eye, Heart, RefreshCcw } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Eye, Heart, RefreshCcw, ShoppingCart } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { useFavorites } from "../../context/FavoriteContext";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import AuthPage from "../Auth/AuthPage";
+import Quickviews from "../../pages/Quickviews";
 
 const AllProducts = ({ products }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showQuickView, setShowQuickView] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [wishlistIds, setWishlistIds] = useState([]);
-  const { addToCart } = useCart ? useCart() : { addToCart: () => {} };
-  const { addToFavorites, removeFromFavorites } = useFavorites ? useFavorites() : {
-    addToFavorites: () => {},
-    removeFromFavorites: () => {},
-  };
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Safely use context
+  const cartContext = useCart();
+  const favoritesContext = useFavorites();
+  const { addToCart } = cartContext || {};
+  const { addToFavorites, removeFromFavorites } = favoritesContext || {};
+
+  // Check login status on load and storage change
+  useEffect(() => {
+    const checkLogin = () => {
+      const user = localStorage.getItem("user");
+      setIsLoggedIn(!!user);
+    };
+
+    checkLogin();
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
 
   const toggleWishlist = (product) => {
-    if (wishlistIds.includes(product._id)) {
-      setWishlistIds(wishlistIds.filter((id) => id !== product._id));
-      removeFromFavorites(product.id);
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    const id = product._id || product.id;
+
+    if (wishlistIds.includes(id)) {
+      setWishlistIds(wishlistIds.filter((wid) => wid !== id));
+      removeFromFavorites?.(id);
       toast.success("Removed from Favorites");
     } else {
-      setWishlistIds([...wishlistIds, product._id]);
-      addToFavorites(product);
+      setWishlistIds([...wishlistIds, id]);
+      addToFavorites?.(product);
       toast.success("Added to Favorites");
     }
   };
-  // console.log(products)
+
+  const handleAddToCart = (product) => {
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    addToCart?.(product);
+    toast.success("Added to Cart");
+  };
 
   return (
     <div className="max-w-8xl mx-5 px-4 py-10 font-sans bg-white min-h-screen">
@@ -36,7 +69,7 @@ const AllProducts = ({ products }) => {
 
           return (
             <div
-              key={product._id || product.id || product}
+              key={product._id}
               className="relative bg-white overflow-hidden transition-all shadow-md group"
             >
               <div className="relative overflow-hidden w-full h-44 sm:h-52 md:h-90 group">
@@ -60,7 +93,7 @@ const AllProducts = ({ products }) => {
                       setShowQuickView(true);
                     }}
                     className="bg-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition 
-                    transform opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100"
+                      transform opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100"
                   >
                     <Eye size={18} />
                   </button>
@@ -80,26 +113,22 @@ const AllProducts = ({ products }) => {
 
                   <button
                     className="bg-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition 
-                    transform opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300"
+                      transform opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300"
                   >
                     <RefreshCcw size={16} />
                   </button>
                 </div>
 
-                {/* Add to Cart Button */}
-                <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full flex justify-center 
-                opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-10">
+                {/* Add to Cart */}
+                <div className="absolute bottom-0 left-0 mb-2 w-full flex justify-center 
+                  opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-10">
                   <button
-                    onClick={() => {
-                      addToCart(product);
-                      toast.success("Added to Cart");
-                    }}
+                    onClick={() => handleAddToCart(product)}
                     className="w-[90%] h-10 sm:h-12 relative overflow-hidden px-2 py-2 text-white font-bold z-10 bg-[#d75a3c] group/button"
                   >
                     <span className="absolute inset-0 bg-white transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
                     <span className="relative text-black z-10">Add to Cart</span>
                   </button>
-                
                 </div>
               </div>
 
@@ -121,8 +150,7 @@ const AllProducts = ({ products }) => {
       </div>
 
       {/* Quick View Modal */}
-      {/* Uncomment if using a Quickviews component */}
-      {/* {showQuickView && selectedProduct && (
+      {showQuickView && selectedProduct && (
         <Quickviews
           product={selectedProduct}
           onClose={() => {
@@ -130,7 +158,28 @@ const AllProducts = ({ products }) => {
             setSelectedProduct(null);
           }}
         />
-      )} */}
+      )}
+
+      {/* Auth/Login Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="absolute top-3 right-4 text-gray-600 text-xl font-bold"
+            >
+              ×
+            </button>
+            <AuthPage
+              onSuccess={() => {
+                setShowLoginModal(false);
+                setIsLoggedIn(true);
+                window.dispatchEvent(new Event("storage"));
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

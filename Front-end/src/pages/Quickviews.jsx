@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Heart, RefreshCcw, Truck, Clock } from 'lucide-react';
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
+import { toast } from "react-hot-toast";
 
 const Quickviews = ({ product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
