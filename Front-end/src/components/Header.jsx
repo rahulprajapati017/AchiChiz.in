@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiSearch,
@@ -9,66 +9,55 @@ import {
   FiX,
 } from "react-icons/fi";
 import { AuthContext } from "../context/AuthContext";
-import AuthPage from "./Auth/Authpage";
-import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
+import { useCart } from "../context/CartContext";
+import AuthPage from "../components/Auth/AuthPage";
 
 const navItems = [
-  { title: "HOME", path: "/", dropdown: [] },
-  {
-    title: "SHOP",
-    path: "/category",
-    dropdown: [
-      {
-        title: "Style",
-        items: ["Classic", "Minimal", "Contemporary"],
-      },
-      {
-        title: "Layouts",
-        items: ["Standard", "Full Width", "List View"],
-      },
-    ],
-  },
-  {
-    title: "PRODUCTS",
-    path: "/products",
-    dropdown: [
-      {
-        title: "Product Types",
-        items: ["Simple Product", "Variable Product", "Grouped Product"],
-      },
-      {
-        title: "Features",
-        items: ["Zoom", "Image Slider", "Custom Tabs"],
-      },
-    ],
-  },
-  { title: "BLOG", path: "/blog", dropdown: [] },
-  { title: "PAGE", path: "/about-us", dropdown: [] },
+  { title: "HOME", path: "/" },
+  { title: "SHOP", path: "/category" },
+  { title: "PRODUCTS", path: "/products" },
+  { title: "BLOG", path: "/blog" },
+  { title: "PAGE", path: "/about-us" },
 ];
 
-export default function Header() {
-  const [hovered, setHovered] = useState(null);
+const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [hovered, setHovered] = useState(null);
 
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
   const { logout, userdata, usertoken } = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const searchRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setSearchOpen(false);
+    };
 
-  const handleMouseEnter = (index) => setHovered(index);
-  const handleMouseLeave = () => setHovered(null);
-  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+        setSearchQuery("");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -77,14 +66,27 @@ export default function Header() {
     navigate("/logout");
   };
 
+  const handleProtectedClick = (path) => {
+    if (!usertoken) {
+      setShowLoginModal(true);
+    } else {
+      navigate(path);
+    }
+  };
+
+  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
+
+  const searchHistory = ["T-Shirts", "Sneakers", "Watches", "Accessories"];
+  const suggestions = ["Shoes", "Pants", "Shirts", "Jackets"];
+
   return (
     <>
-      {/* Notification Bar */}
+      {/* Top bar */}
       <div className="fixed top-0 left-0 w-full z-[60] bg-black text-white text-center text-sm py-1 px-4">
         🎉 Free shipping on orders over ₹999!
       </div>
 
-      {/* Navbar */}
+      {/* Main navbar */}
       <nav
         className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
           scrolled
@@ -99,9 +101,8 @@ export default function Header() {
           {navItems.map((item, idx) => (
             <li
               key={item.title}
-              className="relative"
-              onMouseEnter={() => handleMouseEnter(idx)}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => setHovered(idx)}
+              onMouseLeave={() => setHovered(null)}
             >
               <NavLink
                 to={item.path}
@@ -113,48 +114,26 @@ export default function Header() {
               >
                 {item.title}
               </NavLink>
-
-              {hovered === idx && item.dropdown.length > 0 && (
-                <div className="absolute top-full left-0 mt-2 w-[280px] bg-white text-black shadow-xl rounded-md p-4 z-30">
-                  {item.dropdown.map((section) => (
-                    <div key={section.title} className="mb-3">
-                      <h4 className="text-sm font-semibold text-gray-700">
-                        {section.title}
-                      </h4>
-                      <ul className="pl-2 mt-1 space-y-1">
-                        {section.items.map((sub) => (
-                          <li
-                            key={`${section.title}-${sub}`}
-                            className="text-sm text-gray-600 hover:text-orange-600 cursor-pointer"
-                          >
-                            {sub}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
             </li>
           ))}
         </ul>
 
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
-          <NavLink to="/searchpage">
-            <FiSearch className="cursor-pointer hover:text-orange-500" />
-          </NavLink>
+          <FiSearch
+            className="cursor-pointer hover:text-orange-500"
+            onClick={() => setSearchOpen(!searchOpen)}
+          />
 
           {usertoken && userdata?.name ? (
-            <div className="relative inline-block">
+            <div className="relative">
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer select-none"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer"
                 onClick={() => setProfileOpen(!profileOpen)}
                 title={userdata.name}
               >
                 {firstLetter}
               </div>
-
               {profileOpen && (
                 <div className="absolute top-10 right-0 bg-white shadow-md border p-3 w-40 rounded-md z-50 text-black">
                   <NavLink
@@ -176,173 +155,164 @@ export default function Header() {
           ) : (
             <FiUser
               className="cursor-pointer hover:text-orange-500"
-              onClick={() => setShowAuthPopup(true)}
+              onClick={() => setShowLoginModal(true)}
             />
           )}
 
-          <NavLink to="/favoritespage" className="relative">
-            <FiHeart className="cursor-pointer hover:text-red-500" />
+          <div
+            onClick={() => handleProtectedClick("/favoritespage")}
+            className="relative cursor-pointer"
+          >
+            <FiHeart className="hover:text-red-500" />
             {favorites.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {favorites.length}
               </span>
             )}
-          </NavLink>
+          </div>
 
-          <NavLink to="/cartpage" className="relative">
-            <FiShoppingCart className="cursor-pointer hover:text-red-500" />
+          <div
+            onClick={() => handleProtectedClick("/cartpage")}
+            className="relative cursor-pointer"
+          >
+            <FiShoppingCart className="hover:text-red-500" />
             {cartItems.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {cartItems.length}
               </span>
             )}
-          </NavLink>
+          </div>
         </div>
 
-        {/* Mobile Drawer */}
+        {/* Mobile Menu Icon */}
         <div
-          className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-[999] transform ${
-            mobileOpen ? "translate-x-0" : "translate-x-full"
-          } transition-transform duration-500 ease-in-out`}
+          className="flex lg:hidden text-2xl cursor-pointer"
+          onClick={() => setMobileOpen(!mobileOpen)}
         >
-          <div className="flex justify-between items-center p-4 border-b">
-            <div className="text-xl pt-3 font-bold">ACHICHIZ</div>
-            <FiX
-              className="text-2xl cursor-pointer"
-              onClick={() => setMobileOpen(false)}
-            />
-          </div>
-
-          <ul className="flex flex-col gap-4 p-6 overflow-y-auto max-h-[calc(100vh-140px)]">
-            {navItems.map((item) => (
-              <li key={item.title}>
-                <NavLink
-                  to={item.path}
-                  className="text-lg font-medium text-black hover:text-orange-500"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.title}
-                </NavLink>
-                {item.dropdown.length > 0 && (
-                  <ul className="mt-2 pl-4 space-y-1 text-sm text-gray-700">
-                    {item.dropdown.map((section) =>
-                      section.items.map((sub) => (
-                        <li
-                          key={`${section.title}-${sub}`}
-                          className="hover:text-orange-500 transition duration-300"
-                        >
-                          {sub}
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                )}
-              </li>
-            ))}
-
-            {usertoken && userdata?.name ? (
-              <div className="mt-6 border-t pt-4">
-                <div className="text-lg font-medium mb-2 flex items-center gap-2">
-                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold">
-                    {firstLetter}
-                  </div>
-                  {userdata.name}
-                </div>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <NavLink
-                      to="/dashboard"
-                      className="hover:text-orange-500"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      Profile
-                    </NavLink>
-                  </li>
-                  <li
-                    className="hover:text-orange-500 cursor-pointer"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <div
-                className="mt-4 text-sm text-blue-600 underline cursor-pointer"
-                onClick={() => {
-                  setShowAuthPopup(true);
-                  setMobileOpen(false);
-                }}
-              >
-                Login / Sign Up
-              </div>
-            )}
-          </ul>
-        </div>
-
-        {/* Mobile Icons */}
-        <div className="flex lg:hidden items-center gap-4 text-xl">
-          <NavLink to="/searchpage">
-            <FiSearch className="cursor-pointer hover:text-orange-500" />
-          </NavLink>
-
-          {usertoken && userdata?.name ? (
-            <div
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer select-none"
-              onClick={() => setShowAuthPopup(true)}
-              title={userdata.name}
-            >
-              {firstLetter}
-            </div>
-          ) : (
-            <FiUser
-              className="cursor-pointer hover:text-orange-500"
-              onClick={() => setShowAuthPopup(true)}
-            />
-          )}
-
-          <NavLink to="/favoritespage" className="relative">
-            <FiHeart className="cursor-pointer hover:text-red-500" />
-            {favorites.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                {favorites.length}
-              </span>
-            )}
-          </NavLink>
-
-          <NavLink to="/cartpage" className="relative">
-            <FiShoppingCart className="cursor-pointer hover:text-red-500" />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                {cartItems.length}
-              </span>
-            )}
-          </NavLink>
-
-          <div
-            className="text-2xl cursor-pointer"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <FiX /> : <FiMenu />}
-          </div>
+          {mobileOpen ? <FiX /> : <FiMenu />}
         </div>
       </nav>
 
+      {/* Mobile Drawer */}
+      <div
+        className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-[999] transform ${
+          mobileOpen ? "translate-x-0" : "translate-x-full"
+        } transition-transform duration-500 ease-in-out`}
+      >
+        <div className="flex justify-between items-center p-4 border-b">
+          <div className="text-xl font-bold">ACHICHIZ.</div>
+          <FiX className="text-2xl cursor-pointer" onClick={() => setMobileOpen(false)} />
+        </div>
+
+        <ul className="flex flex-col gap-4 p-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+          {navItems.map((item) => (
+            <li key={item.title}>
+              <NavLink
+                to={item.path}
+                className="text-lg font-medium hover:text-orange-500"
+                onClick={() => setMobileOpen(false)}
+              >
+                {item.title}
+              </NavLink>
+            </li>
+          ))}
+
+          {usertoken && userdata?.name ? (
+            <div className="mt-6 border-t pt-4">
+              <div className="text-lg font-medium mb-2 flex items-center gap-2">
+                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold">
+                  {firstLetter}
+                </div>
+                {userdata.name}
+              </div>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    className="hover:text-orange-500"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Profile
+                  </NavLink>
+                </li>
+                <li
+                  className="hover:text-orange-500 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <div
+              className="mt-4 text-sm text-blue-600 underline cursor-pointer"
+              onClick={() => {
+                setShowLoginModal(true);
+                setMobileOpen(false);
+              }}
+            >
+              Login / Sign Up
+            </div>
+          )}
+        </ul>
+      </div>
+
+      {/* Search Bar */}
+      {searchOpen && (
+        <div
+          ref={searchRef}
+          className="absolute top-[108px] left-0 w-full z-40 px-4 sm:px-8 md:px-12"
+        >
+          <div className="max-w-3xl mx-auto bg-white rounded-md shadow-md border border-gray-300">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for products, categories..."
+              className="w-full p-3 outline-none rounded-t-md text-gray-800"
+              autoFocus
+            />
+            {(searchQuery.length > 0 ? suggestions : searchHistory)
+              .filter((item) =>
+                item.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((item, idx) => (
+                <div
+                  key={idx}
+                  className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  onMouseDown={() => {
+                    setSearchQuery(item);
+                    setSearchOpen(false);
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
       {/* Auth Modal */}
-      {showAuthPopup && (
-        <div className="fixed inset-0 z-[9999] bg-black/40 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative p-6">
+      {showLoginModal && (
+        <div className="fixed inset-0 z-[999] bg-black/40 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative">
             <button
-              className="absolute top-2 right-2 text-gray-700 hover:text-black text-2xl font-bold"
-              onClick={() => setShowAuthPopup(false)}
-              aria-label="Close Authentication Modal"
+              onClick={() => setShowLoginModal(false)}
+              className="absolute top-3 right-4 text-gray-600 text-xl font-bold"
             >
               ×
             </button>
-            <AuthPage onSuccess={() => setShowAuthPopup(false)} />
+            <AuthPage
+              onSuccess={() => {
+                setShowLoginModal(false);
+                window.dispatchEvent(new Event("storage"));
+              }}
+            />
           </div>
         </div>
       )}
     </>
   );
-}
+};
+
+export default Header;

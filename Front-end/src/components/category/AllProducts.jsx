@@ -99,6 +99,7 @@ const AllProducts = ({ products }) => {
                     <span className="absolute inset-0 bg-white transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
                     <span className="relative text-black z-10">Add to Cart</span>
                   </button>
+                
                 </div>
               </div>
 

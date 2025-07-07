@@ -1,119 +1,172 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  User,
+  Home,
+  MapPin,
+  ShoppingBag,
+  Heart,
+  Menu,
+  X as CloseIcon,
+  LogOut,
+} from "lucide-react";
+
 import AddressBook from "../components/addressbook";
 import Wishlist from "../pages/Favpage";
 import MyOrders from "../components/myOrder";
 import AccountInformation from "../components/accountInfo";
 import AccountDashboard from "../components/accountdashboard";
+
 const Dashboard = () => {
   const [section, setSection] = useState("dashboard");
-  const [editMode, setEditMode] = useState(false);
-  const [user, setUser] = useState({
-    name: "raj",
-    phone: "8949952520",
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  const [user] = useState({
+    name: "Raj Jangam",
     email: "rajjangam51@gmail.com",
-    gender: "MALE",
-    dob: "- not added -",
-    location: "- not added -",
-    altMobile: "- not added -",
-    hintName: "- not added -",
+    image:
+      "https://api.dicebear.com/7.x/initials/svg?seed=Raj&backgroundColor=ffe4b5",
   });
 
-  const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const handleSave = () => {
-    setEditMode(false);
-  };
+  const sidebarItems = [
+    { key: "dashboard", label: "Dashboard", icon: Home },
+    { key: "info", label: "Account Info", icon: User },
+    { key: "address", label: "Address Book", icon: MapPin },
+    { key: "orders", label: "My Orders", icon: ShoppingBag },
+    { key: "wishlist", label: "Wishlist", icon: Heart },
+  ];
 
-  const [addressInfo, setAddressInfo] = useState({
-    contactName: "Alex Driver",
-    contactEmail: "ExampleAddress@gmail.com",
-    billingAddress: "",
-    shippingAddress: "",
-  });
-
-  const [editingAddressField, setEditingAddressField] = useState(null);
-
-  const handleAddressChange = (e) => {
-    setAddressInfo({ ...addressInfo, [e.target.name]: e.target.value });
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    window.location.href = "/logout";
   };
 
   return (
-    <div className="min-h-screen bg-white py-10 px-4 sm:px-6 lg:px-12">
-      <div className="max-w-7xl mx-auto">
-        <p className="text-sm text-gray-500 mb-2">Home / My Dashboard</p>
-        <h1 className="text-3xl font-bold mb-8 text-[#0f2c5c]">My Dashboard</h1>
+    <div className="min-h-screen  mt-27 bg-white dark:from-[#1a1a1a] dark:to-[#2a2a2a] transition-all overflow-x-hidden">
+     
+      {isMobile && (
+        <div className="flex justify-between items-center p-4 shadow-md bg-white/70 dark:bg-black/30 backdrop-blur-md sticky top-0 z-40">
+          <h1 className="text-xl font-bold text-[#0f2c5c] dark:text-white">
+            My Dashboard
+          </h1>
+          <button
+            className="bg-indigo-600 text-white p-2 rounded"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+      )}
 
-        <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-          {/* Sidebar */}
-          <div className="w-full md:w-1/4">
-            <div className=" shadow-[8px_8px_0px_#d1cdc7,-8px_-8px_0px_#fff] bg-[#f0eae0] p-2">
-              {[
-                { key: "dashboard", label: "Account Dashboard" },
-                { key: "info", label: "Account Information" },
-                { key: "address", label: "Address Book" },
-                { key: "orders", label: "My Orders" },
-                { key: "wishlist", label: "My Wishlist" },
-              ].map((item) => (
+      <div className="flex flex-col md:flex-row">
+
+        
+        <aside
+          className={`${
+            sidebarOpen || !isMobile ? "translate-x-0" : "-translate-x-full"
+          } fixed  mt-8 md:relative z-30 top-0 left-0 h-full md:h-screen w-64 bg-white/30 dark:bg-black/30 backdrop-blur-xl shadow border-r border-white/20 p-6 transition-transform duration-300 flex flex-col justify-between md:sticky md:top-0`}
+        >
+          <div>
+           
+            <div className="flex items-center gap-3 mb-8">
+              <img
+                src={user.image}
+                alt="User"
+                className="w-12 h-12 rounded-full shadow-lg border-2 border-white/70"
+              />
+              <div>
+                <p className="text-sm font-semibold text-[#0f2c5c] dark:text-white">
+                  {user.name}
+                </p>
+                <p className="text-xs text-gray-600 dark:text-gray-300">
+                  {user.email}
+                </p>
+              </div>
+              {isMobile && (
+                <button onClick={() => setSidebarOpen(false)} className="ml-auto">
+                  <CloseIcon className="text-gray-600 dark:text-white" />
+                </button>
+              )}
+            </div>
+
+            
+            <nav className="space-y-2">
+              {sidebarItems.map((item) => (
                 <button
                   key={item.key}
-                  onClick={() => setSection(item.key)}
-                  className={`block w-full text-left px-4 py-3  my-1 transition font-medium text-sm ${
-                    section === item.key
-                      ? "bg-[#0f2c5c] text-white shadow-md"
-                      : "bg-white/60 text-[#0f2c5c] hover:bg-gradient-to-r from-amber-700 to-orange-500 hover:scale-105"
-                  }`}
+                  onClick={() => {
+                    setSection(item.key);
+                    setSidebarOpen(false);
+                  }}
+                  className={`flex items-center gap-3 w-full text-left px-4 py-3  text-sm font-medium transition-all group
+                    ${
+                      section === item.key
+                        ? "bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-md scale-[1.02]"
+                        : "bg-white/40 text-[#0f2c5c] dark:text-white hover:bg-yellow-300/60 hover:text-indigo-700"
+                    }`}
                 >
+                  <item.icon
+                    size={18}
+                    className="transition-transform duration-200 group-hover:scale-110"
+                  />
                   {item.label}
                 </button>
               ))}
-            </div>
+            </nav>
           </div>
 
-          {/* Main Content */}
-          <div className="w-full md:w-3/4">
-            <div className="backdrop-blur-xl bg-white  p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.2)] border border-white/30 transition-all">
-              {section === "dashboard" && (
-                <>
-                  <AccountDashboard/>
-                  </>)}
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 mt-6 px-4 py-2 w-full text-sm font-medium text-red-600 bg-red-100 hover:bg-red-500 hover:text-white rounded-xl transition"
+          >
+            <LogOut size={18} className="group-hover:rotate-[-10deg] transition" />
+            Logout
+          </button>
+        </aside>
 
-              {section === "info" && (
-                <>
-                <AccountInformation/>
-                </>
-              )}
-
-              {section === "address" && (
-                <>
-                  <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-[#0f2c5c]">My Address</h1>
-                  </div>
-                  <AddressBook
-                    addressInfo={addressInfo}
-                    editingField={editingAddressField}
-                    setEditingField={setEditingAddressField}
-                    handleChange={handleAddressChange}
-                  />
-                </>
-              )}
-
-              {section === "orders" && (
-                <>
-                <MyOrders/>
-                </>
-              )}
-
-              {section === "wishlist" && (
-                <>
-                  <h1 className="text-3xl font-extrabold mb-6 text-[#0f2c5c]">My Wishlist</h1>
-                  <Wishlist />
-                </>
-              )}
-            </div>
+       
+        <main className="flex-1 p-4 md:p-8 transition-all">
+          <div className="bg-white/40 dark:bg-white/10 backdrop-blur-xl p-6  shadow-lg border border-white/30 transition-all">
+            {section === "info" && <AccountInformation />}
+            {section === "dashboard" && <AccountDashboard />}
+            {section === "address" && (
+              <>
+                <h2 className="text-2xl font-bold text-[#0f2c5c] mb-4">
+                  Address Book
+                </h2>
+                <AddressBook />
+              </>
+            )}
+            {section === "orders" && (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <ShoppingBag className="text-[#0f2c5c]" />
+                  <h2 className="text-2xl font-bold text-[#0f2c5c]">
+                    My Orders
+                  </h2>
+                </div>
+                <MyOrders />
+              </>
+            )}
+            {section === "wishlist" && (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <Heart className="text-[#0f2c5c]" />
+                  <h2 className="text-2xl font-bold text-[#0f2c5c]">
+                    My Wishlist
+                  </h2>
+                </div>
+                <Wishlist />
+              </>
+            )}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

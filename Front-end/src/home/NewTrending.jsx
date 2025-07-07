@@ -6,6 +6,10 @@ import { Eye, Heart, RefreshCcw } from "lucide-react";
 import Quickviews from "../pages/Quickviews";
 import { Link } from "react-router-dom";
 import { product } from "../data/allapi";
+// import React, { useState } from "react";
+// import { products } from "../data/products";
+// import ProductCard from "../components/ProductCard";
+import { NavLink } from "react-router-dom";
 
 const NewTrending = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -55,27 +59,28 @@ const NewTrending = () => {
   }
 
   return (
-    <div className="max-w-8xl mx-auto px-4 py-10 font-sans bg-white min-h-screen">
-      {/* Heading */}
-      <div className="flex items-center justify-between px-4 py-2">
-        <h2 className="text-5xl font-serif text-[#000000]">New Trending</h2>
-        <div className="flex gap-5 flex-wrap">
-          {["BAMBOO", "BAR SOAP", "CANDLE", "CEREMICS", "JEWELERY"].map(
-            (item, index) => (
-              <button
-                key={item}
-                className="group relative flex items-center gap-1 text-black-600 text-sm font-medium hover:underline underline-offset-8 transition"
-              >
-                <span>{item}</span>
-                <span
-                  className="inline-block transform translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out"
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  ➤
-                </span>
-              </button>
-            )
-          )}
+    <div className="max-w-8xl mx-5 px-4 py-10 font-sans bg-white min-h-screen">
+       <div className="w-full flex flex-col md:flex-row items-center md:justify-between gap-4 px-2 py-6">
+    {/* Heading */}
+    <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-center md:text-left text-[#000000]">
+      New Trending
+    </h2>
+
+    {/* Category Menu Buttons */}
+    <div className="w-full md:w-auto">
+      <div className="mt-2 md:mt-0 flex justify-center md:justify-end overflow-x-auto no-scrollbar">
+        <div className="flex gap-3 w-max">
+          {["BAMBOO", "BAR SOAP", "CANDLE", "CEREMICS", "JEWELERY"].map((item, index) => (
+            <button
+              key={index}
+              className="px-4 py-2 whitespace-nowrap bg-white border border-gray-200 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-orange-100 hover:text-orange-600 transition"
+            >
+             <NavLink
+                to="/category">
+              {item}
+                </NavLink>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -178,6 +183,8 @@ const NewTrending = () => {
           }}
         />
       )}
+    </div>
+    </div>
     </div>
   );
 };

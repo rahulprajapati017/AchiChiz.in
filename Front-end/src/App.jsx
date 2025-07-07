@@ -25,6 +25,7 @@ import {
   ShopByCategory,
   NewTrending,
   Blog,
+  BlogCommentSection,
   Category,
   Authpage,
   Aboutus,
@@ -32,14 +33,26 @@ import {
   Policy,
   Checkout,
   CheckoutPage,
-  
   OrderPage,
   OrderDetailsPage,
   ReturnRefundPage,
   TrackOrderPage,
   ReturnRefundPolicy,
-  OtpPage
+  OtpPage,
+  PageTopBanner,
+  Payment,
 
+
+  // seller dashboard imports
+  SellerDashboard,
+  // ProductList,
+  // AddProductForm,
+  // EditProductForm,
+  // OrderList,
+  // OrderDetails,
+  // EarningsOverview,
+  // PayoutHistory,
+  // KYCUpload,
 } from "./index";
 import { Toaster } from "react-hot-toast";
 import FavoritesPage from "./pages/Favpage";
@@ -79,18 +92,43 @@ function App() {
               <Route path="contact-us" element={<  ContactUs />} />
               <Route path="privacy-policy" element={<  Policy />} />
               <Route path="blog" element={<  Blog />} />
+              <Route path="blogCommentSection" element={<  BlogCommentSection />} />
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
-              <Route path="product/:id" element={<ProductPage />} />
+           
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
+              <Route path="product/:id" element={<ProductPage />} />
               <Route path="/order-page" element={<OrderPage />} />
               <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
-              {/* <Route path="/product/:id" element={<ProductDetail/>} /> */}
               <Route path="/return-refund" element={<ReturnRefundPage />} />
               <Route path="/track-order" element={<TrackOrderPage />} />
               <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
+              {/* <Route path="/product/:id" element={<productdetails />} /> */}
+              <Route path="/order-page" element={<OrderPage />} />
+              <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
+              <Route path="/return-refund" element={<ReturnRefundPage />} />
+              <Route path="/track-order" element={<TrackOrderPage />} />
+              <Route
+                path="/return-refund-policy"
+                element={<ReturnRefundPolicy />}
+              />
               <Route path="/otp" element={<OtpPage />} />
+              <Route path="/page-top-banner" element={<PageTopBanner/>} />
+              <Route path="/payment" element={<Payment />} />
+
+              <Route path="sellerDashboard" element={<SellerDashboard />} />
+              {/* <Route path ="ProductList" element={<ProductList />} />
+              <Route path="AddProductForm" element={<AddProductForm />} />
+              <Route path="ProductList" element={<ProductList />} />
+              <Route path="AddProductForm" element={<AddProductForm />} />
+              <Route path="EditProductForm " element={<EditProductForm />} />
+              <Route path="EditProductForm" element={<EditProductForm />} />
+              <Route path="OrderList " element={<OrderList />} />
+              <Route path="OrderDetails" element={<OrderDetails />} />
+              <Route path="EarningsOverview" element={<EarningsOverview />} />
+              <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
+              {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
             </Route>
               <Route path="/logout" element={<LogOut/>}/>
           </Routes>

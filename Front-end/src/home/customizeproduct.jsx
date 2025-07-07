@@ -34,7 +34,7 @@ const Customizeproduct = () => {
           </h2>
           {isHovered && (
             <NavLink
-              to="/products/custom"
+              to="/category"
               className="bg-white text-black px-6 py-2 text-sm font-medium shadow hover:bg-gray-200 transition"
             >
               VIEW MORE

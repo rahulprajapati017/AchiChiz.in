@@ -65,21 +65,21 @@ const MyOrders = () => {
 
   return (
     <div className="space-y-6 ">
-      {/* Header */}
+     
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">My Orders</h2>
+       
         <div className="text-sm text-gray-600">
           Total Orders: <span className="font-semibold">{orders.length}</span>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex space-x-1 bg-white/20 p-1 rounded-xl backdrop-blur-lg border border-white/30">
+   
+      <div className="flex space-x-1 bg-white/20 p-1 backdrop-blur-lg border border-white/30">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setSelectedTab(tab.id)}
-            className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+            className={`flex-1 px-4 py-2  text-sm font-medium transition-all duration-300 ${
               selectedTab === tab.id
                 ? 'bg-white/40 text-indigo-700 shadow-lg'
                 : 'text-gray-700 hover:bg-white/20'
@@ -90,15 +90,15 @@ const MyOrders = () => {
         ))}
       </div>
 
-      {/* Orders List */}
+     
       <div className="space-y-6">
         {filteredOrders.map((order) => {
           const statusInfo = getStatusInfo(order.status);
           const StatusIcon = statusInfo.icon;
           
           return (
-            <div key={order.id} className="bg-white/30 backdrop-blur-lg rounded-xl p-6 border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300">
-              {/* Order Header */}
+            <div key={order.id} className="bg-white/30 backdrop-blur-lg  p-6 border border-white/40 shadow-lg hover:shadow-xl transition-all duration-300">
+             
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 space-y-2 md:space-y-0">
                 <div className="flex items-center space-x-4">
                   <div className={`p-2 rounded-lg ${statusInfo.color} shadow-md`}>
@@ -124,10 +124,10 @@ const MyOrders = () => {
                 </div>
               </div>
 
-              {/* Order Items */}
+           
               <div className="space-y-3 mb-4">
                 {order.items.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-4 p-3 bg-white/20 rounded-lg">
+                  <div key={index} className="flex items-center space-x-4 p-3 bg-white/20 ">
                     <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
                       <Package className="h-6 w-6 text-gray-500" />
                     </div>
@@ -142,7 +142,7 @@ const MyOrders = () => {
                 ))}
               </div>
 
-              {/* Order Footer */}
+              
               <div className="flex flex-col md:flex-row md:items-center justify-between pt-4 border-t border-white/30 space-y-2 md:space-y-0">
                 <div className="text-sm text-gray-600">
                   {order.status === 'delivered' ? (

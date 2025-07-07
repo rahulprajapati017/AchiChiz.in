@@ -4,6 +4,8 @@ import * as LucideIcons from "lucide-react";
 import { Heart, Share2 } from "lucide-react";
 import HoverReview from "../components/card";
 import ProductCard from "../components/ProductCard";
+import { useCart } from "../context/CartContext";
+import { useFavorites } from "../context/FavoriteContext";
 import toast from "react-hot-toast";
 import { product, product as singleproductendpoint } from "../data/allapi";
 import { AuthContext } from "../context/AuthContext"; // assuming you have auth context for token
@@ -105,11 +107,12 @@ const ProductPage = () => {
   const relatedProducts = [];
 
   return (
+    <div className="min-h-screen w-full mt-5 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
     <div className="min-h-screen w-full mt-20 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans overflow-hidden">
       {/* Main Section */}
       <div className="bg-white p-6 shadow-xl">
         <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-black drop-shadow">
-          🧺 {products.title}
+           {products.title}
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-10">
@@ -219,7 +222,8 @@ const ProductPage = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-evenly mt-2">
                 <button
-                  onClick={() => toast.success("Added to Wishlist!")}
+                  onClick={() =>{ addToFavorites(product);
+                    toast.success(`${product.title} added to wishlist!`);}}
                   className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-red-600 hover:border-red-600 transition"
                 >
                   <Heart size={16} /> Wishlist
@@ -310,6 +314,7 @@ const ProductPage = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };
