@@ -13,7 +13,7 @@ const NewArrivals = () => {
   }, {});
 
   return (
-    <div className="max-w-8xl mx-5 px-4 py-10 font-sans bg-white min-h-screen">
+    <div className="max-w-8xl mx-5 px-4 py-10 font-sans  min-h-screen">
       <div className="flex items-center justify-center px-4 py-2">
         <h2 className="text-5xl font-serif text-[#000000]">New Arrivals</h2>
       </div>
