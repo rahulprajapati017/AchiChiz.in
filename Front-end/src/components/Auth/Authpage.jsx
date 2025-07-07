@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import OTPPage from "./OtpPage";
 
@@ -25,13 +26,16 @@ const PasswordInput = ({ name, value, onChange, placeholder, show, setShow }) =>
 );
 
 const AuthPage = ({ onSuccess }) => {
+  const location = useLocation();
+  const { login } = useAuth();
+
+  const emailFromQuery = new URLSearchParams(location.search).get("email") || "";
+
   const [mode, setMode] = useState("login"); // login | signup | forgot
   const [step, setStep] = useState("form"); // form | otp | reset
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
-
-  const { login } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
@@ -40,6 +44,15 @@ const AuthPage = ({ onSuccess }) => {
     confirmPassword: "",
   });
 
+  // Populate email from URL and switch to signup mode
+  useEffect(() => {
+    if (emailFromQuery) {
+      setForm((prev) => ({ ...prev, email: emailFromQuery }));
+      setMode("signup");
+      setStep("form");
+    }
+  }, [emailFromQuery]);
+
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -47,7 +60,6 @@ const AuthPage = ({ onSuccess }) => {
   const sendOtp = async () => {
     if (!form.email) return toast.error("Please enter your email");
     try {
-      // Replace with real OTP API
       await fetch("https://reqres.in/api/send-otp", {
         method: "POST",
         body: JSON.stringify({ email: form.email }),
@@ -63,7 +75,6 @@ const AuthPage = ({ onSuccess }) => {
 
   const handleOtpVerify = async (otpCode) => {
     try {
-      // Replace with real OTP verify API
       await fetch("https://reqres.in/api/verify-otp", {
         method: "POST",
         body: JSON.stringify({ otp: otpCode }),
@@ -299,10 +310,7 @@ const AuthPage = ({ onSuccess }) => {
             >
               ×
             </button>
-            <OTPPage
-              onVerify={handleOtpVerify}
-              onResend={sendOtp}
-            />
+            <OTPPage onVerify={handleOtpVerify} onResend={sendOtp} />
           </div>
         </div>
       )}

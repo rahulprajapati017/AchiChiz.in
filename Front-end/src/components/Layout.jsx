@@ -3,7 +3,8 @@ import { Outlet,useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
-import PageTopBanner from "./Displayimage"; 
+import PageTopBanner from "./Displayimage";
+import AutoScrollToTop from "./AutoScrollToTop"; 
 
 
 const Layout = () => {
@@ -12,6 +13,7 @@ const Layout = () => {
 
   return (
     <>
+      <AutoScrollToTop />
       <Header />
         {!isHome && <PageTopBanner />}
       <main>
