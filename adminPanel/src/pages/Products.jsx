@@ -1,4 +1,4 @@
-// src/pages/Products.jsx
+
 import React, { useState } from "react";
 import { Download, FileText, Pencil, Trash, Eye, Upload } from "lucide-react";
 import jsPDF from "jspdf";

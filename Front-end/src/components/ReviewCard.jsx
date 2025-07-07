@@ -40,7 +40,7 @@ const ReviewCard = ({
     shouldTruncate && !expanded ? content.slice(0, 300) + '...' : content;
 
   return (
-    <div className="bg-white shadow-sm border p-6 hover:shadow-md transition-shadow hover:scale-105">
+    <div className="bg-white shadow-sm  p-6  transition-shadow ">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">

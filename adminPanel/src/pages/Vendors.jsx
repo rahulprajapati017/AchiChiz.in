@@ -1,4 +1,4 @@
-// src/pages/Vendors.jsx
+
 import React, { useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Pencil, Trash2, CheckCircle, Ban } from "lucide-react";
@@ -150,7 +150,7 @@ const Vendors = () => {
         </table>
       </div>
 
-      {/* Edit Modal */}
+     
       <Transition appear show={!!editVendor} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setEditVendor(null)}>
           <Transition.Child

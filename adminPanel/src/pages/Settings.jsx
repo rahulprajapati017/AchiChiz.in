@@ -1,4 +1,4 @@
-// src/pages/Settings.jsx
+
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
@@ -57,7 +57,7 @@ const Settings = () => {
       <h2 className="text-2xl font-semibold text-gray-800">🛠️ Site Settings</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-xl shadow-md">
-        {/* General Settings */}
+       
         <div>
           <h3 className="text-lg font-medium text-gray-700 mb-2">General</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -85,7 +85,7 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Contact Settings */}
+        
         <div>
           <h3 className="text-lg font-medium text-gray-700 mb-2">Contact & Shipping</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -124,7 +124,7 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Theme Settings */}
+        
         <div>
           <h3 className="text-lg font-medium text-gray-700 mb-2">Theme</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -156,7 +156,7 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Media Uploads */}
+      
         <div>
           <h3 className="text-lg font-medium text-gray-700 mb-2">Media</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -174,7 +174,7 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Toggles */}
+        
         <div>
           <h3 className="text-lg font-medium text-gray-700 mb-2">Preferences</h3>
           <div className="space-y-2">
