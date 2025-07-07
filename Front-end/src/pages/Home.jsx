@@ -3,7 +3,7 @@ import { Customizeproduct,Customerreview, PromoSection ,Followus,NewArrivals,Scr
 
 function Home() {
   return (
-    <div >
+    <div>
       <Scrollbar />
       <ShopByCategory />
       <NewArrivals />

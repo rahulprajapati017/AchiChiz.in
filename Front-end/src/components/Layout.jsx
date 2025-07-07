@@ -7,6 +7,7 @@ import PageTopBanner from "./Displayimage";
 import AutoScrollToTop from "./AutoScrollToTop"; 
 
 
+
 const Layout = () => {
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -21,7 +22,7 @@ const Layout = () => {
       </main>
       <Footer />
       <ScrollToTop />
-    </>
+    </> 
   );
 };
 

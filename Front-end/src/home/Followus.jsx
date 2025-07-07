@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Followus.css";
 import { FaInstagram } from "react-icons/fa6";
-
+import { colors , buttonStyles, text, bgStyles } from "../utils/theme"; // Importing theme styles
 function Followus() {
   const [hoverDirection, setHoverDirection] = useState({});
 

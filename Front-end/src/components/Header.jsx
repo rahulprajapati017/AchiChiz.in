@@ -94,7 +94,10 @@ const Header = () => {
             : "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
         }`}
       >
-        <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
+        <div className="text-2xl font-bold tracking-wide">
+        <NavLink to="/">
+        ACHICHIZ.</NavLink>
+        </div>
 
         {/* Desktop Navigation */}
         <ul className="hidden lg:flex items-center gap-10 relative">
