@@ -1,107 +1,128 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import SideFilterBar from './SideFilterBar';
+import { product } from '../../data/allapi'; // adjust path as needed
 
-const categories = ['Sneakers & Sports Shoes', 'T-Shirts', 'Shorts & Skirts', 'Flip Flop & Slippers', 'Track Pants'];
-const brands = ['SUTIE', 'COPPER', 'BANDQIT', 'ALFINE', 'CERE', 'DONNA RICCO'];
-const colors = ['#7b2cbf', '#1e3a8a', '#16a34a', '#ca8a04', '#e11d48', '#000000', '#cccccc'];
-const sizes = ['XS', 'S', 'M', 'L', '2XL'];
+const ProductPage = () => {
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filters, setFilters] = useState({
+    category: [],
+    size: [],
+    color: [],
+    priceMax: 5000,
+  });
 
-const PRICE = [0 , 5000];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(product.GET_ALL_PRODUCT);
+        const data = await res.json();
+        const products = data.data || [];
+        setAllProducts(products);
+        setFilteredProducts(products);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      }
+    };
 
+    fetchProducts();
+  }, []);
 
-const SideFilterBar = ({ filters, onFilterChange, onReset }) => {
+  useEffect(() => {
+    const applyFilters = () => {
+      let filtered = [...allProducts];
+
+      // Category filter
+      if (filters.category.length > 0) {
+        filtered = filtered.filter((item) =>
+          filters.category.includes(item.category?.name)
+        );
+      }
+
+      // Size filter
+      if (filters.size.length > 0) {
+        filtered = filtered.filter((item) =>
+          item.size?.some((s) => filters.size.includes(s))
+        );
+      }
+
+      // Color filter
+      if (filters.color.length > 0) {
+        filtered = filtered.filter((item) =>
+          item.color?.some((c) => filters.color.includes(c))
+        );
+      }
+
+      // Price filter
+      filtered = filtered.filter((item) => item.price <= filters.priceMax);
+
+      setFilteredProducts(filtered);
+    };
+
+    applyFilters();
+  }, [filters, allProducts]);
+
+  const handleFilterChange = (type, value) => {
+    setFilters((prev) => {
+      if (type === 'category' || type === 'size' || type === 'color') {
+        const values = prev[type] || [];
+        const updatedValues = values.includes(value)
+          ? values.filter((v) => v !== value)
+          : [...values, value];
+        return { ...prev, [type]: updatedValues };
+      }
+
+      // For single values like priceMax
+      return { ...prev, [type]: value };
+    });
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      category: [],
+      size: [],
+      color: [],
+      priceMax: 5000,
+    });
+  };
+
   return (
-    <div className="md:w-64  p-5 border-r  border-gray-200 min-h-screen">
-      <div className="flex justify-between items-center mb-6 w-full bg-white">
-        <h2 className="text-xl font-semibold text-gray-800">Filter By</h2>
-        <button
-          onClick={onReset}
-          className="text-sm text-blue-700 hover:underline"
-        >
-          Reset
-        </button>
-      </div>
-      {/* Category */}
-      <div className="mb-6">
-        <h3 className="font-bold text-sm mb-2">Category</h3>
-        {categories.map((item, i) => (
-          <label key={i} className="block text-sm text-gray-700 mb-1">
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={filters.category.includes(item)}
-              onChange={() => onFilterChange('category', item)}
-            />
-            {item}
-          </label>
-        ))}
-       
-      </div>
-      {/* Price Range Single Slider */}
-      <div className="mb-6">
-        <h3 className="font-bold text-sm mb-2">Price Range</h3>
-        <div className="flex flex-col gap-2 mt-2">
-          <div className="flex justify-between text-xs text-gray-600 mb-1">
-            <span>₹{PRICE[0]}</span>
-            <span>to</span>
-            <span>₹{filters.priceMax || PRICE[1]}</span>
+    <div className="flex">
+      {/* Sidebar */}
+      <SideFilterBar
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onReset={handleResetFilters}
+      />
+
+      {/* Product List */}
+      <div className="flex-1 p-6">
+        <h1 className="text-2xl font-bold mb-4">Products</h1>
+
+        {filteredProducts.length === 0 ? (
+          <p>No products match the selected filters.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((item) => (
+              <div
+                key={item.id}
+                className="border p-4 rounded shadow hover:shadow-lg transition"
+              >
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-48 object-cover mb-4"
+                />
+                <h2 className="text-lg font-semibold">{item.name}</h2>
+                <p className="text-sm text-gray-600">{item.category?.name}</p>
+                <p className="font-bold text-orange-600 mt-2">₹{item.price}</p>
+              </div>
+            ))}
           </div>
-          <input
-            type="range"
-            min={PRICE[0]}
-            max={PRICE[1]}
-            value={filters.priceMax || PRICE[1]}
-            onChange={e => onFilterChange('priceMax', e.target.value)}
-            className="w-full accent-orange-500"
-          />
-        </div>
-      </div>
-      {/* Brand */}
-      <div className="mb-6">
-        <h3 className="font-bold text-sm mb-2">Brand</h3>
-        {brands.map((brand, i) => (
-          <label key={i} className="block text-sm text-gray-700 mb-1">
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={filters.brand.includes(brand)}
-              onChange={() => onFilterChange('brand', brand)}
-            />
-            {brand}
-          </label>
-        ))}
-      </div>
-      {/* Color */}
-      <div className="mb-6">
-        <h3 className="font-bold text-sm mb-2">Color</h3>
-        <div className="flex flex-wrap gap-2">
-          {colors.map((color, i) => (
-            <div
-              key={i}
-              className={`w-5 h-5 rounded-full border cursor-pointer ${filters.color.includes(color) ? 'ring-2 ring-blue-500' : ''}`}
-              style={{ backgroundColor: color }}
-              onClick={() => onFilterChange('color', color)}
-            ></div>
-          ))}
-        </div>
-      </div>
-      {/* Size & Fit */}
-      <div>
-        <h3 className="font-bold text-sm mb-2">Size & Fit</h3>
-        {sizes.map((size, i) => (
-          <label key={i} className="block text-sm text-gray-700 mb-1">
-            <input
-              type="checkbox"
-              className="mr-2"
-              checked={filters.size.includes(size)}
-              onChange={() => onFilterChange('size', size)}
-            />
-            {size}
-          </label>
-        ))}
-        <button className="text-xs text-blue-700 mt-1">More</button>
+        )}
       </div>
     </div>
   );
 };
 
-export default SideFilterBar;
+export default ProductPage;

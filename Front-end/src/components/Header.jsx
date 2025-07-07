@@ -16,7 +16,7 @@ import AuthPage from "../components/Auth/AuthPage";
 const navItems = [
   { title: "HOME", path: "/" },
   { title: "SHOP", path: "/category" },
-  { title: "PRODUCTS", path: "/products" },
+  { title: "PRODUCTS", path: "/category" },
   { title: "BLOG", path: "/blog" },
   { title: "PAGE", path: "/about-us" },
 ];

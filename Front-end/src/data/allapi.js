@@ -6,6 +6,9 @@ export const auth={
     VERIFY_OTP:BASE_URL+"/verify",
     USER_AUTHORIZATION_FOR_PROFILE:BASE_URL+"/User",
     UPDATE_USER_DATA:BASE_URL+"/updateUserProfile",
+    getAllBlogs: BASE_URL + "/getAllBlogs",
+    getSingleBlogById: BASE_URL + "/getSingleBlogById",
+  commentOnBlog: BASE_URL + "/commentOnBlog",
 
     
  
@@ -16,7 +19,9 @@ export const product={
     ADD_TO_CART:BASE_URL+"/addtocart",
     REMOVE_FROM_CART:BASE_URL+"/removeitem",
     ADD_TO_WISHLIST:BASE_URL+"/addtowishlist",
-    REMOVE_FROM_WISHLIST:BASE_URL+"/removefromwishlist"
+    REMOVE_FROM_WISHLIST:BASE_URL+"/removefromwishlist",
+    GET_ALL_PRODUCT:BASE_URL+"/fileUpload/getallproductforcategory",
+    // BLOG_API:BASE_URL+ "/getAllBlogs"
     
 }
 

@@ -92,7 +92,7 @@ function App() {
               <Route path="contact-us" element={<  ContactUs />} />
               <Route path="privacy-policy" element={<  Policy />} />
               <Route path="blog" element={<  Blog />} />
-              <Route path="blogCommentSection" element={<  BlogCommentSection />} />
+              <Route path="/blog/:id" element={<  BlogCommentSection />} />
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
            

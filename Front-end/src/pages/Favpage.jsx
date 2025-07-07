@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Heart, ShoppingCart, Trash2, Star } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
@@ -9,42 +9,69 @@ import { product } from '../data/allapi';
 
 const FavoriteItems = () => {
   const { userdata, usertoken } = useContext(AuthContext);
-  const wishlist = userdata?.addtowishlist || [];
-  const { cartItems, addToCart } = useCart();
   const navigate = useNavigate();
+  const { cartItems, addToCart } = useCart();
+
+  // Local state for wishlist initialized from context userdata
+  const [wishlist, setWishlist] = useState(userdata?.addtowishlist || []);
+
+  // In case userdata changes (like after login), update wishlist
+  useEffect(() => {
+    setWishlist(userdata?.addtowishlist || []);
+  }, [userdata]);
 
   const handleAddToCart = async (id) => {
-  if (!usertoken) {
-    toast.error("Please login to add products to cart.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${product.ADD_TO_CART}/${id}`, {
-      method: "POST",
-      headers: {
-        // "Content-Type": "application/json",
-        Authorization: `Bearer ${usertoken}`,
-      },
-      // body: JSON.stringify({ quantity: 1 }),
-    });
-    console.log(response)
-
-    if (!response.ok) {
-      const res = await response.json();
-      throw new Error(res.message || "Failed to add to cart");
+    if (!usertoken) {
+      toast.error("Please login to add products to cart.");
+      return;
     }
-    
 
-    toast.success("Item added to cart successfully!");
-  } catch (error) {
-    toast.error(error.message || "Something went wrong");
-  }
-};
+    try {
+      const response = await fetch(`${product.ADD_TO_CART}/${id}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${usertoken}`,
+        },
+      });
 
+      if (!response.ok) {
+        const res = await response.json();
+        throw new Error(res.message || "Failed to add to cart");
+      }
 
-  const handleRemove = (id) => {
-    toast.success('Removed from favorites');
+      toast.success("Item added to cart successfully!");
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    }
+  };
+
+  const handleRemove = async (id) => {
+    if (!usertoken) {
+      toast.error("Please login to remove items from wishlist.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${product.REMOVE_FROM_WISHLIST}/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${usertoken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const res = await response.json();
+        throw new Error(res.message || "Failed to remove item");
+      }
+
+      toast.success("Removed from favorites");
+
+      // Update local wishlist state by filtering out removed item
+      setWishlist(prevWishlist => prevWishlist.filter(item => item._id !== id));
+
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    }
   };
 
   const renderStars = (rating) => {
@@ -74,8 +101,7 @@ const FavoriteItems = () => {
               className="relative bg-white/30 backdrop-blur-lg p-6 border border-white/40 shadow-lg group overflow-hidden"
               whileHover={{ scale: 1.03 }}
             >
-              <div className="absolute -top-32 -left-32 w-64 h-64 bg-gradient-to-tr from-pink-200 to-yellow-200 rounded-full blur-3xl opacity-30 group-hover:opacity-60 transition-all duration-500" />
-
+              {/* ...rest of your JSX code remains unchanged */}
               <div className="relative mb-4">
                 <div className="w-full h-78 bg-gray-200 overflow-hidden flex items-center justify-center">
                   <img

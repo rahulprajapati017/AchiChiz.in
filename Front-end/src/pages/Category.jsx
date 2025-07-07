@@ -23,8 +23,9 @@ function Category() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(product.APPROVED_PRODUCTS_FOR_HOME);
+        const res = await fetch(product.GET_ALL_PRODUCT);
         const data = await res.json();
+        console.log(data)
 // console.log(data.data)
         // Check if API response contains array of products
         if (!Array.isArray(data.data)) {
