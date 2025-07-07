@@ -88,7 +88,7 @@ const ProductForm = ({ isOpen, onClose, onSave, product = null }) => {
         <h2 className="text-xl font-bold mb-4">{product ? "Edit Product" : "Add New Product"}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Basic Info */}
+           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               name="title"
@@ -125,7 +125,7 @@ const ProductForm = ({ isOpen, onClose, onSave, product = null }) => {
             />
           </div>
 
-          {/* Image Upload */}
+          
           <div>
             <label className="font-medium text-sm">Product Images</label>
             <input
@@ -142,7 +142,7 @@ const ProductForm = ({ isOpen, onClose, onSave, product = null }) => {
             </div>
           </div>
 
-          {/* Features */}
+          
           <div>
             <label className="font-medium text-sm">Features</label>
             <div className="flex gap-2 mt-2">
@@ -164,7 +164,7 @@ const ProductForm = ({ isOpen, onClose, onSave, product = null }) => {
             </div>
           </div>
 
-          {/* Specifications */}
+         
           <div>
             <label className="font-medium text-sm">Specifications</label>
             <div className="flex gap-2 mt-2">
@@ -186,7 +186,7 @@ const ProductForm = ({ isOpen, onClose, onSave, product = null }) => {
             </div>
           </div>
 
-          {/* FAQs */}
+          
           <div>
             <label className="font-medium text-sm">FAQs</label>
             <div className="flex gap-2 mt-2 flex-col sm:flex-row">
@@ -208,7 +208,7 @@ const ProductForm = ({ isOpen, onClose, onSave, product = null }) => {
             </div>
           </div>
 
-          {/* Save Button */}
+          
           <div className="text-right">
             <button
               type="submit"

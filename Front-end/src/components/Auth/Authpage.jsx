@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "react-hot-toast";
-// import { useAuth } from "../../context/AuthContext";
-import OTPPage from "./OtpPage"; // ✅ adjust path if needed
+import { useAuth } from "../../context/AuthContext";
+import OTPPage from "./OtpPage"; 
 
 const AuthPage = ({ onSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
@@ -16,7 +16,7 @@ const AuthPage = ({ onSuccess }) => {
     e.preventDefault();
 
    localStorage.setItem("user", JSON.stringify({ name: "John Doe" }));
-    window.dispatchEvent(new Event("storage")); // Force sync for all tabs/components
+    window.dispatchEvent(new Event("storage")); 
     toast.success("Login successful!");
     if (onSuccess) onSuccess();
   };
@@ -137,7 +137,7 @@ const AuthPage = ({ onSuccess }) => {
         </button>
       </p>
 
-      {/* ✅ OTP MODAL shown only after signup */}
+      
       {showOtp && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative p-4">

@@ -13,15 +13,15 @@ const ReviewSummary = ({ averageRating, totalReviews, ratingDistribution }) => {
     totalReviews > 0 ? (count / totalReviews) * 100 : 0;
 
   return (
-    <div className="bg-white shadow-sm border p-6 mb-6 hover:scale-105 transition-transform duration-300">
+    <div className="bg-white shadow-sm  p-6 mb-6 hover: transition-transform duration-300">
       <div className="flex flex-col md:flex-row gap-8">
         {/* Average Rating */}
-        <div className="flex flex-col items-center md:items-start">
-          <div className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="flex flex-col items-center justify-center  md:items-start">
+          <div className="text-4xl pl-6 font-bold text-black-900 mb-2">
             {averageRating.toFixed(1)}
           </div>
           <RatingStars rating={averageRating} size="lg" />
-          <div className="text-sm text-gray-600 mt-2">
+          <div className="text-sm  text-gray-600 mt-2">
             Based on {totalReviews.toLocaleString()} reviews
           </div>
         </div>

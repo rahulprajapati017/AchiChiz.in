@@ -56,16 +56,16 @@ const ProductPage = () => {
     .slice(0, 4);
 
   return (
-    <div className="min-h-screen w-full mt-5 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
-    <div className="min-h-screen w-full mt-20 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans overflow-hidden">
-      {/* Main Section */}
+    <div className="min-h-screen w-full bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
+    <div className="min-h-screen w-full bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans overflow-hidden">
+     
       <div className="bg-white p-6 shadow-xl">
         <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-black drop-shadow">
           {product.title}
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-10">
-          {/* Image Section */}
+         
           <div className="w-full lg:w-1/2 flex flex-col-reverse lg:flex-row">
             <div className="flex flex-row lg:flex-col gap-2 justify-center lg:pr-4 mt-4 lg:mt-0 overflow-hidden">
               {product.images.map((img, i) => (
@@ -108,7 +108,7 @@ const ProductPage = () => {
             </div>
           </div>
 
-          {/* Details Section */}
+         
           <div className="w-full lg:w-1/2 space-y-4">
             <h2 className="text-2xl sm:text-3xl font-semibold text-black">{product.title}</h2>
             <HoverReview
@@ -144,7 +144,7 @@ const ProductPage = () => {
                   <span className="relative z-10">Add To Cart</span>
                 </button>
 
-                {/* ✅ Updated Buy Now Button */}
+              
                 <button
                   onClick={() =>
                     navigate("/checkout", {

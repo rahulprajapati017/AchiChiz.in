@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Heart, RefreshCcw, Truck, Clock } from 'lucide-react';
+import { X, Heart, Share2, Truck, Clock } from 'lucide-react';
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
 
@@ -115,19 +115,29 @@ const Quickviews = ({ product, onClose }) => {
           </button>
 
           <div className="mt-6 space-y-5 text-sm text-gray-700">
-            <div className="flex items-center gap-6">
+            <div className="flex items-center justify-between">
                <button
                   onClick={() =>{ addToFavorites(product);
                     toast.success(`${product.title} added to wishlist!`);}}
                   className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-red-600 hover:border-red-600 transition"
                 
                 >
-                  <Heart size={16} />add to Wishlist
+                  <Heart size={20} />add to Wishlist
                 </button>
-              <button className="flex items-center gap-2 hover:text-blue-500">
-                <RefreshCcw className="w-5 h-5" />
-                Compare
-              </button>
+              <button
+                  onClick={() => {
+                    navigator.share
+                      ? navigator.share({
+                          title: product.title,
+                          text: "Check out this amazing product!",
+                          url: window.location.href,
+                        })
+                      : toast("Sharing not supported in your browser.");
+                  }}
+                  className="flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:text-blue-600 hover:border-blue-600 transition"
+                >
+                  <Share2 size={20} /> Share
+                </button>
             </div>
 
             <div className="bg-gray-100 p-4 rounded-lg text-center shadow space-y-2">

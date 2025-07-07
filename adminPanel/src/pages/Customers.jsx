@@ -1,4 +1,4 @@
-// src/pages/Customers.jsx
+
 import React, { useEffect, useState, Fragment } from "react";
 import { Dialog, Transition, Tab } from "@headlessui/react";
 import { Pencil, Trash2 } from "lucide-react";
@@ -97,7 +97,7 @@ const Customers = () => {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      {/* Dashboard Cards */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Total Customers" value={customers.length} color="text-blue-700" />
         <StatCard title="VIP Customers" value={customers.filter(c => c.status === 'VIP').length} color="text-purple-700" />
@@ -105,7 +105,7 @@ const Customers = () => {
         <StatCard title="Total Revenue" value={`₹${customers.reduce((a, c) => a + parseAmount(c.totalSpent), 0)}`} color="text-emerald-700" />
       </div>
 
-      {/* Charts */}
+    
       <div className="bg-white p-4 rounded-xl shadow mb-6">
         <h2 className="font-bold mb-2 text-gray-700">Top Spenders</h2>
         <ResponsiveContainer width="100%" height={250}>
@@ -120,7 +120,7 @@ const Customers = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Filters */}
+     
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
@@ -138,7 +138,7 @@ const Customers = () => {
         </select>
       </div>
 
-      {/* Table */}
+     
       <div className="overflow-x-auto rounded-xl bg-white/30 shadow backdrop-blur-md">
         <table className="min-w-full text-sm">
           <thead className="bg-white/40">
@@ -186,7 +186,7 @@ const Customers = () => {
         </table>
       </div>
 
-      {/* Edit Modal */}
+      
       <Transition appear show={!!editCustomer} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={() => setEditCustomer(null)}>
           <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
