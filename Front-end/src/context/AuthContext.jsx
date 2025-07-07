@@ -1,6 +1,7 @@
 import { createContext, useContext, useState,useEffect } from "react";
+import { auth } from "../data/allapi";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -23,37 +24,39 @@ const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
 
     const userauthentication=async ()=>{
       try {
-        const response=await fetch("https://boleshop-project-mern.onrender.com/api/user",{
+        const response=await fetch(auth.USER_AUTHORIZATION_FOR_PROFILE,{
           method:"GET",
           headers:{
             "Authorization":`Bearer ${usertoken}`
           }
         })
-        if(response.ok){
-          const mydata=await response.json()
-          const {userdata}=mydata
-          setuserdata(userdata)
-         
-          
+       if (response.ok) {
+  const mydata = await response.json();
+  const { user } = mydata;
 
-        }
+  setuserdata(user); // ✅ This sets the user data correctly
+  console.log("user my data", user);
+}
+
+        console.log("data from context",response)
         
       } catch (error) {
         console.log(error)
-      navigate("/errorpage")
+      // navigate("/errorpage")
         
       }
     }
 
   useEffect(()=>{
 userauthentication()
+console.log(usertoken)
   },[usertoken])
   
   const login = (name = "John Doe") => setUser({ name });
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout,userdata,setuserdata,usertoken,setusertoken,logoutuser }}>
+    <AuthContext.Provider value={{ user, login, logout,userdata,setuserdata,usertoken,setusertoken,logoutuser,settoken }}>
       {children}
     </AuthContext.Provider>
   );

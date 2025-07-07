@@ -2,6 +2,7 @@ import React from 'react';
 import { User, MapPin, ShoppingBag, Heart, TrendingUp, Award } from 'lucide-react';
 
 const AccountDashboard = () => {
+  
   const stats = [
     { icon: ShoppingBag, label: 'Total Orders', value: '24', color: 'bg-blue-500' },
     { icon: Heart, label: 'Wishlist Items', value: '12', color: 'bg-pink-500' },

@@ -1,21 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import * as LucideIcons from "lucide-react";
 import { Heart, Share2 } from "lucide-react";
 import HoverReview from "../components/card";
 import ProductCard from "../components/ProductCard";
-import { useCart } from "../context/CartContext";
 import toast from "react-hot-toast";
-import { product as singleproductendpoint } from "../data/allapi";
+import { product, product as singleproductendpoint } from "../data/allapi";
+import { AuthContext } from "../context/AuthContext"; // assuming you have auth context for token
 
 const ProductPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { usertoken } = useContext(AuthContext); // get user token from auth context
+
   const [products, setproducts] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [zoomPos, setZoomPos] = useState({ x: "50%", y: "50%" });
   const [isHoveringImage, setIsHoveringImage] = useState(false);
+  const [loading, setLoading] = useState(false);
   const intervalRef = useRef(null);
-  const { addToCart } = useCart();
 
   const fetchproduct = async () => {
     try {
@@ -41,6 +45,36 @@ const ProductPage = () => {
     }
     return () => clearInterval(intervalRef.current);
   }, [isHoveringImage, products?.images?.length]);
+
+  const handleAddToCart = async () => {
+    if (!usertoken) {
+      toast.error("Please login to add products to cart.");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${product.ADD_TO_CART}/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${usertoken}`,
+        },
+        body: JSON.stringify({ quantity: 1 }),
+      });
+
+      if (!response.ok) {
+        const res = await response.json();
+        throw new Error(res.message || "Failed to add to cart");
+      }
+
+      toast.success(`${products.title} added to cart successfully!`);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!products) {
     return (
@@ -158,21 +192,22 @@ const ProductPage = () => {
             <div className="flex flex-col gap-3 mt-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => {
-                    addToCart(products);
-                    toast.success(`${products.title} added to cart!`);
-                  }}
-                  className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded"
+                  onClick={handleAddToCart}
+                  disabled={loading}
+                  className={`flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group
+                    ${loading ? "opacity-60 cursor-not-allowed" : "hover:scale-105"}
+                    transition-transform duration-300 rounded`}
                 >
                   <span className="absolute inset-0 bg-[#143b7c] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0" />
-                  <span className="relative z-10">Add To Cart</span>
+                  <span className="relative z-10">
+                    {loading ? "Adding..." : "Add To Cart"}
+                  </span>
                 </button>
 
-                {/* ✅ Updated Buy Now Button */}
                 <button
                   onClick={() =>
                     navigate("/checkout", {
-                      state: { product, quantity: 1 },
+                      state: { product: products, quantity: 1 },
                     })
                   }
                   className="flex-1 py-3 px-6 bg-gradient-to-r from-amber-500 to-orange-500 relative overflow-hidden font-semibold text-white shadow z-10 group hover:scale-105 transition-transform duration-300 rounded"
@@ -266,13 +301,12 @@ const ProductPage = () => {
       <div className="space-y-6 border-y-2 py-3 mt-10">
         <h2 className="text-2xl font-bold text-[#0f2c5c]">Related Products</h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {relatedProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-          {relatedProducts.length === 0 && (
-            <p className="text-gray-500 col-span-full text-center">
-              No related products available.
-            </p>
+          {relatedProducts.length > 0 ? (
+            relatedProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))
+          ) : (
+            <p className="text-gray-400">No related products found.</p>
           )}
         </div>
       </div>

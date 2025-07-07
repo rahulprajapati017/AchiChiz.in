@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { useAuth } from "../../context/AuthContext";
-<<<<<<< HEAD
+import { AuthContext, AuthProvider, useAuth } from "../../context/AuthContext";
 import { auth } from "../../data/allapi";
-=======
-import OTPPage from "./OtpPage"; // ✅ adjust path if needed
->>>>>>> refs/remotes/origin/main
+import OTPPage from "./OtpPage";
+// import { useAuth } from "../../context/AuthContext";
+
 
 const AuthPage = ({ onSuccess }) => {
   const [isSignup, setIsSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
+  const [otpEmail, setOtpEmail] = useState(""); // ✅ new state to track email for OTP
+  // const {usertoken}=useAuth()
+  const {userdata,setuserdata,settoken}=useContext(AuthContext)
+  
 
   const { login } = useAuth();
 
@@ -20,7 +23,7 @@ const AuthPage = ({ onSuccess }) => {
     email: "",
     password: "",
     confirmPassword: "",
-    accountType: "",
+    accountType: "User",
   });
 
   useEffect(() => {
@@ -29,9 +32,8 @@ const AuthPage = ({ onSuccess }) => {
       email: "",
       password: "",
       confirmPassword: "",
-      accountType: "",
+      accountType: "User",
     });
-    // Reset password visibility on mode change
     setShowPassword(false);
     setShowConfirmPassword(false);
   }, [isSignup]);
@@ -47,13 +49,79 @@ const AuthPage = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.email || !formData.password) {
+      alert("Email and password are required");
+      return;
+    }
+
     if (isSignup) {
-      // ✅ Signup flow → go to OTP page
-      setShowOtp(true);
+      if (!formData.name || !formData.confirmPassword) {
+        alert("Please fill all required fields");
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match");
+        return;
+      }
+
+      try {
+        const response = await fetch(auth.SIGNUP_BY_EMAIL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...formData,
+            accountType: "User",
+          }),
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (response.ok) {
+          console.log("Signup successful:", data);
+          setOtpEmail(formData.email); // ✅ store email
+          setShowOtp(true);            // ✅ show OTP modal
+        } else {
+          alert(data.message || "Signup failed");
+        }
+      } catch (error) {
+        console.error("Signup error:", error);
+        alert("An error occurred during signup");
+      }
     } else {
-      // ✅ Login flow → directly login
-      login("John Doe");
-      if (onSuccess) onSuccess();
+      try {
+        const response = await fetch(auth.LOGIN_BY_EMAIL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        });
+
+        const {data} = await response.json();
+        const {user,token}=data
+        
+        // setuserdata({...user})
+        settoken(token)
+        console.log(token)
+        console.log(user)
+
+        if (response.ok) {
+          login(data.name || "User");
+          if (onSuccess) onSuccess();
+        } else {
+          alert(data.message || "Login failed");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("An error occurred during login");
+      }
     }
   };
 
@@ -76,8 +144,6 @@ const AuthPage = ({ onSuccess }) => {
       </h2>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
-       
-
         {isSignup && (
           <input
             type="text"
@@ -98,7 +164,6 @@ const AuthPage = ({ onSuccess }) => {
           className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
 
-        {/* Password Input */}
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -118,7 +183,6 @@ const AuthPage = ({ onSuccess }) => {
           </button>
         </div>
 
-        {/* Confirm Password Input */}
         {isSignup && (
           <div className="relative">
             <input
@@ -134,33 +198,17 @@ const AuthPage = ({ onSuccess }) => {
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               aria-label={
-                showConfirmPassword ? "Hide confirm password" : "Show confirm password"
+                showConfirmPassword
+                  ? "Hide confirm password"
+                  : "Show confirm password"
               }
             >
-              {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+              {showConfirmPassword ? (
+                <FiEyeOff size={20} />
+              ) : (
+                <FiEye size={20} />
+              )}
             </button>
-          </div>
-        )}
-
-        {isSignup && (
-          <div className="relative">
-            <select
-              value={formData.accountType}
-              name="accountType"
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
-            >
-              <option value="">Select Account Type*</option>
-              <option value="Seller">Seller</option>
-              <option value="User">User</option>
-            </select>
-            
-            <div
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
-            </div>
           </div>
         )}
 
@@ -216,7 +264,6 @@ const AuthPage = ({ onSuccess }) => {
         </button>
       </p>
 
-      {/* ✅ OTP MODAL shown only after signup */}
       {showOtp && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative p-4">
@@ -227,6 +274,7 @@ const AuthPage = ({ onSuccess }) => {
               ×
             </button>
             <OTPPage
+              email={otpEmail} // ✅ pass email as prop
               onVerify={handleOtpVerify}
               onResend={() => console.log("Resend OTP clicked")}
             />
