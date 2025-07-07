@@ -44,6 +44,7 @@ const blogData = [
 const BlogCard = ({ blog }) => {
   return (
     <div className="max-w-4xl mx-auto mb-10 mt-[140px] border-b pb-6">
+      <h1 className="text-7xl b">OUR BLOG</h1>
       <div className="relative">
         <img
           src={blog.image}

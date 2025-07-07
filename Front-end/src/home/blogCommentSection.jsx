@@ -17,13 +17,43 @@ const BlogCommentSection = () => {
     website: "",
   });
 
+  // State to store all comments
+  const [comments, setComments] = useState([
+    {
+      id: 1,
+      name: "WIPINGO",
+      date: "June 25, 2024 at 10:32 am",
+      comment: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum.",
+      avatar: "W"
+    }
+  ]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Later: send to backend
+    
+    // Create new comment object
+    const newComment = {
+      id: Date.now(), // Use timestamp as unique ID
+      name: formData.name,
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      comment: formData.comment,
+      avatar: formData.name.charAt(0).toUpperCase()
+    };
+
+    // Add new comment to the beginning of the array
+    setComments([newComment, ...comments]);
+
+    // Reset form
     setFormData({ comment: "", name: "", email: "", website: "" });
   };
 
@@ -49,23 +79,30 @@ const BlogCommentSection = () => {
       </div>
 
       {/* Comment Count */}
-      <h2 className="text-[1.15rem] font-serif font-semibold tracking-wide text-center mb-8 border-b pb-2">1 COMMENT</h2>
-      {/* Single Comment */}
-      <div className="flex items-start gap-5 mb-12">
-        <div className="w-14 h-14 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-2xl font-bold text-gray-400">
-          {/* Placeholder for avatar */}
-          <span>W</span>
-        </div>
-        <div className="flex-1">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-            <span className="font-semibold font-serif text-base">WIPINGO</span>
-            <span className="text-xs text-gray-500">June 25, 2024 at 10:32 am</span>
-            <span className="text-xs text-[#d26b4b] font-medium cursor-pointer ml-0 sm:ml-2 underline">Reply</span>
+      <h2 className="text-[1.15rem] font-serif font-semibold tracking-wide text-center mb-8 border-b pb-2">
+        {comments.length} COMMENT{comments.length !== 1 ? 'S' : ''}
+      </h2>
+
+      {/* Comments Section */}
+      <div className="mb-12 space-y-8">
+        {comments.map((comment) => (
+          <div key={comment.id} className="flex items-start gap-5">
+            <div className="w-14 h-14 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center text-2xl font-bold text-gray-400">
+              {/* Avatar with first letter of name */}
+              <span>{comment.avatar}</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                <span className="font-semibold font-serif text-base">{comment.name}</span>
+                <span className="text-xs text-gray-500">{comment.date}</span>
+                <span className="text-xs text-[#d26b4b] font-medium cursor-pointer ml-0 sm:ml-2 underline">Reply</span>
+              </div>
+              <p className="text-[0.97rem] text-gray-700 leading-relaxed">
+                {comment.comment}
+              </p>
+            </div>
           </div>
-          <p className="text-[0.97rem] text-gray-700 leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum.
-          </p>
-        </div>
+        ))}
       </div>
 
       {/* Leave a Reply */}
