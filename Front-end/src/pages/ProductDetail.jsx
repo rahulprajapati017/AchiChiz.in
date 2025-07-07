@@ -1,10 +1,48 @@
-import React from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // adjust path if needed
+import { product } from '../data/allapi';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const location = useLocation();
-  const { formData, cartItem } = location.state || {};
+  const { usertoken } = useContext(AuthContext);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  // useEffect(() => {
+  //   console.log("ProductDetail mounted");
+  //   console.log("User token:", usertoken);
+  //   console.log("API Endpoint:", product.ADD_TO_CART, "Product ID:", id);
+  // }, [usertoken, id]);
+
+  const handleAddToCart = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const response = await fetch(`${product.ADD_TO_CART}${id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${usertoken}`
+        }
+      });
+      console.log(response)
+
+      if (!response.ok) {
+        const res = await response.json();
+        throw new Error(res.message || 'Failed to add to cart');
+      }
+
+      setSuccess('✅ Product added to cart successfully!');
+    } catch (err) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="pt-[300px] max-w-4xl mx-auto px-4">
@@ -13,48 +51,18 @@ const ProductDetail = () => {
         You are viewing product with ID: <span className="font-semibold">{id}</span>
       </p>
 
-      {/* Buyer Information */}
-      {formData ? (
-        <div className="mb-8 bg-gray-100 p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Buyer Information</h2>
-          <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
-          <p><strong>Email:</strong> {formData.email}</p>
-          <p><strong>Phone:</strong> {formData.phone}</p>
-          <p>
-            <strong>Address:</strong>{' '}
-            {formData.address1}, {formData.address2 && formData.address2 + ','} {formData.city},{' '}
-            {formData.state}, {formData.postalCode}, {formData.country}
-          </p>
-          <p><strong>Payment Method:</strong> {formData.paymentMethod}</p>
-          {formData.orderNotes && (
-            <p><strong>Order Notes:</strong> {formData.orderNotes}</p>
-          )}
-        </div>
-      ) : (
-        <p className="text-red-600">No buyer data found. Please complete checkout again.</p>
-      )}
+      <button
+        onClick={handleAddToCart}
+        disabled={!usertoken || loading}
+        className={`mt-4 px-4 py-2 rounded text-white ${
+          !usertoken || loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+        }`}
+      >
+        {loading ? 'Adding...' : 'Add to Cart'}
+      </button>
 
-      {/* Product Info */}
-      {cartItem ? (
-        <div className="bg-white p-6 border rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Product Purchased</h2>
-          <div className="flex gap-6 items-start">
-            <img
-              src={cartItem.image}
-              alt={cartItem.name}
-              className="w-32 h-32 object-cover rounded border"
-            />
-            <div>
-              <p><strong>Name:</strong> {cartItem.name}</p>
-              <p><strong>Price:</strong> ${cartItem.price}</p>
-              <p><strong>Quantity:</strong> {cartItem.quantity}</p>
-              <p><strong>Total:</strong> ${(cartItem.price * cartItem.quantity).toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <p className="text-red-600 mt-6">No product data found.</p>
-      )}
+      {error && <p className="text-red-600 mt-2">{error}</p>}
+      {success && <p className="text-green-600 mt-2">{success}</p>}
     </div>
   );
 };

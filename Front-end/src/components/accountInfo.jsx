@@ -1,24 +1,34 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Edit3, Save, X, Upload } from 'lucide-react';
-import profile from '../assets/profile.jpg'; // Update this if needed
+import profile from '../assets/profile.jpg';
+import { AuthContext } from "../context/AuthContext";
+import { auth } from '../data/allapi';
+
 
 const AccountInformation = () => {
-  const initialState = {
-    fullName: 'raj',
-    mobileNumber: '8949952520',
-    emailId: 'rajjangam51@gmail.com',
-    gender: 'MALE',
-    dateOfBirth: '',
-    location: '',
-    alternateMobile: '',
-    hintName: ''
+  const { userdata, usertoken, setuserdata } = useContext(AuthContext);
+
+  const defaultState = {
+    name: userdata?.name || "",
+    email: userdata?.email || "",
+    mobileNumber: userdata?.mobileNumber || "",
+    gender: userdata?.gender || "",
+    dateOfBirth: userdata?.dateOfBirth?.slice(0, 10) || "",
+    location: userdata?.location || "",
+    alternativeMobileNumber: userdata?.alternativeMobileNumber || "",
+    hintName: userdata?.hintName || "",
   };
 
+  const [formData, setFormData] = useState(defaultState);
+  const [initialData, setInitialData] = useState(defaultState);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(initialState);
-  const [initialData, setInitialData] = useState(initialState);
   const [profileImage, setProfileImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
+
+  useEffect(() => {
+    setFormData(defaultState);
+    setInitialData(defaultState);
+  }, [userdata]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,21 +45,52 @@ const AccountInformation = () => {
     }
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    setInitialData(formData);
-    // You can add API saving logic here
+  const handleSave = async () => {
+    try {
+      const form = new FormData();
+      for (const key in formData) {
+        form.append(key, formData[key]);
+      }
+
+      if (profileImage) {
+        form.append("image", profileImage);
+      }
+
+      const response = await fetch(auth.UPDATE_USER_DATA, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${usertoken}`,
+        },
+        body: form
+      });
+      console.log(response)
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
+
+      const data = await response.json();
+      setuserdata(data.data);
+      setInitialData(formData);
+      setIsEditing(false);
+      setProfilePreview(null);
+      setProfileImage(null);
+      alert("Profile updated successfully.");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile.");
+    }
   };
 
   const handleCancel = () => {
     setFormData(initialData);
     setProfilePreview(null);
+    setProfileImage(null);
     setIsEditing(false);
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-10 space-y-10">
-      {/* Header */}
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-extrabold text-gray-800 tracking-tight">👤 Account Information</h2>
         <button
@@ -65,7 +106,7 @@ const AccountInformation = () => {
       <div className="flex flex-col items-center gap-3">
         <div className="relative group">
           <img
-            src={profilePreview || profile}
+            src={profilePreview || userdata?.image || profile}
             alt="Profile"
             className="w-36 h-36 rounded-full object-cover border-4 border-white shadow-xl transition-transform duration-300 group-hover:scale-105"
           />
@@ -79,12 +120,12 @@ const AccountInformation = () => {
         <p className="text-sm text-gray-600">Tap icon to change photo</p>
       </div>
 
-      {/* Form */}
+      {/* Form Fields */}
       <div className="bg-[#F6F5F5] backdrop-blur-xl  border border-white/40 shadow-2xl p-10 transition-all">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <InputField label="Full Name" name="fullName" value={formData.fullName} onChange={handleInputChange} isEditing={isEditing} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Full Name" name="name" value={formData.name} onChange={handleInputChange} isEditing={isEditing} />
           <InputField label="Mobile Number" name="mobileNumber" type="tel" value={formData.mobileNumber} onChange={handleInputChange} isEditing={isEditing} />
-          <InputField label="Email ID" name="emailId" type="email" value={formData.emailId} onChange={handleInputChange} isEditing={isEditing} />
+          <InputField label="Email ID" name="email" type="email" value={formData.email} onChange={handleInputChange} isEditing={isEditing} disabled={true} />
 
           {/* Gender */}
           <div>
@@ -96,20 +137,21 @@ const AccountInformation = () => {
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="OTHER">Other</option>
+                <option value="">--Select--</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
               </select>
             ) : (
-              <div className="px-4 py-3 bg-[#F6F5F5] border border-white/40 rounded-xl">
-                {formData.gender}
+              <div className="px-4 py-3 bg-white/20 rounded-xl border border-white/30">
+                {formData.gender || '- not added -'}
               </div>
             )}
           </div>
 
           <InputField label="Date of Birth" name="dateOfBirth" type="date" value={formData.dateOfBirth} onChange={handleInputChange} isEditing={isEditing} />
           <InputField label="Location" name="location" value={formData.location} onChange={handleInputChange} isEditing={isEditing} />
-          <InputField label="Alternate Mobile" name="alternateMobile" type="tel" value={formData.alternateMobile} onChange={handleInputChange} isEditing={isEditing} />
+          <InputField label="Alternate Mobile" name="alternativeMobileNumber" value={formData.alternativeMobileNumber} onChange={handleInputChange} isEditing={isEditing} />
           <InputField label="Hint Name" name="hintName" value={formData.hintName} onChange={handleInputChange} isEditing={isEditing} />
         </div>
 
@@ -138,7 +180,8 @@ const AccountInformation = () => {
 };
 
 
-const InputField = ({ label, name, value, onChange, isEditing, type = "text" }) => (
+// InputField Component
+const InputField = ({ label, name, value, onChange, isEditing, disabled = false, type = "text" }) => (
   <div>
     <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
     {isEditing ? (
@@ -147,7 +190,10 @@ const InputField = ({ label, name, value, onChange, isEditing, type = "text" }) 
         name={name}
         value={value}
         onChange={onChange}
-        className="w-full px-4 py-3 bg-white/60 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        disabled={disabled}
+        className={`w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl focus:outline-none backdrop-blur-sm ${
+          disabled ? 'opacity-60 cursor-not-allowed' : 'focus:ring-2 focus:ring-indigo-500'
+        }`}
       />
     ) : (
       <div className="px-4 py-3 bg-white/30 border border-white/40 rounded-xl text-gray-700">
@@ -156,5 +202,6 @@ const InputField = ({ label, name, value, onChange, isEditing, type = "text" }) 
     )}
   </div>
 );
+
 
 export default AccountInformation;

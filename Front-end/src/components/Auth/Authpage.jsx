@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import OTPPage from "./OtpPage";
+import { AuthContext, useAuth } from "../../context/AuthContext";
+import { auth } from "../../data/allapi";
 
 const PasswordInput = ({ name, value, onChange, placeholder, show, setShow }) => (
   <div className="relative">
@@ -28,6 +29,7 @@ const PasswordInput = ({ name, value, onChange, placeholder, show, setShow }) =>
 const AuthPage = ({ onSuccess }) => {
   const location = useLocation();
   const { login } = useAuth();
+  const { settoken } = useContext(AuthContext);
 
   const emailFromQuery = new URLSearchParams(location.search).get("email") || "";
 
@@ -36,6 +38,7 @@ const AuthPage = ({ onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
+  const [otpEmail, setOtpEmail] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -44,7 +47,8 @@ const AuthPage = ({ onSuccess }) => {
     confirmPassword: "",
   });
 
-  // Populate email from URL and switch to signup mode
+  const isSignup = mode === "signup";
+
   useEffect(() => {
     if (emailFromQuery) {
       setForm((prev) => ({ ...prev, email: emailFromQuery }));
@@ -54,7 +58,8 @@ const AuthPage = ({ onSuccess }) => {
   }, [emailFromQuery]);
 
   const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const sendOtp = async () => {
@@ -66,7 +71,7 @@ const AuthPage = ({ onSuccess }) => {
         headers: { "Content-Type": "application/json" },
       });
       toast.success("OTP sent to your email!");
-      setStep("otp");
+      setOtpEmail(form.email);
       setShowOtpModal(true);
     } catch (err) {
       toast.error("Failed to send OTP");
@@ -97,27 +102,60 @@ const AuthPage = ({ onSuccess }) => {
     }
   };
 
-  const handleLogin = () => {
-    if (!form.email || !form.password) return toast.error("Enter credentials");
-    localStorage.setItem("user", JSON.stringify({ name: form.name || "User" }));
-    login(form.name || "User");
-    toast.success("Login successful!");
-    onSuccess?.();
-    resetAll();
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!form.email || !form.password) {
+      return toast.error("Email and password are required");
+    }
+
     if (mode === "signup") {
-      if (form.password !== form.confirmPassword) {
-        return toast.error("Passwords do not match");
+      if (!form.name || !form.confirmPassword) return toast.error("Please fill all fields");
+      if (form.password !== form.confirmPassword) return toast.error("Passwords do not match");
+
+      try {
+        const res = await fetch(auth.SIGNUP_BY_EMAIL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...form, accountType: "User" }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setOtpEmail(form.email);
+          setShowOtpModal(true);
+        } else {
+          toast.error(data.message || "Signup failed");
+        }
+      } catch (err) {
+        toast.error("An error occurred during signup");
       }
-      sendOtp();
+    } else if (mode === "login") {
+      try {
+        const res = await fetch(auth.LOGIN_BY_EMAIL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: form.email, password: form.password }),
+        });
+
+        const { data } = await res.json();
+        const { token, user } = data || {};
+
+        if (res.ok) {
+          settoken(token);
+          login(user?.name || "User");
+          toast.success("Login successful!");
+          onSuccess?.();
+          resetAll();
+        } else {
+          toast.error("Login failed");
+        }
+      } catch (err) {
+        toast.error("An error occurred during login");
+      }
     } else if (mode === "forgot") {
       sendOtp();
-    } else {
-      handleLogin();
     }
   };
 
@@ -145,21 +183,20 @@ const AuthPage = ({ onSuccess }) => {
     onSuccess?.();
   };
 
-  const title =
-    mode === "signup"
-      ? "SIGN UP"
-      : mode === "forgot" && step === "reset"
-      ? "RESET PASSWORD"
-      : mode === "forgot"
-      ? "FORGOT PASSWORD"
-      : "SIGN IN";
+  const title = mode === "signup"
+    ? "SIGN UP"
+    : mode === "forgot" && step === "reset"
+    ? "RESET PASSWORD"
+    : mode === "forgot"
+    ? "FORGOT PASSWORD"
+    : "SIGN IN";
 
   return (
     <div className="p-6 w-full max-w-md mx-auto">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800 text-center">{title}</h2>
+      <h2 className="text-xl font-semibold mb-4 text-center">{title}</h2>
 
-      {mode === "forgot" && step === "reset" ? (
-        <form className="space-y-4" onSubmit={handleResetPassword}>
+      {step === "reset" ? (
+        <form onSubmit={handleResetPassword} className="space-y-4">
           <PasswordInput
             name="password"
             value={form.password}
@@ -172,42 +209,37 @@ const AuthPage = ({ onSuccess }) => {
             name="confirmPassword"
             value={form.confirmPassword}
             onChange={handleChange}
-            placeholder="Confirm New Password*"
+            placeholder="Confirm Password*"
             show={showConfirmPassword}
             setShow={setShowConfirmPassword}
           />
-          <button
-            type="submit"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold rounded"
-          >
+          <button className="w-full bg-orange-600 text-white py-2 rounded" type="submit">
             RESET PASSWORD
           </button>
         </form>
       ) : (
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {mode === "signup" && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {isSignup && (
             <input
               type="text"
               name="name"
               placeholder="Name*"
               value={form.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300"
+              className="w-full px-4 py-2 border"
               required
             />
           )}
 
-          {(mode === "signup" || mode === "forgot" || mode === "login") && (
-            <input
-              type="email"
-              name="email"
-              placeholder="Email*"
-              value={form.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300"
-              required
-            />
-          )}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email*"
+            value={form.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border"
+            required
+          />
 
           {(mode === "signup" || mode === "login") && (
             <PasswordInput
@@ -220,7 +252,7 @@ const AuthPage = ({ onSuccess }) => {
             />
           )}
 
-          {mode === "signup" && (
+          {isSignup && (
             <PasswordInput
               name="confirmPassword"
               value={form.confirmPassword}
@@ -233,7 +265,7 @@ const AuthPage = ({ onSuccess }) => {
 
           <button
             type="submit"
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 font-semibold rounded"
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded"
           >
             {mode === "signup"
               ? "SIGN UP"
@@ -246,7 +278,7 @@ const AuthPage = ({ onSuccess }) => {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 font-semibold rounded"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
             >
               {mode === "signup" ? "Sign up with Google" : "Sign in with Google"}
             </button>
@@ -255,62 +287,58 @@ const AuthPage = ({ onSuccess }) => {
       )}
 
       {mode === "login" && (
-        <div className="text-center mt-3">
+        <p className="text-center mt-3">
           <button
             onClick={() => {
               setMode("forgot");
               setStep("form");
-              setForm({ name: "", email: "", password: "", confirmPassword: "" });
+              resetAll();
             }}
             className="text-sm text-orange-700 underline"
           >
             Forgot Password?
           </button>
-        </div>
-      )}
-
-      {mode !== "forgot" && (
-        <p className="text-center text-sm mt-4 text-gray-700">
-          {mode === "signup" ? (
-            <>
-              Already have an account?{" "}
-              <button
-                onClick={() => {
-                  setMode("login");
-                  setStep("form");
-                }}
-                className="text-orange-700 underline"
-              >
-                Sign in
-              </button>
-            </>
-          ) : (
-            <>
-              Don’t have an account?{" "}
-              <button
-                onClick={() => {
-                  setMode("signup");
-                  setStep("form");
-                }}
-                className="text-orange-700 underline"
-              >
-                Sign up
-              </button>
-            </>
-          )}
         </p>
       )}
 
+      <p className="text-center text-sm mt-4">
+        {mode === "signup" ? (
+          <>
+            Already have an account?{" "}
+            <button
+              onClick={() => setMode("login")}
+              className="text-orange-700 underline"
+            >
+              Sign in
+            </button>
+          </>
+        ) : (
+          <>
+            Don’t have an account?{" "}
+            <button
+              onClick={() => setMode("signup")}
+              className="text-orange-700 underline"
+            >
+              Sign up
+            </button>
+          </>
+        )}
+      </p>
+
       {showOtpModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md relative p-4">
+          <div className="bg-white rounded-lg shadow-lg p-6 relative w-full max-w-md">
             <button
               onClick={() => setShowOtpModal(false)}
               className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
             >
               ×
             </button>
-            <OTPPage onVerify={handleOtpVerify} onResend={sendOtp} />
+            <OTPPage
+              email={otpEmail}
+              onVerify={handleOtpVerify}
+              onResend={sendOtp}
+            />
           </div>
         </div>
       )}

@@ -33,7 +33,6 @@ import {
   Policy,
   Checkout,
   CheckoutPage,
-  productdetails,
   OrderPage,
   OrderDetailsPage,
   ReturnRefundPage,
@@ -58,7 +57,8 @@ import {
 import { Toaster } from "react-hot-toast";
 import FavoritesPage from "./pages/Favpage";
 import CartPage from "./pages/Cart";
-
+import LogOut from "./components/LogOut";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -71,10 +71,8 @@ function App() {
               <Route path="customer-review" element={<Customerreview />} />
               <Route path="customize-product" element={<Customizeproduct />} />
               <Route path="follow-us" element={<Followus />} />
-              <Route path="product/:id" element={<ProductPage />} />
               <Route path="new-arrival" element={<NewArrivals />} />
               <Route path="scrollbar" element={<Scrollbar />} />
-             
               <Route path="favoritespage" element={<FavoritesPage />} />
               <Route path="cartpage" element={<CartPage />} />
               <Route path="shop-by-category" element={<ShopByCategory />} />
@@ -100,13 +98,13 @@ function App() {
            
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
-              <Route path="/product/:id" element={< productdetails />} />
+              <Route path="product/:id" element={<ProductPage />} />
               <Route path="/order-page" element={<OrderPage />} />
               <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
               <Route path="/return-refund" element={<ReturnRefundPage />} />
               <Route path="/track-order" element={<TrackOrderPage />} />
               <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
-              <Route path="/product/:id" element={<productdetails />} />
+              {/* <Route path="/product/:id" element={<productdetails />} /> */}
               <Route path="/order-page" element={<OrderPage />} />
               <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
               <Route path="/return-refund" element={<ReturnRefundPage />} />
@@ -132,6 +130,7 @@ function App() {
               <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
               {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
             </Route>
+              <Route path="/logout" element={<LogOut/>}/>
           </Routes>
           <Toaster position="top-right" />
         </>

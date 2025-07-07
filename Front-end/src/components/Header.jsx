@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiSearch,
   FiUser,
@@ -8,9 +8,9 @@ import {
   FiMenu,
   FiX,
 } from "react-icons/fi";
-import { useCart } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoriteContext";
-import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import AuthPage from "../components/Auth/AuthPage";
 
 const navItems = [
@@ -27,20 +27,15 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [hovered, setHovered] = useState(null);
 
-  const searchRef = useRef();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
+  const { logout, userdata, usertoken } = useContext(AuthContext);
 
-  const searchHistory = ["Handmade Vase", "Terracotta Lamp", "Wooden Art"];
-  const suggestions = ["Brass Decor", "Eco-Friendly Gifts", "Wall Hangings"];
-
-  const isHome = pathname === "/";
-  const glassEffect = isHome && !scrolled;
+  const navigate = useNavigate();
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,44 +50,43 @@ const Header = () => {
       }
     };
 
-    const updateLoginStatus = () => {
-      const user = localStorage.getItem("user");
-      setIsLoggedIn(!!user);
-    };
-
     window.addEventListener("scroll", handleScroll);
     document.addEventListener("mousedown", handleClickOutside);
-    window.addEventListener("storage", updateLoginStatus);
-    updateLoginStatus();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("storage", updateLoginStatus);
     };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
-    window.dispatchEvent(new Event("storage"));
+    logout();
+    setProfileOpen(false);
+    setMobileOpen(false);
+    navigate("/logout");
   };
 
   const handleProtectedClick = (path) => {
-    const user = localStorage.getItem("user");
-    if (!user) {
+    if (!usertoken) {
       setShowLoginModal(true);
     } else {
       navigate(path);
     }
   };
 
+  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
+
+  const searchHistory = ["T-Shirts", "Sneakers", "Watches", "Accessories"];
+  const suggestions = ["Shoes", "Pants", "Shirts", "Jackets"];
+
   return (
     <>
+      {/* Top bar */}
       <div className="fixed top-0 left-0 w-full z-[60] bg-black text-white text-center text-sm py-1 px-4">
         🎉 Free shipping on orders over ₹999!
       </div>
 
+      {/* Main navbar */}
       <nav
         className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
           scrolled
@@ -102,14 +96,20 @@ const Header = () => {
       >
         <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
 
+        {/* Desktop Navigation */}
         <ul className="hidden lg:flex items-center gap-10 relative">
           {navItems.map((item, idx) => (
-            <li key={idx}>
+            <li
+              key={item.title}
+              onMouseEnter={() => setHovered(idx)}
+              onMouseLeave={() => setHovered(null)}
+            >
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
                   `uppercase text-sm font-bold transition duration-300 ${
-                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"}`
+                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"
+                  }`
                 }
               >
                 {item.title}
@@ -118,31 +118,39 @@ const Header = () => {
           ))}
         </ul>
 
+        {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
           <FiSearch
             className="cursor-pointer hover:text-orange-500"
             onClick={() => setSearchOpen(!searchOpen)}
           />
 
-          {isLoggedIn ? (
-            <div className="relative group">
-              <span className="cursor-pointer hover:text-orange-500 font-medium">
-                {JSON.parse(localStorage.getItem("user"))?.name || "User"}
-              </span>
-              <div className="absolute top-6 right-0 hidden group-hover:block bg-white shadow-md border p-3 w-40 rounded-md z-50 text-black">
-                <div
-                  className="text-sm hover:text-orange-500 cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </div>
-                <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
-                  <NavLink to="/dashboard">Profile</NavLink>
-                </div>
-                <div className="text-sm hover:text-orange-500 cursor-pointer mt-2">
-                  <NavLink to="/Order-page">Order</NavLink>
-                </div>
+          {usertoken && userdata?.name ? (
+            <div className="relative">
+              <div
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer"
+                onClick={() => setProfileOpen(!profileOpen)}
+                title={userdata.name}
+              >
+                {firstLetter}
               </div>
+              {profileOpen && (
+                <div className="absolute top-10 right-0 bg-white shadow-md border p-3 w-40 rounded-md z-50 text-black">
+                  <NavLink
+                    to="/dashboard"
+                    className="block text-sm hover:text-orange-500 mb-2"
+                    onClick={() => setProfileOpen(false)}
+                  >
+                    Profile
+                  </NavLink>
+                  <div
+                    className="text-sm hover:text-orange-500 cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <FiUser
@@ -176,26 +184,80 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Icons */}
-        <div className="flex lg:hidden items-center gap-4 text-xl">
-          <FiSearch
-            className="cursor-pointer hover:text-orange-500"
-            onClick={() => setSearchOpen(!searchOpen)}
-          />
-          <FiUser
-            className="cursor-pointer hover:text-orange-500"
-            onClick={() => setShowLoginModal(true)}
-          />
-          <div
-            className="text-2xl cursor-pointer"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <FiX /> : <FiMenu />}
-          </div>
+        {/* Mobile Menu Icon */}
+        <div
+          className="flex lg:hidden text-2xl cursor-pointer"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          {mobileOpen ? <FiX /> : <FiMenu />}
         </div>
       </nav>
 
-      {/* Search Panel */}
+      {/* Mobile Drawer */}
+      <div
+        className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-[999] transform ${
+          mobileOpen ? "translate-x-0" : "translate-x-full"
+        } transition-transform duration-500 ease-in-out`}
+      >
+        <div className="flex justify-between items-center p-4 border-b">
+          <div className="text-xl font-bold">ACHICHIZ.</div>
+          <FiX className="text-2xl cursor-pointer" onClick={() => setMobileOpen(false)} />
+        </div>
+
+        <ul className="flex flex-col gap-4 p-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+          {navItems.map((item) => (
+            <li key={item.title}>
+              <NavLink
+                to={item.path}
+                className="text-lg font-medium hover:text-orange-500"
+                onClick={() => setMobileOpen(false)}
+              >
+                {item.title}
+              </NavLink>
+            </li>
+          ))}
+
+          {usertoken && userdata?.name ? (
+            <div className="mt-6 border-t pt-4">
+              <div className="text-lg font-medium mb-2 flex items-center gap-2">
+                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold">
+                  {firstLetter}
+                </div>
+                {userdata.name}
+              </div>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    className="hover:text-orange-500"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Profile
+                  </NavLink>
+                </li>
+                <li
+                  className="hover:text-orange-500 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <div
+              className="mt-4 text-sm text-blue-600 underline cursor-pointer"
+              onClick={() => {
+                setShowLoginModal(true);
+                setMobileOpen(false);
+              }}
+            >
+              Login / Sign Up
+            </div>
+          )}
+        </ul>
+      </div>
+
+      {/* Search Bar */}
       {searchOpen && (
         <div
           ref={searchRef}
@@ -210,28 +272,27 @@ const Header = () => {
               className="w-full p-3 outline-none rounded-t-md text-gray-800"
               autoFocus
             />
-            {searchQuery.length > 0 &&
-              (searchQuery === "" ? searchHistory : suggestions)
-                .filter((item) =>
-                  item.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    onMouseDown={() => {
-                      setSearchQuery(item);
-                      setSearchOpen(false);
-                    }}
-                  >
-                    {item}
-                  </div>
-                ))}
+            {(searchQuery.length > 0 ? suggestions : searchHistory)
+              .filter((item) =>
+                item.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .map((item, idx) => (
+                <div
+                  key={idx}
+                  className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  onMouseDown={() => {
+                    setSearchQuery(item);
+                    setSearchOpen(false);
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
           </div>
         </div>
       )}
 
-      {/* Login Modal */}
+      {/* Auth Modal */}
       {showLoginModal && (
         <div className="fixed inset-0 z-[999] bg-black/40 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full relative">
@@ -244,7 +305,6 @@ const Header = () => {
             <AuthPage
               onSuccess={() => {
                 setShowLoginModal(false);
-                setIsLoggedIn(true);
                 window.dispatchEvent(new Event("storage"));
               }}
             />

@@ -1,22 +1,12 @@
-import AllProducts  from "../components/category/AllProducts";
-import  SideFilterBar  from "../components/category/SideFilterBar";
-import  TopBar  from "../components/category/TopBar";
-import React, { useState, useMemo } from 'react';
-import { products as rawProducts } from '../data/products';
-
-// Map products to expected structure for filtering and display
-const allProducts = rawProducts.map((p, idx) => ({
-  id: p.id || idx,
-  image: Array.isArray(p.images) ? p.images[0] : p.image,
-  title: p.title,
-  price: p.price,
-  category: p.category || 'Other',
-  brand: p.brand || 'Other',
-  color: p.specs?.Color || '#cccccc',
-  size: p.size || 'M',
-}));
+import React, { useState, useEffect, useMemo } from 'react';
+import AllProducts from "../components/category/AllProducts";
+import SideFilterBar from "../components/category/SideFilterBar";
+import TopBar from "../components/category/TopBar";
+import { product } from "../data/allapi";
 
 function Category() {
+  const [apiProducts, setApiProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     category: [],
     price: [],
@@ -28,6 +18,44 @@ function Category() {
   });
   const [sort, setSort] = useState('highToLow');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Fetch data from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(product.APPROVED_PRODUCTS_FOR_HOME);
+        const data = await res.json();
+// console.log(data.data)
+        // Check if API response contains array of products
+        if (!Array.isArray(data.data)) {
+          throw new Error("Invalid API response format. Expected 'data' to be an array.");
+        }
+        // console.log(data)
+
+        // Normalize data
+    const normalized = data.data.map((p, idx) => ({
+  _id: p._id, // include original MongoDB _id
+  id: p.id || idx, // optional fallback
+  image: Array.isArray(p.images) ? p.images[0] : p.image,
+  title: p.title,
+  price: p.price,
+  category: p.category?.name || 'Other',
+  brand: p.brand || 'Other',
+  color: p.specs?.Color || '#cccccc',
+  size: p.size || 'M',
+}));
+
+
+        setApiProducts(normalized);
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleFilterChange = (type, value) => {
     setFilters(prev => {
@@ -60,22 +88,16 @@ function Category() {
 
   // Filtering and sorting logic
   const filteredProducts = useMemo(() => {
-    let result = allProducts.filter(product => {
-      // Category
+    let result = apiProducts.filter(product => {
       if (filters.category.length && !filters.category.includes(product.category)) return false;
-      // Brand
       if (filters.brand.length && !filters.brand.includes(product.brand)) return false;
-      // Color
       if (filters.color.length && !filters.color.includes(product.color)) return false;
-      // Size
       if (filters.size.length && !filters.size.includes(product.size)) return false;
-      // Price range
       if (filters.priceMin && product.price < Number(filters.priceMin)) return false;
       if (filters.priceMax && product.price > Number(filters.priceMax)) return false;
       return true;
     });
 
-    // Sort logic
     switch (sort) {
       case 'lowToHigh':
         result = result.slice().sort((a, b) => a.price - b.price);
@@ -90,16 +112,14 @@ function Category() {
         result = result.slice().sort((a, b) => b.title.localeCompare(a.title));
         break;
       case 'newest':
-        // For newest, we can sort by ID (assuming higher ID = newer)
         result = result.slice().sort((a, b) => b.id - a.id);
         break;
       default:
-        // Default to high to low price
         result = result.slice().sort((a, b) => b.price - a.price);
     }
-    
+
     return result;
-  }, [filters, sort]);
+  }, [apiProducts, filters, sort]);
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen pt-[110px] relative">
@@ -160,4 +180,3 @@ function Category() {
 }
 
 export default Category;
-
