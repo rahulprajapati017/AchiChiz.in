@@ -14,6 +14,7 @@ import {
   Sun,
   Moon,
   X,
+  Star, // Added Star icon for Reviews
 } from "lucide-react";
 
 const menuItems = [
@@ -24,6 +25,7 @@ const menuItems = [
   { name: "Customers", path: "/customers", icon: Users },
   { name: "Vendors", path: "/vendors", icon: UserCheck },
   { name: "Analytics", path: "/analytics", icon: BarChart2 },
+  { name: "Reviews", path: "/reviews", icon: Star }, // Added Reviews section
   { name: "Settings", path: "/settings", icon: Settings },
 ];
 
