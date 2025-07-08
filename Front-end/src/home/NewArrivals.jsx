@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useFavorites } from "../context/FavoriteContext";
 import { toast } from "react-hot-toast";
-import { Eye, Heart, RefreshCcw } from "lucide-react";
+import { Eye, Heart, ShoppingCart } from "lucide-react";
+
 import Quickviews from "../pages/Quickviews";
 import { Link } from "react-router-dom";
 import { product } from "../data/allapi";
@@ -23,7 +24,7 @@ const NewArrivals = () => {
         const {data} = await res.json();
 
         const validData = Array.isArray(data)
-          ? data
+          ? data  
           : Array.isArray(data.products)
           ? data.products
           : [];
@@ -40,17 +41,33 @@ const NewArrivals = () => {
     fetchProducts();
   }, []);
 
-  const toggleWishlist = (product) => {
-    if (wishlistIds.includes(product._id)) {
-      setWishlistIds(wishlistIds.filter((id) => id !== product._id));
-      removeFromFavorites(product._id);
+ const handleAddToCart = () => {
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+    addToCart(product);
+    toast.success("Added to Cart");
+  };
+
+  const toggleWishlist = () => {
+    if (!isLoggedIn) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    if (wishlistIds.includes(product.id)) {
+      setWishlistIds(wishlistIds.filter((id) => id !== product.id));
+      removeFromFavorites(product.id);
       toast.success("Removed from Favorites");
     } else {
-      setWishlistIds([...wishlistIds, product._id]);
+      setWishlistIds([...wishlistIds, product.id]);
       addToFavorites(product);
       toast.success("Added to Favorites");
     }
   };
+
+  const isWishlisted = wishlistIds.includes(product.id);
 
   return (
     <div className="max-w-8xl mx-5 px-4 py-10 font-sans  min-h-screen">
@@ -59,12 +76,12 @@ const NewArrivals = () => {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
-        {productsData.map((product) => {
+        {productsData.slice(0, 4).map((product) => {
           const isWishlisted = wishlistIds.includes(product._id);
 
           return (
-            <div key={product._id} className="relative bg-white overflow-hidden shadow-md">
-              <div className="relative overflow-hidden w-full h-44 sm:h-52 md:h-90 group">
+            <div key={product._id} className="relative bg-white overflow-hidden">
+              <div className="relative overflow-hidden w-full h-70 sm:h-52 md:h-110 group">
                 <Link to={`/product/${product._id}`}>
                   <img
                     src={product.images?.[0].url}
@@ -84,43 +101,35 @@ const NewArrivals = () => {
                   {product.isHandmade ? "Handmade" : "Hot"}
                 </div>
 
-                <div className="absolute top-1/2 right-4 -translate-y-1/2 flex flex-col items-center space-y-2 z-10">
-                  <button
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      setShowQuickView(true);
-                    }}
-                    className="bg-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100"
-                  >
-                    <Eye size={18} />
-                  </button>
-
-                  <button
-                    onClick={() => toggleWishlist(product)}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full shadow transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-200 ${
-                      isWishlisted
-                        ? "bg-red-500 text-white"
-                        : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
-                    }`}
-                  >
-                    <Heart size={16} />
-                  </button>
-
-                  <button className="bg-white w-10 h-10 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300">
-                    <RefreshCcw size={16} />
-                  </button>
-                </div>
-
-                <div className="absolute bottom-0 left-0 mb-2 pr-2 pl-2 w-full flex justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-10">
+                <div className="absolute top-1/2 right-2 -translate-y-1/1 flex flex-col items-center space-y-3 z-10">
                   <button
                     onClick={() => {
                       addToCart(product);
                       toast.success("Added to Cart");
                     }}
-                    className="w-[90%] h-10 sm:h-12 relative overflow-hidden px-2 py-2 text-white font-bold z-10 bg-[#d75a3c] group/button"
+                  className="bg-white  w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100">
+                 <ShoppingCart size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setShowQuickView(true);
+                    }}
+                    className="bg-white  w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-200"
                   >
-                    <span className="absolute inset-0 bg-white transition-all duration-500 ease-out transform -translate-x-full group-hover/button:translate-x-0 z-0"></span>
-                    <span className="relative text-black z-10">Add to Cart</span>
+                    <Eye size={20} />
+                  </button>
+
+                  <button
+                    onClick={() => toggleWishlist(product)}
+                    className={` w-12 h-12 flex items-center justify-center rounded-full shadow transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 ${
+                      isWishlisted
+                        ? "bg-red-500 text-white"
+                        : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
+                    }`}
+                  >
+                    <Heart size={20} />
                   </button>
                 </div>
               </div>
@@ -130,9 +139,11 @@ const NewArrivals = () => {
                 <p className="text-xs uppercase text-gray-400 tracking-widest">
                   {product.subCategory?.name || "Gift Item"}
                 </p>
-                <h2 className="text-sm font-semibold text-gray-800 truncate">
-                  {product.title}
-                </h2>
+                <Link to={`/product/${product._id}`}>
+            <h2 className="inline-block text-sm py-3 font-semibold text-gray-800 truncate hover:text-red-500 cursor-pointer">
+              {product.title}
+            </h2>
+          </Link>
                 <p className="text-sm text-gray-500 truncate">
                   by {product.artisan?.name} ({product.artisan?.origin})
                 </p>

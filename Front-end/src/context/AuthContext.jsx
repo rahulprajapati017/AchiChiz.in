@@ -38,7 +38,7 @@ const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
   console.log("user my data", user);
 }
 
-        console.log("data from context",response)
+        // console.log("data from context",response)
         
       } catch (error) {
         console.log(error)

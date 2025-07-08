@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { User, MapPin, ShoppingBag, Heart, TrendingUp, Award } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 
 const AccountDashboard = () => {
-  
-  const stats = [
-    { icon: ShoppingBag, label: 'Total Orders', value: '24', color: 'bg-blue-500' },
-    { icon: Heart, label: 'Wishlist Items', value: '12', color: 'bg-pink-500' },
-    { icon: Award, label: 'Loyalty Points', value: '1,250', color: 'bg-purple-500' },
-  ];
+  const {userdata}=useContext(AuthContext)
+
+ const order = userdata?.orders?.length || 0;
+const wishlist = userdata?.addtowishlist?.length || 0;
+
+const stats = [
+  { icon: ShoppingBag, label: 'Total Orders', value: order, color: 'bg-blue-500' },
+  { icon: Heart, label: 'Wishlist Items', value: wishlist, color: 'bg-pink-500' },
+  { icon: Award, label: 'Loyalty Points', value: '1,250', color: 'bg-purple-500' },
+];
+
 
   const recentOrders = [
     { id: '#ORD-001', date: '2024-06-15', status: 'Delivered', amount: '₹125.99' },
@@ -22,7 +28,7 @@ const AccountDashboard = () => {
         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
           <User className="h-10 w-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back, Raj!</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back, {userdata.name}!</h2>
         <p className="text-gray-600 text-sm">Manage your account and track your activities from here.</p>
       </div>
 

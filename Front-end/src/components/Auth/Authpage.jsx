@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { toast } from "react-hot-toast";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import OTPPage from "./OtpPage";
 import { AuthContext, useAuth } from "../../context/AuthContext";
 import { auth } from "../../data/allapi";
@@ -39,6 +39,7 @@ const AuthPage = ({ onSuccess }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
+  const navigate=useNavigate()
 
   const [form, setForm] = useState({
     name: "",
@@ -127,9 +128,11 @@ const AuthPage = ({ onSuccess }) => {
           setShowOtpModal(true);
         } else {
           toast.error(data.message || "Signup failed");
+          navigate("/notfound")
         }
       } catch (err) {
         toast.error("An error occurred during signup");
+        navigate("/notfound")
       }
     } else if (mode === "login") {
       try {

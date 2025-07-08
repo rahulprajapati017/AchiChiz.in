@@ -45,21 +45,24 @@ const ProductPage = () => {
     return () => clearInterval(intervalRef.current);
   }, [isHoveringImage, products?.images?.length]);
 
- const handleAddToCart = async (productId) => {
+const handleAddToCart = async () => {
   if (!usertoken) {
     toast.error("Please login to add products to cart.");
     return;
   }
 
+  setLoading(true);
+
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/cart/add/${productId}`, {
+    const response = await fetch(`${product.ADD_TO_CART}/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${usertoken}`,
       },
-      body: JSON.stringify({ quantity: 1 }),
+    
     });
+    console.log(response)
 
     if (!response.ok) {
       const res = await response.json();
@@ -69,8 +72,11 @@ const ProductPage = () => {
     toast.success("Item added to cart successfully!");
   } catch (error) {
     toast.error(error.message || "Something went wrong");
+  } finally {
+    setLoading(false);
   }
 };
+
 
 
   const handleAddToWishlist = async () => {

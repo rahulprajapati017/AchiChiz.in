@@ -1,4 +1,4 @@
-const BASE_URL="http://localhost:3000/api/v1"
+const BASE_URL="https://backend-2-d52g.onrender.com/api/v1"
 
 export const auth={
     SIGNUP_BY_EMAIL:BASE_URL+"/signup",
