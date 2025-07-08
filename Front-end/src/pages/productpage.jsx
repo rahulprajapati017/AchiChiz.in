@@ -129,9 +129,9 @@ const handleAddToCart = async () => {
   const relatedProducts = [];
 
   return (
-    <div className="min-h-screen w-full mt-5 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans">
-      <div className="min-h-screen w-full mt-20 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-10 space-y-10 font-sans overflow-hidden">
-        <div className="bg-white p-6 shadow-xl">
+    <div className="min-h-screen w-full mt-3 bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12 py-5 space-y-10 font-sans">
+      <div className="min-h-screen w-full  bg-white text-[#1e1e1e] px-4 sm:px-6 lg:px-12  space-y-5 font-sans overflow-hidden">
+        <div className="bg-white  p-6 shadow-xl">
           <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-black drop-shadow">
             {products.title}
           </h1>

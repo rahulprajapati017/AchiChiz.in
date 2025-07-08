@@ -82,7 +82,7 @@ const Header = () => {
   return (
     <>
       {/* Top bar */}
-      <div className="fixed top-0 left-0 w-full z-[60] bg-black text-white text-center text-sm py-1 px-4">
+      <div className="fixed top-0 left-0 w-full z-[60] bg-[#4b3b07] text-white text-center text-sm py-1 px-4">
         🎉 Free shipping on orders over ₹999!
       </div>
 
@@ -90,11 +90,14 @@ const Header = () => {
       <nav
         className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
           scrolled
-            ? "bg-white text-black shadow-md border-b border-black/10"
+            ? "bg-[#cfbd8c] text-black shadow-md border-b border-black/10"
             : "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
         }`}
       >
-        <div className="text-2xl font-bold tracking-wide">ACHICHIZ.</div>
+        <div className="text-2xl font-bold tracking-wide">
+        <NavLink to="/">
+        ACHICHIZ.</NavLink>
+        </div>
 
         {/* Desktop Navigation */}
         <ul className="hidden lg:flex items-center gap-10 relative">
@@ -108,7 +111,7 @@ const Header = () => {
                 to={item.path}
                 className={({ isActive }) =>
                   `uppercase text-sm font-bold transition duration-300 ${
-                    isActive ? "text-[#AC604F]" : "hover:text-[#AC604F]"
+                    isActive ? "text-[#915c50]" : "hover:text-[#915c50] "
                   }`
                 }
               >
@@ -121,7 +124,7 @@ const Header = () => {
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
           <FiSearch
-            className="cursor-pointer hover:text-orange-500"
+            className="cursor-pointer hover:text-[#915c50]"
             onClick={() => setSearchOpen(!searchOpen)}
           />
 
@@ -135,7 +138,7 @@ const Header = () => {
                 {firstLetter}
               </div>
               {profileOpen && (
-                <div className="absolute top-10 right-0 bg-white shadow-md border p-3 w-40 rounded-md z-50 text-black">
+                <div className="absolute top-10 right-0 bg-[#cfbd8c] shadow-md border p-3 w-40 rounded-md z-50 text-black">
                   <NavLink
                     to="/dashboard"
                     className="block text-sm hover:text-orange-500 mb-2"
@@ -195,7 +198,7 @@ const Header = () => {
 
       {/* Mobile Drawer */}
       <div
-        className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-white text-black shadow-xl z-[999] transform ${
+        className={`lg:hidden fixed top-0 right-0 h-full w-3/4 max-w-xs bg-[#cfbd8c] text-black shadow-xl z-[999] transform ${
           mobileOpen ? "translate-x-0" : "translate-x-full"
         } transition-transform duration-500 ease-in-out`}
       >

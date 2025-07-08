@@ -67,7 +67,7 @@ const ProductCard = ({ product }) => {
     <>
       <div className="relative bg-white ml-3 overflow-hidden transition-all group">
         {/* Product Images */}
-        <div className="relative overflow-hidden w-full h-50 sm:h-70 md:h-100">
+        <div className="relative overflow-hidden w-full h-70 sm:h-70 md:h-120">
           <Link to={`/product/${product.id}`}>
             <img
               src={product.images[0]}
