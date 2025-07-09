@@ -220,7 +220,7 @@ const handleAddToCart = async () => {
 
                   <button
                     onClick={() =>
-                      navigate("/checkout", {
+                      navigate(`/checkout/${id}`, {
                         state: { product: products, quantity: 1 },
                       })
                     }

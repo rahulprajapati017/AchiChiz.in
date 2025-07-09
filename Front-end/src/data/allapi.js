@@ -9,6 +9,7 @@ export const auth={
     getAllBlogs: BASE_URL + "/getAllBlogs",
     getSingleBlogById: BASE_URL + "/getSingleBlogById",
   commentOnBlog: BASE_URL + "/commentOnBlog",
+  GET_USER_PROFILE:BASE_URL+"/userProfile"
 
     
  

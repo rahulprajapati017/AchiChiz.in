@@ -96,7 +96,7 @@ function App() {
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
            
-              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout/:id" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
               <Route path="product/:id" element={<ProductPage />} />
               <Route path="/order-page" element={<OrderPage />} />
