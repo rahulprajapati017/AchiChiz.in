@@ -37,6 +37,13 @@ const pieData = [
 ];
 const COLORS = ["#34d399", "#60a5fa", "#fbbf24", "#f87171"];
 
+const mockOverview = [
+  { id: 1, metric: "Total Sales", value: "₹2,50,000", description: "Total sales revenue this year" },
+  { id: 2, metric: "Total Orders", value: 320, description: "Number of orders placed" },
+  { id: 3, metric: "Total Customers", value: 150, description: "Registered customers" },
+  { id: 4, metric: "Active Vendors", value: 12, description: "Vendors with active listings" },
+];
+
 const Overview = () => {
   const [counts, setCounts] = useState({ revenue: 0, orders: 0, returning: 0, refunds: 0 });
   const [startDate, setStartDate] = useState("2024-07-01");
@@ -193,6 +200,30 @@ const Overview = () => {
               12% Orders with Delays
             </li>
           </ul>
+        </div>
+
+        <div className="p-6">
+          <h2 className="text-2xl font-semibold mb-4">Overview</h2>
+          <div className="overflow-x-auto bg-white rounded-xl shadow">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metric</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {mockOverview.map((item) => (
+                  <tr key={item.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.metric}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.value}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{item.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
