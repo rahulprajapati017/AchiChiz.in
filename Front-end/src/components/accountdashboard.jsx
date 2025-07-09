@@ -5,11 +5,8 @@ import { auth } from '../data/allapi';
 
 const AccountDashboard = () => {
   const { usertoken } = useContext(AuthContext);
-
-  // ✅ Local state for user data
   const [userdata, setUserdata] = useState(null);
 
-  // ✅ Fetch user data with fetch API
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -20,14 +17,13 @@ const AccountDashboard = () => {
             'Content-Type': 'application/json',
           },
         });
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch user data');
         }
-        
+
         const data = await response.json();
-        console.log(data)
-        setUserdata(data.data); // API se jo data aaya, usko set karo
+        setUserdata(data.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -38,12 +34,10 @@ const AccountDashboard = () => {
     }
   }, [usertoken]);
 
-  // 🔄 Show loader until data arrives
   if (!userdata) {
     return <div className="text-center py-10">Loading user data...</div>;
   }
 
-  // 👉 Derive values from fetched userdata
   const order = userdata?.orders?.length || 0;
   const wishlist = userdata?.addtowishlist?.length || 0;
 
@@ -51,12 +45,6 @@ const AccountDashboard = () => {
     { icon: ShoppingBag, label: 'Total Orders', value: order, color: 'bg-blue-500' },
     { icon: Heart, label: 'Wishlist Items', value: wishlist, color: 'bg-pink-500' },
     { icon: Award, label: 'Loyalty Points', value: '1,250', color: 'bg-purple-500' },
-  ];
-
-  const recentOrders = [
-    { id: '#ORD-001', date: '2024-06-15', status: 'Delivered', amount: '₹125.99' },
-    { id: '#ORD-002', date: '2024-06-10', status: 'Processing', amount: '₹89.50' },
-    { id: '#ORD-003', date: '2024-06-05', status: 'Shipped', amount: '₹234.75' },
   ];
 
   return (
@@ -80,7 +68,7 @@ const AccountDashboard = () => {
           return (
             <div
               key={index}
-              className="bg-white/30 backdrop-blur-xl  p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+              className="bg-white/30 backdrop-blur-xl p-6 border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
             >
               <div className="flex items-center gap-4">
                 <div className={`p-3 rounded-xl ${stat.color} shadow-md`}>
@@ -97,7 +85,7 @@ const AccountDashboard = () => {
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white/30 backdrop-blur-xl  p-6 border border-white/50 shadow-lg">
+      <div className="bg-white/30 backdrop-blur-xl p-6 border border-white/50 shadow-lg">
         <h3 className="text-xl font-semibold text-gray-800 mb-6 flex items-center">
           <TrendingUp className="h-5 w-5 mr-2 text-indigo-600" />
           Recent Orders
@@ -113,26 +101,39 @@ const AccountDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {recentOrders.map((order, index) => (
+              {userdata.orders?.slice(0, 5).map((order, index) => (
                 <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                  <td className="py-3 px-4 font-medium text-gray-800">{order.id}</td>
-                  <td className="py-3 px-4 text-gray-600">{order.date}</td>
+                  <td className="py-3 px-4 font-medium text-gray-800">
+                    #{order._id.slice(-6).toUpperCase()}
+                  </td>
+                  <td className="py-3 px-4 text-gray-600">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
                   <td className="py-3 px-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        order.status === 'Delivered'
+                        order.orderStatus === 'Delivered'
                           ? 'bg-green-100 text-green-700'
-                          : order.status === 'Processing'
+                          : order.orderStatus === 'Processing'
                           ? 'bg-yellow-100 text-yellow-700'
                           : 'bg-blue-100 text-blue-700'
                       }`}
                     >
-                      {order.status}
+                      {order.orderStatus}
                     </span>
                   </td>
-                  <td className="py-3 px-4 font-semibold text-gray-800">{order.amount}</td>
+                  <td className="py-3 px-4 font-semibold text-gray-800">
+                    ₹{order.totalAmount}
+                  </td>
                 </tr>
               ))}
+              {userdata.orders?.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="text-center text-gray-500 py-4">
+                    No recent orders found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
