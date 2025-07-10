@@ -12,6 +12,7 @@ import { AuthContext } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoriteContext";
 import { useCart } from "../context/CartContext";
 import AuthPage from "../components/Auth/AuthPage";
+import { product } from "../data/allapi";
 
 const navItems = [
   { title: "HOME", path: "/" },
@@ -29,6 +30,10 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
 
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
   const { logout, userdata, usertoken } = useContext(AuthContext);
@@ -39,11 +44,46 @@ const Header = () => {
   const searchHistory = ["T-Shirts", "Sneakers", "Watches", "Accessories"];
   const suggestions = ["Shoes", "Pants", "Shirts", "Jackets"];
 
+  // Fetch all products once when search dropdown opens for the first time
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-      setSearchOpen(false);
-    };
+    if (searchOpen && allProducts.length === 0) {
+      setIsLoading(true);
+      fetch(product.GET_ALL_PRODUCT) // <-- your API URL here
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch products");
+          return res.json();
+        })
+        .then((data) => {
+          if (data && data.data && Array.isArray(data.data)) {
+            setAllProducts(data.data);
+          } else {
+            setAllProducts([]);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching products:", error);
+          setAllProducts([]);
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [searchOpen, allProducts.length]);
+
+  // Filter products when searchQuery changes
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredProducts([]);
+    } else {
+      const filtered = allProducts.filter((product) =>
+        product.title
+          ? product.title.toLowerCase().includes(searchQuery.toLowerCase())
+          : false
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [searchQuery, allProducts]);
+
+  // Close search dropdown and reset query when clicking outside
+  useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
         setSearchOpen(false);
@@ -51,13 +91,18 @@ const Header = () => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
     document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("mousedown", handleClickOutside);
+  // Scroll handler
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setSearchOpen(false);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const toggleSearchBar = () => {
@@ -87,6 +132,7 @@ const Header = () => {
       navigate(path);
     }
   };
+
 
   return (
     <>
@@ -129,17 +175,17 @@ const Header = () => {
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
           {/* Search */}
           <FiSearch
-            className="cursor-pointer hover:text-[#fe5f55]"
-            onClick={toggleSearchBar}
+            className="cursor-pointer hover:text-[#915c50]"
+            onClick={() => setSearchOpen((prev) => !prev)}
           />
 
           {/* User */}
           {usertoken ? (
             <div className="relative">
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-[#fe5f55] text-white font-semibold cursor-pointer"
-                onClick={() => setProfileOpen(!profileOpen)}
-                title={userdata?.name || "User"}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer"
+                onClick={() => setProfileOpen((prev) => !prev)}
+                title={userdata.name}
               >
                 {firstLetter}
               </div>
@@ -198,7 +244,7 @@ const Header = () => {
         {/* Mobile Menu Toggle */}
         <div
           className="flex lg:hidden text-2xl cursor-pointer"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          onClick={() => setMobileOpen((prev) => !prev)}
         >
           {mobileOpen ? <FiX /> : <FiMenu />}
         </div>
@@ -276,29 +322,51 @@ const Header = () => {
           ref={searchRef}
           className="fixed top-[120px] left-1/2 -translate-x-1/2 transform z-40 w-full max-w-2xl px-4"
         >
-          <div className="rounded-md border transition-all duration-300 bg-white/5 border-white/20 backdrop-blur-[99%] hover:bg-[#fff2eb] hover:border-black/10 focus-within:bg-[#fff2eb] focus-within:border-black/10">
+          <div
+            className="max-w-3xl mx-auto rounded-md shadow-md border border-gray-300"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+            }}
+          >
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for products, categories..."
-              className="w-full p-3 outline-none text-black placeholder-gray-500 bg-transparent"
+              className="w-full p-3 outline-none rounded-t-md text-gray-800 bg-white"
               autoFocus
             />
-            {(searchQuery.length > 0 ? suggestions : searchHistory)
-              .filter((item) =>
-                item.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((item, idx) => (
+            {isLoading && (
+              <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>
+            )}
+            {!isLoading && searchQuery.trim() !== "" && filteredProducts.length === 0 && (
+              <div className="px-4 py-2 text-sm text-gray-700">No products found</div>
+            )}
+            {!isLoading &&
+              filteredProducts.map((product, idx) => (
                 <div
-                  key={idx}
-                  className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                  key={product._id || idx}
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                   onMouseDown={() => {
-                    setSearchQuery(item);
+                    setSearchQuery(product.title);
                     setSearchOpen(false);
+                    navigate(`/product/${product._id}`);
                   }}
                 >
-                  {item}
+                  {/* Image */}
+                  {product.images && product.images[0] && product.images[0].url ? (
+                    <img
+                      src={product.images[0].url}
+                      alt={product.title}
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-gray-200 rounded" />
+                  )}
+                  {/* Title */}
+                  <span>{product.title}</span>
                 </div>
               ))}
           </div>

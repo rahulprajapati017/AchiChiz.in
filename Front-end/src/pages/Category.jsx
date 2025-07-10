@@ -21,7 +21,7 @@ function Category() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(product.APPROVED_PRODUCTS_FOR_HOME);
+        const res = await fetch(product.GET_ALL_PRODUCT);
         const data = await res.json();
 
         if (!Array.isArray(data.data)) throw new Error("Invalid response");

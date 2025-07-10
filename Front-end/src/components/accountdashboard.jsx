@@ -1,11 +1,55 @@
-import React from 'react';
-import { User, MapPin, ShoppingBag, Heart, TrendingUp, Award } from 'lucide-react';
+import React, { useContext, useEffect, useState } from 'react';
+import { User, ShoppingBag, Heart, TrendingUp, Award } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
+import { auth } from '../data/allapi';
 
 const AccountDashboard = () => {
-  
+  const { usertoken } = useContext(AuthContext);
+
+  // ✅ Local state for user data
+  const [userdata, setUserdata] = useState(null);
+
+  // ✅ Fetch user data with fetch API
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(auth.GET_USER_PROFILE, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${usertoken}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+        
+        const data = await response.json();
+        console.log(data)
+        setUserdata(data.data); // API se jo data aaya, usko set karo
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    if (usertoken) {
+      fetchUserData();
+    }
+  }, [usertoken]);
+
+  // 🔄 Show loader until data arrives
+  if (!userdata) {
+    return <div className="text-center py-10">Loading user data...</div>;
+  }
+
+  // 👉 Derive values from fetched userdata
+  const order = userdata?.orders?.length || 0;
+  const wishlist = userdata?.addtowishlist?.length || 0;
+
   const stats = [
-    { icon: ShoppingBag, label: 'Total Orders', value: '24', color: 'bg-blue-500' },
-    { icon: Heart, label: 'Wishlist Items', value: '12', color: 'bg-pink-500' },
+    { icon: ShoppingBag, label: 'Total Orders', value: order, color: 'bg-blue-500' },
+    { icon: Heart, label: 'Wishlist Items', value: wishlist, color: 'bg-pink-500' },
     { icon: Award, label: 'Loyalty Points', value: '1,250', color: 'bg-purple-500' },
   ];
 
@@ -17,13 +61,16 @@ const AccountDashboard = () => {
 
   return (
     <div className="space-y-10">
-      
       <div className="text-center p-8 bg-[#F6F5F5] border border-white/40 shadow-[8px_8px_20px_rgba(0,0,0,0.05)] backdrop-blur-md">
         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
           <User className="h-10 w-10 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back, Raj!</h2>
-        <p className="text-gray-600 text-sm">Manage your account and track your activities from here.</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-1">
+          Welcome back, {userdata.name}!
+        </h2>
+        <p className="text-gray-600 text-sm">
+          Manage your account and track your activities from here.
+        </p>
       </div>
 
       {/* Stats Grid */}
@@ -67,10 +114,7 @@ const AccountDashboard = () => {
             </thead>
             <tbody>
               {recentOrders.map((order, index) => (
-                <tr
-                  key={index}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition"
-                >
+                <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition">
                   <td className="py-3 px-4 font-medium text-gray-800">{order.id}</td>
                   <td className="py-3 px-4 text-gray-600">{order.date}</td>
                   <td className="py-3 px-4">

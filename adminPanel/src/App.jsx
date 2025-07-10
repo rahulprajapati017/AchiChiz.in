@@ -11,6 +11,7 @@ import Customers from "./pages/Customers";
 import Vendors from "./pages/Vendors";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
+import Reviews from "./pages/Reviews";
 
 const App = () => {
   return (
@@ -76,6 +77,14 @@ const App = () => {
         element={
           <AdminLayout>
             <Settings />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="reviews"
+        element={
+          <AdminLayout>
+            <Reviews />
           </AdminLayout>
         }
       />

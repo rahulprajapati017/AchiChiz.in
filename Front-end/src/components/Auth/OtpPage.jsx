@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { auth } from "../../data/allapi";
+import { useNavigate } from "react-router-dom";
 
 const OTPPage = ({ onVerify, onResend, email }) => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(60);
   const inputRefs = useRef([]);
-
+const navigate=useNavigate()
   // ⏱ Countdown timer effect
   useEffect(() => {
     if (timer === 0) return;
@@ -72,10 +73,13 @@ const OTPPage = ({ onVerify, onResend, email }) => {
         onVerify && onVerify(enteredOtp); // ✅ callback to parent
       } else {
         alert(data.message || "Invalid OTP");
+        navigate("/notfound")
+        
       }
     } catch (error) {
       console.error("OTP verification error:", error);
       alert("An error occurred during verification.");
+      navigate("/notfound")
     }
   };
 

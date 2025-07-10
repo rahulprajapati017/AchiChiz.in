@@ -95,11 +95,11 @@ function App() {
               <Route path="contact-us" element={<  ContactUs />} />
               <Route path="privacy-policy" element={<  Policy />} />
               <Route path="blog" element={<  Blog />} />
-              <Route path="blogCommentSection" element={<  BlogCommentSection />} />
+              <Route path="/blog/:id" element={<  BlogCommentSection />} />
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
            
-              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout/:id" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
               <Route path="product/:id" element={<ProductPage />} />
               <Route path="/order-page" element={<OrderPage />} />
