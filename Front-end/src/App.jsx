@@ -54,11 +54,13 @@ import {
   // PayoutHistory,
   // KYCUpload,
 } from "./index";
+import Login  from "../../adminPanel/src/pages/Login";
 import { Toaster } from "react-hot-toast";
 import FavoritesPage from "./pages/Favpage";
 import CartPage from "./pages/Cart";
 import LogOut from "./components/LogOut";
 import ProductDetail from "./pages/ProductDetail";
+import { LogIn } from "lucide-react";
 
 function App() {
   return (
@@ -129,6 +131,7 @@ function App() {
               <Route path="EarningsOverview" element={<EarningsOverview />} />
               <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
               {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
+              <Route path="/admin" element={<Login/>}/>
             </Route>
               <Route path="/logout" element={<LogOut/>}/>
           </Routes>

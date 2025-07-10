@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 const BASE_URL="http://localhost:3000/api/v1"
 // const BASE_URL="https://backend-2-d52g.onrender.com/api/v1"
-=======
-const BASE_URL="https://backend-2-d52g.onrender.com/api/v1"
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
 
 export const auth={
     SIGNUP_BY_EMAIL:BASE_URL+"/signup",
@@ -27,10 +23,7 @@ export const product={
     ADD_TO_WISHLIST:BASE_URL+"/addtowishlist",
     REMOVE_FROM_WISHLIST:BASE_URL+"/removefromwishlist",
     GET_ALL_PRODUCT:BASE_URL+"/fileUpload/getallproductforcategory",
-<<<<<<< HEAD
     CREATE_ORDER:BASE_URL+"/createOrder"
-=======
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
     // BLOG_API:BASE_URL+ "/getAllBlogs"
     
 }

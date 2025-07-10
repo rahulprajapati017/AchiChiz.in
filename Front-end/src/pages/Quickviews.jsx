@@ -5,26 +5,17 @@ import { useFavorites } from "../context/FavoriteContext";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
 import { product as pro } from "../data/allapi";
-<<<<<<< HEAD
 import { useNavigate, useParams } from "react-router-dom";
-=======
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
 
 const Quickviews = ({ product, onClose }) => {
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
-<<<<<<< HEAD
   const {id} = useParams()
-=======
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
 
   const { addToCart } = useCart();
   const { addToFavorites } = useFavorites();
   const { usertoken } = useContext(AuthContext);
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
 
   const { data = {} } = product || {};
   const {
@@ -56,10 +47,7 @@ const Quickviews = ({ product, onClose }) => {
       });
 
       const result = await res.json();
-<<<<<<< HEAD
       console.log(result)
-=======
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
 
       if (res.ok) {
         addToCart(data);
@@ -84,11 +72,7 @@ const Quickviews = ({ product, onClose }) => {
 
         <div className="w-1/2 h-[90vh] relative flex items-center justify-center border-r overflow-hidden">
           <img
-<<<<<<< HEAD
             src={product.images[imageIndex]?.url}
-=======
-            src={images[imageIndex]?.url}
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
             alt={title}
             className="w-full h-full object-cover transition-all duration-300"
           />
@@ -111,18 +95,13 @@ const Quickviews = ({ product, onClose }) => {
         </div>
 
         <div className="w-1/2 h-[80vh] overflow-y-auto p-8 bg-gray-50 space-y-5">
-<<<<<<< HEAD
           <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
-=======
-          <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
 
           <div className="text-yellow-500 text-xl">
             {"★".repeat(reviews?.[0]?.rating || ratings || 4)}
           </div>
           <p className="text-sm text-gray-500">{reviews.length || 0} Customer Reviews</p>
 
-<<<<<<< HEAD
           <div className="text-2xl font-bold text-green-700">₹{product.price}</div>
           <hr className="border-gray-300" />
 
@@ -130,15 +109,6 @@ const Quickviews = ({ product, onClose }) => {
 
           <div>
             <p className="text-red-600 font-semibold">Only {product.stock} item(s) left in stock!</p>
-=======
-          <div className="text-2xl font-bold text-green-700">₹{price}</div>
-          <hr className="border-gray-300" />
-
-          <p className="text-gray-700">{description}</p>
-
-          <div>
-            <p className="text-red-600 font-semibold">Only {stock} item(s) left in stock!</p>
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
             <div className="w-full h-2 rounded-full bg-gray-200 mt-1">
               <div
                 className="bg-red-500 h-full"
@@ -173,14 +143,10 @@ const Quickviews = ({ product, onClose }) => {
             </button>
           </div>
 
-<<<<<<< HEAD
           <button
             onClick={() => navigate(`/checkout/${id}`)}
             className="w-full border border-gray-400 mt-4 py-3 font-semibold hover:bg-gray-100 transition"
           >
-=======
-          <button className="w-full border border-gray-400 mt-4 py-3 font-semibold hover:bg-gray-100 transition">
->>>>>>> ac35eccdc4eb61f5061a1026ed92865a1db889bd
             BUY NOW
           </button>
 
