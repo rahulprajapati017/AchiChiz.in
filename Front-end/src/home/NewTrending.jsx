@@ -54,7 +54,7 @@ const NewTrending = () => {
   };
 
   return (
-    <div className="max-w-8xl mx-5 px-4 py-10 font-sans  min-h-screen">
+    <div className="max-w-8xl  px-10 py-10 bg-[#fde2c3] font-sans  min-h-screen">
       <div className="w-full flex flex-col md:flex-row items-center md:justify-between gap-4 px-2 py-6">
         {/* Heading */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-center md:text-left text-[#000000]">
@@ -141,19 +141,19 @@ const NewTrending = () => {
               </div>
 
               {/* Product Info */}
-              <div className="px-3 py-2 bg-white">
-                <p className="text-xs uppercase text-gray-400 tracking-widest">
+              <div className="px-3 py-2 bg-[#fde2c3]">
+                <p className="text-xs uppercase text-black tracking-widest">
                   {product.subCategory?.name || "Gift Item"}
                 </p>
                    <Link to={`/product/${product._id}`}>
-                           <h2 className="inline-block text-sm py-3 font-semibold text-gray-800 truncate hover:text-red-500 cursor-pointer">
+                           <h2 className="inline-block text-sm py-3 font-semibold text-black truncate hover:text-red-500 cursor-pointer">
                              {product.title}
                            </h2>
                          </Link>
-                <p className="text-sm text-gray-500 truncate">
+                <p className="text-sm text-black truncate">
                   by {product.artisan?.name} ({product.artisan?.origin})
                 </p>
-                <p className="text-sm font-medium text-gray-900">₹{product.price}</p>
+                <p className="text-sm font-medium text-black">₹{product.price}</p>
               </div>
             </div>
           );

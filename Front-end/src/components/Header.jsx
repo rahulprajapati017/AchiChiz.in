@@ -28,7 +28,6 @@ const Header = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [hovered, setHovered] = useState(null);
 
   const { cartItems } = useCart();
   const { favorites } = useFavorites();
@@ -36,13 +35,15 @@ const Header = () => {
 
   const navigate = useNavigate();
   const searchRef = useRef(null);
+  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
+  const searchHistory = ["T-Shirts", "Sneakers", "Watches", "Accessories"];
+  const suggestions = ["Shoes", "Pants", "Shirts", "Jackets"];
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
       setSearchOpen(false);
     };
-
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
         setSearchOpen(false);
@@ -59,6 +60,19 @@ const Header = () => {
     };
   }, []);
 
+  const toggleSearchBar = () => {
+    if (searchOpen) {
+      setSearchOpen(false);
+    } else {
+      if (window.scrollY === 0) {
+        setSearchOpen(true);
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => setSearchOpen(true), 400);
+      }
+    }
+  };
+
   const handleLogout = () => {
     logout();
     setProfileOpen(false);
@@ -74,44 +88,34 @@ const Header = () => {
     }
   };
 
-  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
-
-  const searchHistory = ["T-Shirts", "Sneakers", "Watches", "Accessories"];
-  const suggestions = ["Shoes", "Pants", "Shirts", "Jackets"];
-
   return (
     <>
-      {/* Top bar */}
-      <div className="fixed top-0 left-0 w-full z-[60] bg-[#4b3b07] text-white text-center text-sm py-1 px-4">
+      {/* Top Bar */}
+      <div className="fixed top-0 left-0 w-full z-[60] bg-black text-white text-center text-sm py-1">
         🎉 Free shipping on orders over ₹999!
       </div>
 
-      {/* Main navbar */}
+      {/* Navbar */}
       <nav
         className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
           scrolled
-            ? "bg-[#cfbd8c] text-black shadow-md border-b border-black/10"
+            ? "bg-[#fff2eb] text-black shadow-md border-b border-black/10"
             : "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
         }`}
       >
         <div className="text-2xl font-bold tracking-wide">
-        <NavLink to="/">
-        ACHICHIZ.</NavLink>
+          <NavLink to="/">ACHICHIZ.</NavLink>
         </div>
 
-        {/* Desktop Navigation */}
-        <ul className="hidden lg:flex items-center gap-10 relative">
-          {navItems.map((item, idx) => (
-            <li
-              key={item.title}
-              onMouseEnter={() => setHovered(idx)}
-              onMouseLeave={() => setHovered(null)}
-            >
+        {/* Desktop Nav */}
+        <ul className="hidden lg:flex items-center gap-10">
+          {navItems.map((item) => (
+            <li key={item.title}>
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
                   `uppercase text-sm font-bold transition duration-300 ${
-                    isActive ? "text-[#915c50]" : "hover:text-[#915c50] "
+                    isActive ? "text-[#fe5f55]" : "hover:text-[#fe5f55]"
                   }`
                 }
               >
@@ -123,17 +127,19 @@ const Header = () => {
 
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
+          {/* Search */}
           <FiSearch
-            className="cursor-pointer hover:text-[#915c50]"
-            onClick={() => setSearchOpen(!searchOpen)}
+            className="cursor-pointer hover:text-[#fe5f55]"
+            onClick={toggleSearchBar}
           />
 
-          {usertoken && userdata?.name ? (
+          {/* User */}
+          {usertoken ? (
             <div className="relative">
               <div
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-[#fe5f55] text-white font-semibold cursor-pointer"
                 onClick={() => setProfileOpen(!profileOpen)}
-                title={userdata.name}
+                title={userdata?.name || "User"}
               >
                 {firstLetter}
               </div>
@@ -141,13 +147,13 @@ const Header = () => {
                 <div className="absolute top-10 right-0 bg-[#cfbd8c] shadow-md border p-3 w-40 rounded-md z-50 text-black">
                   <NavLink
                     to="/dashboard"
-                    className="block text-sm hover:text-orange-500 mb-2"
+                    className="block text-sm hover:text-[#fe5f55] mb-2"
                     onClick={() => setProfileOpen(false)}
                   >
                     Profile
                   </NavLink>
                   <div
-                    className="text-sm hover:text-orange-500 cursor-pointer"
+                    className="text-sm hover:text-[#fe5f55] cursor-pointer"
                     onClick={handleLogout}
                   >
                     Logout
@@ -157,37 +163,39 @@ const Header = () => {
             </div>
           ) : (
             <FiUser
-              className="cursor-pointer hover:text-orange-500"
+              className="cursor-pointer hover:text-[#fe5f55]"
               onClick={() => setShowLoginModal(true)}
             />
           )}
 
+          {/* Wishlist */}
           <div
             onClick={() => handleProtectedClick("/favoritespage")}
             className="relative cursor-pointer"
           >
-            <FiHeart className="hover:text-red-500" />
+            <FiHeart className="hover:text-[#fe5f55]" />
             {favorites.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-[#fe4134] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {favorites.length}
               </span>
             )}
           </div>
 
+          {/* Cart */}
           <div
             onClick={() => handleProtectedClick("/cartpage")}
             className="relative cursor-pointer"
           >
             <FiShoppingCart className="hover:text-red-500" />
             {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-[#fe4134] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {cartItems.length}
               </span>
             )}
           </div>
         </div>
 
-        {/* Mobile Menu Icon */}
+        {/* Mobile Menu Toggle */}
         <div
           className="flex lg:hidden text-2xl cursor-pointer"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -204,10 +212,13 @@ const Header = () => {
       >
         <div className="flex justify-between items-center p-4 border-b">
           <div className="text-xl font-bold">ACHICHIZ.</div>
-          <FiX className="text-2xl cursor-pointer" onClick={() => setMobileOpen(false)} />
+          <FiX
+            className="text-2xl cursor-pointer"
+            onClick={() => setMobileOpen(false)}
+          />
         </div>
 
-        <ul className="flex flex-col gap-4 p-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+        <ul className="flex flex-col gap-4 p-6">
           {navItems.map((item) => (
             <li key={item.title}>
               <NavLink
@@ -220,43 +231,42 @@ const Header = () => {
             </li>
           ))}
 
-          {usertoken && userdata?.name ? (
-            <div className="mt-6 border-t pt-4">
-              <div className="text-lg font-medium mb-2 flex items-center gap-2">
+          {/* Mobile User Info */}
+          <div className="flex items-center gap-3 mt-4">
+            {usertoken ? (
+              <>
                 <div className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold">
                   {firstLetter}
                 </div>
-                {userdata.name}
+                <div className="text-sm font-medium">
+                  {userdata?.name || "User"}
+                </div>
+              </>
+            ) : (
+              <div
+                className="text-sm text-blue-600 underline cursor-pointer"
+                onClick={() => {
+                  setShowLoginModal(true);
+                  setMobileOpen(false);
+                }}
+              >
+                Login / Sign Up
               </div>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <NavLink
-                    to="/dashboard"
-                    className="hover:text-orange-500"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Profile
-                  </NavLink>
-                </li>
-                <li
-                  className="hover:text-orange-500 cursor-pointer"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </li>
-              </ul>
-            </div>
-          ) : (
-            <div
-              className="mt-4 text-sm text-blue-600 underline cursor-pointer"
-              onClick={() => {
-                setShowLoginModal(true);
-                setMobileOpen(false);
-              }}
-            >
-              Login / Sign Up
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Mobile Icons */}
+          <div className="flex gap-6 text-xl mt-4">
+            <FiSearch onClick={toggleSearchBar} className="cursor-pointer" />
+            <FiHeart
+              onClick={() => handleProtectedClick("/favoritespage")}
+              className="cursor-pointer"
+            />
+            <FiShoppingCart
+              onClick={() => handleProtectedClick("/cartpage")}
+              className="cursor-pointer"
+            />
+          </div>
         </ul>
       </div>
 
@@ -264,15 +274,15 @@ const Header = () => {
       {searchOpen && (
         <div
           ref={searchRef}
-          className="absolute top-[108px] left-0 w-full z-40 px-4 sm:px-8 md:px-12"
+          className="fixed top-[120px] left-1/2 -translate-x-1/2 transform z-40 w-full max-w-2xl px-4"
         >
-          <div className="max-w-3xl mx-auto bg-white rounded-md shadow-md border border-gray-300">
+          <div className="rounded-md border transition-all duration-300 bg-white/5 border-white/20 backdrop-blur-[99%] hover:bg-[#fff2eb] hover:border-black/10 focus-within:bg-[#fff2eb] focus-within:border-black/10">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for products, categories..."
-              className="w-full p-3 outline-none rounded-t-md text-gray-800"
+              className="w-full p-3 outline-none text-black placeholder-gray-500 bg-transparent"
               autoFocus
             />
             {(searchQuery.length > 0 ? suggestions : searchHistory)

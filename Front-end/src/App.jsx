@@ -41,6 +41,9 @@ import {
   OtpPage,
   PageTopBanner,
   Payment,
+  FaqPage,
+  PaymentSuccessPage, 
+  PaymentFailPage,
 
 
   // seller dashboard imports
@@ -116,6 +119,9 @@ function App() {
               <Route path="/otp" element={<OtpPage />} />
               <Route path="/page-top-banner" element={<PageTopBanner/>} />
               <Route path="/payment" element={<Payment />} />
+              <Route path="/payment-success" element={<PaymentSuccessPage />} />
+              <Route path="/payment-failure" element={<PaymentFailPage />} />
+              <Route path="/FaqPage" element={<FaqPage />} />
 
               <Route path="sellerDashboard" element={<SellerDashboard />} />
               {/* <Route path ="ProductList" element={<ProductList />} />

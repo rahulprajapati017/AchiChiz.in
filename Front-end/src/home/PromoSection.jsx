@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 const PromoSection = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white mt-25">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-15 p-4 bg-[#fde2c3] ">
       {/* Handmade Section */}
       <div className="relative overflow-hidden ">
         <img

@@ -54,15 +54,14 @@ const NewArrivals = () => {
   };
 
   return (
-    <div className="max-w-8xl mx-5 px-4 py-10 font-sans  min-h-screen">
-      <div className="flex items-center justify-center px-4 py-2">
+    <div className="max-w-8xl font-sans bg-[#fde2c3] min-h-screen">
+      <div className="flex items-center justify-center">
         <h2 className="text-5xl font-serif text-[#000000]">New Arrivals</h2>
       </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-10">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 px-10 pt-10">
         {productsData.slice(0, 4).map((product) => {
           const isWishlisted = wishlistIds.includes(product._id);
-
+          
           return (
             <div key={product._id} className="relative bg-white overflow-hidden">
               <div className="relative overflow-hidden w-full h-70 sm:h-52 md:h-110 group">
@@ -77,11 +76,11 @@ const NewArrivals = () => {
                       src={product.images[1].url}
                       alt={product.title}
                       className="absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-hover:scale-105"
-                    />
+                      />
                   )}
                 </Link>
 
-                <div className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded-4xl shadow-md">
+                <div className="absolute top-3 left-3 bg-[#4dc149] text-white text-xs font-semibold px-3 py-1 rounded-4xl shadow-md">
                   {product.isHandmade ? "Handmade" : "Hot"}
                 </div>
 
@@ -101,7 +100,7 @@ const NewArrivals = () => {
                       setShowQuickView(true);
                     }}
                     className="bg-white  w-12 h-12 flex items-center justify-center rounded-full shadow hover:bg-red-500 text-gray-600 hover:text-white transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-200"
-                  >
+                    >
                     <Eye size={20} />
                   </button>
 
@@ -109,17 +108,17 @@ const NewArrivals = () => {
                     onClick={() => toggleWishlist(product)}
                     className={` w-12 h-12 flex items-center justify-center rounded-full shadow transition opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 ${
                       isWishlisted
-                        ? "bg-red-500 text-white"
-                        : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
+                      ? "bg-red-500 text-white"
+                      : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
                     }`}
-                  >
+                    >
                     <Heart size={20} />
                   </button>
                 </div>
               </div>
 
               {/* Product Info */}
-              <div className="px-4 py-2 bg-white">
+              <div className="px-4 py-2 bg-[#fde2c3]">
                 <p className="text-xs uppercase text-gray-400 tracking-widest">
                   {product.subCategory?.name || "Gift Item"}
                 </p>
@@ -127,11 +126,11 @@ const NewArrivals = () => {
             <h2 className="inline-block text-sm py-3 font-semibold text-gray-800 truncate hover:text-red-500 cursor-pointer">
               {product.title}
             </h2>
-          </Link>
                 <p className="text-sm text-gray-500 truncate">
                   by {product.artisan?.name} ({product.artisan?.origin})
                 </p>
                 <p className="text-sm font-medium text-gray-900">₹{product.price}</p>
+          </Link>
               </div>
             </div>
           );

@@ -39,13 +39,13 @@ const CustomerReview = () => {
   }, []);
 
   return (
-    <section className="bg-white px-4 md:px-20">
+    <section className="bg-[#fde2c3] py-10 px-4 md:px-20">
       {/* Heading */}
       <div className="text-center mb-10">
-        <h2 className="text-2xl md:text-3xl font-serif uppercase tracking-wide">
+        <h1 className="text-4xl  tracking-wide">
           CUSTOMER REVIEWS
-        </h2>
-        <p className="mt-2 text-sm text-gray-600 max-w-2xl mx-auto">
+        </h1>
+        <p className="mt-2 text-sm text-black max-w-2xl mx-auto">
           Handmade items are created with heart and soul. Here’s what our happy
           customers have to say.
         </p>
