@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   FiSearch,
   FiUser,
@@ -39,22 +39,29 @@ const Header = () => {
   const { logout, userdata, usertoken } = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const searchRef = useRef(null);
-  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
-  const searchHistory = ["T-Shirts", "Sneakers", "Watches", "Accessories"];
-  const suggestions = ["Shoes", "Pants", "Shirts", "Jackets"];
 
-  // Fetch all products once when search dropdown opens for the first time
+  const isLoggedIn = !!usertoken;
+  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
+
+  // Auto-close on route change
+  useEffect(() => {
+    setMobileOpen(false);
+    setProfileOpen(false);
+  }, [location.pathname]);
+
+  // Fetch products for search
   useEffect(() => {
     if (searchOpen && allProducts.length === 0) {
       setIsLoading(true);
-      fetch(product.GET_ALL_PRODUCT) // <-- your API URL here
+      fetch(product.GET_ALL_PRODUCT)
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch products");
           return res.json();
         })
         .then((data) => {
-          if (data && data.data && Array.isArray(data.data)) {
+          if (data?.data && Array.isArray(data.data)) {
             setAllProducts(data.data);
           } else {
             setAllProducts([]);
@@ -68,21 +75,19 @@ const Header = () => {
     }
   }, [searchOpen, allProducts.length]);
 
-  // Filter products when searchQuery changes
+  // Filter products on query change
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredProducts([]);
     } else {
       const filtered = allProducts.filter((product) =>
-        product.title
-          ? product.title.toLowerCase().includes(searchQuery.toLowerCase())
-          : false
+        product.title?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredProducts(filtered);
     }
   }, [searchQuery, allProducts]);
 
-  // Close search dropdown and reset query when clicking outside
+  // Close search dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -90,12 +95,11 @@ const Header = () => {
         setSearchQuery("");
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Scroll handler
+  // Scroll effects
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -120,19 +124,16 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    setProfileOpen(false);
-    setMobileOpen(false);
     navigate("/logout");
   };
 
   const handleProtectedClick = (path) => {
-    if (!usertoken) {
+    if (!isLoggedIn) {
       setShowLoginModal(true);
     } else {
       navigate(path);
     }
   };
-
 
   return (
     <>
@@ -149,11 +150,12 @@ const Header = () => {
             : "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
         }`}
       >
+        {/* Logo */}
         <div className="text-2xl font-bold tracking-wide">
           <NavLink to="/">ACHICHIZ.</NavLink>
         </div>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav Links */}
         <ul className="hidden lg:flex items-center gap-10">
           {navItems.map((item) => (
             <li key={item.title}>
@@ -173,19 +175,14 @@ const Header = () => {
 
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
-          {/* Search */}
-          <FiSearch
-            className="cursor-pointer hover:text-[#915c50]"
-            onClick={() => setSearchOpen((prev) => !prev)}
-          />
+          <FiSearch className="cursor-pointer hover:text-[#915c50]" onClick={toggleSearchBar} />
 
-          {/* User */}
-          {usertoken ? (
+          {isLoggedIn ? (
             <div className="relative">
               <div
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer"
-                onClick={() => setProfileOpen((prev) => !prev)}
-                title={userdata.name}
+                onClick={() => setProfileOpen(!profileOpen)}
+                title={userdata?.name}
               >
                 {firstLetter}
               </div>
@@ -194,7 +191,6 @@ const Header = () => {
                   <NavLink
                     to="/dashboard"
                     className="block text-sm hover:text-[#fe5f55] mb-2"
-                    onClick={() => setProfileOpen(false)}
                   >
                     Profile
                   </NavLink>
@@ -208,17 +204,11 @@ const Header = () => {
               )}
             </div>
           ) : (
-            <FiUser
-              className="cursor-pointer hover:text-[#fe5f55]"
-              onClick={() => setShowLoginModal(true)}
-            />
+            <FiUser className="cursor-pointer hover:text-[#fe5f55]" onClick={() => setShowLoginModal(true)} />
           )}
 
           {/* Wishlist */}
-          <div
-            onClick={() => handleProtectedClick("/favoritespage")}
-            className="relative cursor-pointer"
-          >
+          <div onClick={() => handleProtectedClick("/favoritespage")} className="relative cursor-pointer">
             <FiHeart className="hover:text-[#fe5f55]" />
             {favorites.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#fe4134] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
@@ -228,10 +218,7 @@ const Header = () => {
           </div>
 
           {/* Cart */}
-          <div
-            onClick={() => handleProtectedClick("/cartpage")}
-            className="relative cursor-pointer"
-          >
+          <div onClick={() => handleProtectedClick("/cartpage")} className="relative cursor-pointer">
             <FiShoppingCart className="hover:text-red-500" />
             {cartItems.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#fe4134] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
@@ -241,11 +228,8 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <div
-          className="flex lg:hidden text-2xl cursor-pointer"
-          onClick={() => setMobileOpen((prev) => !prev)}
-        >
+        {/* Mobile Menu Icon */}
+        <div className="flex lg:hidden text-2xl cursor-pointer" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <FiX /> : <FiMenu />}
         </div>
       </nav>
@@ -258,10 +242,7 @@ const Header = () => {
       >
         <div className="flex justify-between items-center p-4 border-b">
           <div className="text-xl font-bold">ACHICHIZ.</div>
-          <FiX
-            className="text-2xl cursor-pointer"
-            onClick={() => setMobileOpen(false)}
-          />
+          <FiX className="text-2xl cursor-pointer" onClick={() => setMobileOpen(false)} />
         </div>
 
         <ul className="flex flex-col gap-4 p-6">
@@ -279,14 +260,12 @@ const Header = () => {
 
           {/* Mobile User Info */}
           <div className="flex items-center gap-3 mt-4">
-            {usertoken ? (
+            {isLoggedIn ? (
               <>
                 <div className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold">
                   {firstLetter}
                 </div>
-                <div className="text-sm font-medium">
-                  {userdata?.name || "User"}
-                </div>
+                <div className="text-sm font-medium">{userdata?.name || "User"}</div>
               </>
             ) : (
               <div
@@ -305,18 +284,24 @@ const Header = () => {
           <div className="flex gap-6 text-xl mt-4">
             <FiSearch onClick={toggleSearchBar} className="cursor-pointer" />
             <FiHeart
-              onClick={() => handleProtectedClick("/favoritespage")}
+              onClick={() => {
+                setMobileOpen(false);
+                handleProtectedClick("/favoritespage");
+              }}
               className="cursor-pointer"
             />
             <FiShoppingCart
-              onClick={() => handleProtectedClick("/cartpage")}
+              onClick={() => {
+                setMobileOpen(false);
+                handleProtectedClick("/cartpage");
+              }}
               className="cursor-pointer"
             />
           </div>
         </ul>
       </div>
 
-      {/* Search Bar */}
+      {/* Search Dropdown */}
       {searchOpen && (
         <div
           ref={searchRef}
@@ -338,9 +323,7 @@ const Header = () => {
               className="w-full p-3 outline-none rounded-t-md text-gray-800 bg-white"
               autoFocus
             />
-            {isLoading && (
-              <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>
-            )}
+            {isLoading && <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>}
             {!isLoading && searchQuery.trim() !== "" && filteredProducts.length === 0 && (
               <div className="px-4 py-2 text-sm text-gray-700">No products found</div>
             )}
@@ -355,8 +338,7 @@ const Header = () => {
                     navigate(`/product/${product._id}`);
                   }}
                 >
-                  {/* Image */}
-                  {product.images && product.images[0] && product.images[0].url ? (
+                  {product.images?.[0]?.url ? (
                     <img
                       src={product.images[0].url}
                       alt={product.title}
@@ -365,7 +347,6 @@ const Header = () => {
                   ) : (
                     <div className="w-10 h-10 bg-gray-200 rounded" />
                   )}
-                  {/* Title */}
                   <span>{product.title}</span>
                 </div>
               ))}
