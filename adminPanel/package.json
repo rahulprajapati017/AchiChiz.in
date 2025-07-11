@@ -21,6 +21,10 @@
     "react-csv": "^2.2.2",
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
+<<<<<<< HEAD
+=======
+    "react-icons": "^5.5.0",
+>>>>>>> a7cee864a0040b35f73a5d6d8a7b9e8c80880776
     "react-router-dom": "^7.6.3",
     "rechart": "^0.0.1",
     "recharts": "^3.0.2"

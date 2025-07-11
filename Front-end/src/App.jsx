@@ -41,9 +41,7 @@ import {
   OtpPage,
   PageTopBanner,
   Payment,
-  FaqPage,
-  PaymentSuccessPage, 
-  PaymentFailPage,
+  CustomProductPage,
 
 
   // seller dashboard imports
@@ -57,11 +55,13 @@ import {
   // PayoutHistory,
   // KYCUpload,
 } from "./index";
+import Login  from "../../adminPanel/src/pages/Login";
 import { Toaster } from "react-hot-toast";
 import FavoritesPage from "./pages/Favpage";
 import CartPage from "./pages/Cart";
 import LogOut from "./components/LogOut";
 import ProductDetail from "./pages/ProductDetail";
+import { LogIn } from "lucide-react";
 
 function App() {
   return (
@@ -98,6 +98,7 @@ function App() {
               <Route path="/blog/:id" element={<  BlogCommentSection />} />
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
+              <Route path="CustomProductPage" element={< CustomProductPage />} />
            
               <Route path="/checkout/:id" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
@@ -119,9 +120,6 @@ function App() {
               <Route path="/otp" element={<OtpPage />} />
               <Route path="/page-top-banner" element={<PageTopBanner/>} />
               <Route path="/payment" element={<Payment />} />
-              <Route path="/payment-success" element={<PaymentSuccessPage />} />
-              <Route path="/payment-failure" element={<PaymentFailPage />} />
-              <Route path="/FaqPage" element={<FaqPage />} />
 
               <Route path="sellerDashboard" element={<SellerDashboard />} />
               {/* <Route path ="ProductList" element={<ProductList />} />
@@ -135,6 +133,7 @@ function App() {
               <Route path="EarningsOverview" element={<EarningsOverview />} />
               <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
               {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
+              <Route path="/admin" element={<Login/>}/>
             </Route>
               <Route path="/logout" element={<LogOut/>}/>
           </Routes>

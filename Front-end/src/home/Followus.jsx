@@ -47,7 +47,7 @@ function Followus() {
   ];
 
   return (
-    <div className="followus-layout md:h-[60vh] grid grid-cols-6 grid-rows-2 bg-[#f5c996]  gap-2 w-full px-5 py-10">
+    <div className="followus-layout md:h-[60vh] grid grid-cols-6 grid-rows-2  gap-2 w-full px-5 py-10">
       {images.map((img, index) => (
         <div
           key={index}

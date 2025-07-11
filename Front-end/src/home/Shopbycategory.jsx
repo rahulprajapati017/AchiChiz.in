@@ -28,7 +28,7 @@ const CategorySliderSection = ({
   }, [autoRotate, rotateInterval]);
 
   return (
-    <section className="w-full flex flex-col py-20 md:flex-row items-start justify-center bg-[#fde2c3] p-0 m-0 overflow-hidden">
+    <section className="w-full flex flex-col py-20 md:flex-row items-start justify-center bg-[#f5f2ed] p-0 m-0 overflow-hidden">
       {/* Left Image Section */}
       <div className="w-full  md:w-1/2 md:h-[700px]">
         <img

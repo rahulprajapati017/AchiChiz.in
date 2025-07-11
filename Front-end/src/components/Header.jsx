@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiSearch,
   FiUser,
@@ -29,6 +29,7 @@ const Header = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [hovered, setHovered] = useState(null);
 
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -39,29 +40,19 @@ const Header = () => {
   const { logout, userdata, usertoken } = useContext(AuthContext);
 
   const navigate = useNavigate();
-  const location = useLocation();
   const searchRef = useRef(null);
 
-  const isLoggedIn = !!usertoken;
-  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
-
-  // Auto-close on route change
-  useEffect(() => {
-    setMobileOpen(false);
-    setProfileOpen(false);
-  }, [location.pathname]);
-
-  // Fetch products for search
+  // Fetch all products once when search dropdown opens for the first time
   useEffect(() => {
     if (searchOpen && allProducts.length === 0) {
       setIsLoading(true);
-      fetch(product.GET_ALL_PRODUCT)
+      fetch(product.GET_ALL_PRODUCT) // <-- your API URL here
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch products");
           return res.json();
         })
         .then((data) => {
-          if (data?.data && Array.isArray(data.data)) {
+          if (data && data.data && Array.isArray(data.data)) {
             setAllProducts(data.data);
           } else {
             setAllProducts([]);
@@ -75,19 +66,21 @@ const Header = () => {
     }
   }, [searchOpen, allProducts.length]);
 
-  // Filter products on query change
+  // Filter products when searchQuery changes
   useEffect(() => {
     if (searchQuery.trim() === "") {
       setFilteredProducts([]);
     } else {
       const filtered = allProducts.filter((product) =>
-        product.title?.toLowerCase().includes(searchQuery.toLowerCase())
+        product.title
+          ? product.title.toLowerCase().includes(searchQuery.toLowerCase())
+          : false
       );
       setFilteredProducts(filtered);
     }
   }, [searchQuery, allProducts]);
 
-  // Close search dropdown on outside click
+  // Close search dropdown and reset query when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
@@ -99,7 +92,7 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Scroll effects
+  // Scroll handler
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -109,61 +102,55 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleSearchBar = () => {
-    if (searchOpen) {
-      setSearchOpen(false);
-    } else {
-      if (window.scrollY === 0) {
-        setSearchOpen(true);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setTimeout(() => setSearchOpen(true), 400);
-      }
-    }
-  };
-
   const handleLogout = () => {
     logout();
+    setProfileOpen(false);
+    setMobileOpen(false);
     navigate("/logout");
   };
 
   const handleProtectedClick = (path) => {
-    if (!isLoggedIn) {
+    if (!usertoken) {
       setShowLoginModal(true);
     } else {
       navigate(path);
     }
   };
 
+  const firstLetter = userdata?.name?.charAt(0)?.toUpperCase() || "U";
+
   return (
     <>
-      {/* Top Bar */}
-      <div className="fixed top-0 left-0 w-full z-[60] bg-black text-white text-center text-sm py-1">
+      {/* Top bar */}
+      <div className="fixed top-0 left-0 w-full z-[60] bg-[#4b3b07] text-white text-center text-sm py-1 px-4">
         🎉 Free shipping on orders over ₹999!
       </div>
 
-      {/* Navbar */}
+      {/* Main navbar */}
       <nav
         className={`fixed top-[28px] w-full z-50 px-4 sm:px-8 md:px-12 py-3 h-[80px] flex items-center justify-between transition-all duration-300 ${
           scrolled
-            ? "bg-[#fff2eb] text-black shadow-md border-b border-black/10"
+            ? "bg-[#cfbd8c] text-black shadow-md border-b border-black/10"
             : "bg-white/5 backdrop-blur-[99%] text-white border-b border-white/20"
         }`}
       >
-        {/* Logo */}
         <div className="text-2xl font-bold tracking-wide">
           <NavLink to="/">ACHICHIZ.</NavLink>
         </div>
 
-        {/* Desktop Nav Links */}
-        <ul className="hidden lg:flex items-center gap-10">
-          {navItems.map((item) => (
-            <li key={item.title}>
+        {/* Desktop Navigation */}
+        <ul className="hidden lg:flex items-center gap-10 relative">
+          {navItems.map((item, idx) => (
+            <li
+              key={item.title}
+              onMouseEnter={() => setHovered(idx)}
+              onMouseLeave={() => setHovered(null)}
+            >
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
                   `uppercase text-sm font-bold transition duration-300 ${
-                    isActive ? "text-[#fe5f55]" : "hover:text-[#fe5f55]"
+                    isActive ? "text-[#915c50]" : "hover:text-[#915c50] "
                   }`
                 }
               >
@@ -175,14 +162,17 @@ const Header = () => {
 
         {/* Desktop Icons */}
         <div className="hidden lg:flex items-center gap-5 text-lg relative">
-          <FiSearch className="cursor-pointer hover:text-[#915c50]" onClick={toggleSearchBar} />
+          <FiSearch
+            className="cursor-pointer hover:text-[#915c50]"
+            onClick={() => setSearchOpen((prev) => !prev)}
+          />
 
-          {isLoggedIn ? (
+          {usertoken && userdata?.name ? (
             <div className="relative">
               <div
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold cursor-pointer"
-                onClick={() => setProfileOpen(!profileOpen)}
-                title={userdata?.name}
+                onClick={() => setProfileOpen((prev) => !prev)}
+                title={userdata.name}
               >
                 {firstLetter}
               </div>
@@ -190,12 +180,13 @@ const Header = () => {
                 <div className="absolute top-10 right-0 bg-[#cfbd8c] shadow-md border p-3 w-40 rounded-md z-50 text-black">
                   <NavLink
                     to="/dashboard"
-                    className="block text-sm hover:text-[#fe5f55] mb-2"
+                    className="block text-sm hover:text-orange-500 mb-2"
+                    onClick={() => setProfileOpen(false)}
                   >
                     Profile
                   </NavLink>
                   <div
-                    className="text-sm hover:text-[#fe5f55] cursor-pointer"
+                    className="text-sm hover:text-orange-500 cursor-pointer"
                     onClick={handleLogout}
                   >
                     Logout
@@ -204,24 +195,31 @@ const Header = () => {
               )}
             </div>
           ) : (
-            <FiUser className="cursor-pointer hover:text-[#fe5f55]" onClick={() => setShowLoginModal(true)} />
+            <FiUser
+              className="cursor-pointer hover:text-orange-500"
+              onClick={() => setShowLoginModal(true)}
+            />
           )}
 
-          {/* Wishlist */}
-          <div onClick={() => handleProtectedClick("/favoritespage")} className="relative cursor-pointer">
-            <FiHeart className="hover:text-[#fe5f55]" />
+          <div
+            onClick={() => handleProtectedClick("/favoritespage")}
+            className="relative cursor-pointer"
+          >
+            <FiHeart className="hover:text-red-500" />
             {favorites.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#fe4134] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {favorites.length}
               </span>
             )}
           </div>
 
-          {/* Cart */}
-          <div onClick={() => handleProtectedClick("/cartpage")} className="relative cursor-pointer">
+          <div
+            onClick={() => handleProtectedClick("/cartpage")}
+            className="relative cursor-pointer"
+          >
             <FiShoppingCart className="hover:text-red-500" />
             {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#fe4134] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
                 {cartItems.length}
               </span>
             )}
@@ -229,7 +227,10 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu Icon */}
-        <div className="flex lg:hidden text-2xl cursor-pointer" onClick={() => setMobileOpen(!mobileOpen)}>
+        <div
+          className="flex lg:hidden text-2xl cursor-pointer"
+          onClick={() => setMobileOpen((prev) => !prev)}
+        >
           {mobileOpen ? <FiX /> : <FiMenu />}
         </div>
       </nav>
@@ -242,10 +243,13 @@ const Header = () => {
       >
         <div className="flex justify-between items-center p-4 border-b">
           <div className="text-xl font-bold">ACHICHIZ.</div>
-          <FiX className="text-2xl cursor-pointer" onClick={() => setMobileOpen(false)} />
+          <FiX
+            className="text-2xl cursor-pointer"
+            onClick={() => setMobileOpen(false)}
+          />
         </div>
 
-        <ul className="flex flex-col gap-4 p-6">
+        <ul className="flex flex-col gap-4 p-6 overflow-y-auto max-h-[calc(100vh-140px)]">
           {navItems.map((item) => (
             <li key={item.title}>
               <NavLink
@@ -258,54 +262,51 @@ const Header = () => {
             </li>
           ))}
 
-          {/* Mobile User Info */}
-          <div className="flex items-center gap-3 mt-4">
-            {isLoggedIn ? (
-              <>
+          {usertoken && userdata?.name ? (
+            <div className="mt-6 border-t pt-4">
+              <div className="text-lg font-medium mb-2 flex items-center gap-2">
                 <div className="w-8 h-8 flex items-center justify-center rounded-full bg-orange-500 text-white font-semibold">
                   {firstLetter}
                 </div>
-                <div className="text-sm font-medium">{userdata?.name || "User"}</div>
-              </>
-            ) : (
-              <div
-                className="text-sm text-blue-600 underline cursor-pointer"
-                onClick={() => {
-                  setShowLoginModal(true);
-                  setMobileOpen(false);
-                }}
-              >
-                Login / Sign Up
+                {userdata.name}
               </div>
-            )}
-          </div>
-
-          {/* Mobile Icons */}
-          <div className="flex gap-6 text-xl mt-4">
-            <FiSearch onClick={toggleSearchBar} className="cursor-pointer" />
-            <FiHeart
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    className="hover:text-orange-500"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Profile
+                  </NavLink>
+                </li>
+                <li
+                  className="hover:text-orange-500 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <div
+              className="mt-4 text-sm text-blue-600 underline cursor-pointer"
               onClick={() => {
+                setShowLoginModal(true);
                 setMobileOpen(false);
-                handleProtectedClick("/favoritespage");
               }}
-              className="cursor-pointer"
-            />
-            <FiShoppingCart
-              onClick={() => {
-                setMobileOpen(false);
-                handleProtectedClick("/cartpage");
-              }}
-              className="cursor-pointer"
-            />
-          </div>
+            >
+              Login / Sign Up
+            </div>
+          )}
         </ul>
       </div>
 
-      {/* Search Dropdown */}
+      {/* Search Bar */}
       {searchOpen && (
         <div
           ref={searchRef}
-          className="fixed top-[120px] left-1/2 -translate-x-1/2 transform z-40 w-full max-w-2xl px-4"
+          className="absolute top-[108px] left-0 w-full z-40 px-4 sm:px-8 md:px-12"
         >
           <div
             className="max-w-3xl mx-auto rounded-md shadow-md border border-gray-300"
@@ -323,7 +324,9 @@ const Header = () => {
               className="w-full p-3 outline-none rounded-t-md text-gray-800 bg-white"
               autoFocus
             />
-            {isLoading && <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>}
+            {isLoading && (
+              <div className="px-4 py-2 text-sm text-gray-700">Loading...</div>
+            )}
             {!isLoading && searchQuery.trim() !== "" && filteredProducts.length === 0 && (
               <div className="px-4 py-2 text-sm text-gray-700">No products found</div>
             )}
@@ -338,7 +341,8 @@ const Header = () => {
                     navigate(`/product/${product._id}`);
                   }}
                 >
-                  {product.images?.[0]?.url ? (
+                  {/* Image */}
+                  {product.images && product.images[0] && product.images[0].url ? (
                     <img
                       src={product.images[0].url}
                       alt={product.title}
@@ -347,6 +351,7 @@ const Header = () => {
                   ) : (
                     <div className="w-10 h-10 bg-gray-200 rounded" />
                   )}
+                  {/* Title */}
                   <span>{product.title}</span>
                 </div>
               ))}

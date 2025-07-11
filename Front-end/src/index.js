@@ -39,6 +39,7 @@ export { default as Payment } from './pages/Payment';
 export { default as PaymentSuccessPage } from './pages/PaymentSuccess';
 export { default as PaymentFailPage } from './pages/PaymentFailure'; 
 export { default as FaqPage } from './pages/FaqPage';
+export { default as CustomProductPage } from './pages/CustomizeProductPage';
 
 
 //seller dashboard
