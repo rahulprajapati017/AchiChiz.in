@@ -62,12 +62,16 @@ import LogOut from "./components/LogOut";
 import ProductDetail from "./pages/ProductDetail";
 import { LogIn } from "lucide-react";
 
+
+
 function App() {
   return (
     <CartProvider>
       <FavoriteProvider>
         <>
           <Routes>
+
+              
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="customer-review" element={<Customerreview />} />
@@ -131,6 +135,8 @@ function App() {
               <Route path="EarningsOverview" element={<EarningsOverview />} />
               <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
               {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
+
+   
               <Route path="/admin" element={<Login/>}/>
             </Route>
               <Route path="/logout" element={<LogOut/>}/>

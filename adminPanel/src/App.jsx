@@ -30,7 +30,7 @@ function App() {
 
         {/* Admin-Only Routes */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-          <Route path="/adminpanel" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/products" element={<Products />} />
           <Route path="/add-product/:id?" element={<AddProduct />} />
           <Route path="/orders" element={<Orders />} />

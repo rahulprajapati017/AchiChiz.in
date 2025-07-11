@@ -10,7 +10,8 @@ export const auth={
     getAllBlogs: BASE_URL + "/getAllBlogs",
     getSingleBlogById: BASE_URL + "/getSingleBlogById",
   commentOnBlog: BASE_URL + "/commentOnBlog",
-  GET_USER_PROFILE:BASE_URL+"/userProfile"
+  GET_USER_PROFILE:BASE_URL+"/userProfile",
+  CONTACT_US:BASE_URL+"/createContact"
 
     
  
@@ -23,7 +24,8 @@ export const product={
     ADD_TO_WISHLIST:BASE_URL+"/addtowishlist",
     REMOVE_FROM_WISHLIST:BASE_URL+"/removefromwishlist",
     GET_ALL_PRODUCT:BASE_URL+"/fileUpload/getallproductforcategory",
-    CREATE_ORDER:BASE_URL+"/createOrder"
+    CREATE_ORDER:BASE_URL+"/createOrder",
+    GET_BANNERS:BASE_URL+"/admin/getAllBanner"
     // BLOG_API:BASE_URL+ "/getAllBlogs"
     
 }

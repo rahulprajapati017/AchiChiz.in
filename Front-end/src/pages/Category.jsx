@@ -23,7 +23,7 @@ function Category() {
       try {
         const res = await fetch(product.GET_ALL_PRODUCT);
         const data = await res.json();
-
+console.log(data)
         if (!Array.isArray(data.data)) throw new Error("Invalid response");
 
         const normalized = data.data.map((p, idx) => ({
