@@ -190,12 +190,18 @@ const Header = () => {
                   >
                     Profile
                   </NavLink>
+                  <NavLink to="/order-page"
+                    className="text-sm hover:text-[#fe5f55] cursor-pointer" 
+                  >
+                    Orders
+                  </NavLink>
                   <div
                     className="text-sm hover:text-[#fe5f55] cursor-pointer"
                     onClick={handleLogout}
                   >
                     Logout
                   </div>
+                  
                 </div>
               )}
             </div>

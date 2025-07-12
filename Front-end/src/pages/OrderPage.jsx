@@ -1,47 +1,20 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import { auth } from '../data/allapi';
 
-
-const ordersData = {
-  current: [
-    {
-      id: 'ORD12345',
-      date: '2025-07-01',
-      items: 3,
-      status: 'Shipped',
-      total: '₹1,499',
-      delivery: 'Expected by July 7, 2025',
-    },
-    {
-      id: 'ORD12346',
-      date: '2025-07-02',
-      items: 1,
-      status: 'Processing',
-      total: '₹799',
-      delivery: 'Expected by July 6, 2025',
-    },
-  ],
-  previous: [
-    {
-      id: 'ORD12222',
-      date: '2025-06-20',
-      items: 2,
-      status: 'Delivered',
-      total: '₹1,299',
-      delivery: 'Delivered on June 25, 2025',
-    },
-    {
-      id: 'ORD12111',
-      date: '2025-06-10',
-      items: 1,
-      status: 'Cancelled',
-      total: '₹599',
-      delivery: 'Cancelled',
-    },
-  ],
+// === Helper: Format date ===
+const formatDate = (iso) => {
+  if (!iso) return 'N/A';
+  const date = new Date(iso);
+  return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 
+// === OrderCard Component ===
 const OrderCard = ({ order }) => {
+  const navigate = useNavigate();
+
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Delivered':
@@ -71,11 +44,13 @@ const OrderCard = ({ order }) => {
         return '📦';
     }
   };
-  const navigate = useNavigate();
+
   const handleNavigation = (path) => {
     navigate(path, {
       state: {
-        orderId: order.id,}})
+        orderId: order.id,
+      },
+    });
   };
 
   return (
@@ -107,13 +82,13 @@ const OrderCard = ({ order }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white p-4 border border-gray-200 shadow-sm">
           <div className="flex items-center gap-2">
             <span className="text-2xl">💰</span>
             <div>
               <p className="text-sm font-semibold text-gray-700">Total</p>
-              <p className="text-lg font-bold text-gray-900">{order.total}</p>
+              <p className="text-lg font-bold text-gray-900">₹{order.total}</p>
             </div>
           </div>
         </div>
@@ -134,19 +109,20 @@ const OrderCard = ({ order }) => {
           <span>👁️</span>
           View Details
         </button>
-        
-        <button
+
+        {/* <button
           onClick={() => handleNavigation('/track-order')}
           className="flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           <span>📦</span>
           Track Order
-        </button>
+        </button> */}
       </div>
     </div>
   );
 };
 
+// === OrderSection Component ===
 const OrderSection = ({ title, orders, icon, titleColor }) => (
   <div className="mb-12">
     <div className={`bg-white p-6 shadow-lg mb-6 border-l-4 ${titleColor}`}>
@@ -155,16 +131,16 @@ const OrderSection = ({ title, orders, icon, titleColor }) => (
         <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
       </div>
     </div>
-    
+
     {orders.length > 0 ? (
       <div className="space-y-4">
         {orders.map((order, index) => (
-          <div 
-            key={order.id} 
+          <div
+            key={order.id}
             className="animate-fade-in"
-            style={{ 
+            style={{
               animationDelay: `${index * 0.1}s`,
-              animationFillMode: 'both'
+              animationFillMode: 'both',
             }}
           >
             <OrderCard order={order} />
@@ -180,7 +156,65 @@ const OrderSection = ({ title, orders, icon, titleColor }) => (
   </div>
 );
 
+// === Main OrderPage Component ===
 const OrderPage = () => {
+  const [userdata, setUserdata] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { usertoken } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const res = await axios.get(auth.GET_USER_PROFILE, {
+          headers: {
+            Authorization: `Bearer ${usertoken}`,
+          },
+        });
+        // console.log(res.data.data)
+        setUserdata(res.data.data);
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (usertoken) {
+      fetchUserProfile();
+    }
+  }, [usertoken]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600 text-lg">Loading orders...</p>
+      </div>
+    );
+  }
+
+  const allOrders = userdata?.orders || [];
+
+  const formattedOrders = allOrders.map((order) => ({
+    id: order._id,
+    date: formatDate(order.createdAt),
+    items: order.orderItems.length,
+    status: order.orderStatus,
+    total: order.totalAmount,
+    delivery:
+      order.orderStatus === 'Delivered'
+        ? `Delivered on ${formatDate(order.deliveredAt)}`
+        : order.orderStatus === 'Cancelled'
+        ? 'Cancelled'
+        : 'Expected soon',
+  }));
+
+  const currentOrders = formattedOrders.filter(
+    (order) => order.status !== 'Delivered' && order.status !== 'Cancelled'
+  );
+  const previousOrders = formattedOrders.filter(
+    (order) => order.status === 'Delivered' || order.status === 'Cancelled'
+  );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -196,13 +230,13 @@ const OrderPage = () => {
         </div>
 
         {/* Order Sections */}
-        <OrderSection 
-          title="Current Orders" 
-          orders={ordersData.current}
+        <OrderSection
+          title="Current Orders"
+          orders={currentOrders}
           icon="🔥"
           titleColor="border-orange-500"
         />
-        
+
         <div className="my-12">
           <div className="flex items-center gap-4">
             <div className="flex-1 h-px bg-gray-300"></div>
@@ -212,16 +246,17 @@ const OrderPage = () => {
             <div className="flex-1 h-px bg-gray-300"></div>
           </div>
         </div>
-        
-        <OrderSection 
-          title="Previous Orders" 
-          orders={ordersData.previous}
+
+        <OrderSection
+          title="Previous Orders"
+          orders={previousOrders}
           icon="📚"
           titleColor="border-blue-500"
         />
       </div>
-      
-      <style jsx>{`
+
+      {/* Corrected: No jsx attribute */}
+      <style>{`
         @keyframes fade-in {
           from {
             opacity: 0;
@@ -232,7 +267,7 @@ const OrderPage = () => {
             transform: translateY(0);
           }
         }
-        
+
         .animate-fade-in {
           animation: fade-in 0.5s ease-out;
         }

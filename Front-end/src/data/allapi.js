@@ -27,7 +27,8 @@ export const product={
     CREATE_ORDER:BASE_URL+"/createOrder",
     GET_BANNERS:BASE_URL+"/admin/getAllBanner",
     GET_ALL_REVIEWS:BASE_URL+"/getAllReviews",
-    CREATEING_REVIEWS:BASE_URL+"/createRating"
+    CREATEING_REVIEWS:BASE_URL+"/createRating",
+    GET_SINGLE_ORDER:BASE_URL+"/getSingleOrder"
     // BLOG_API:BASE_URL+ "/getAllBlogs"
     
 }
