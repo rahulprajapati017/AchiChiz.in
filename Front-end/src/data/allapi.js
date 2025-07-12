@@ -25,7 +25,8 @@ export const product={
     REMOVE_FROM_WISHLIST:BASE_URL+"/removefromwishlist",
     GET_ALL_PRODUCT:BASE_URL+"/fileUpload/getallproductforcategory",
     CREATE_ORDER:BASE_URL+"/createOrder",
-    GET_BANNERS:BASE_URL+"/admin/getAllBanner"
+    GET_BANNERS:BASE_URL+"/admin/getAllBanner",
+    GET_ALL_REVIEWS:BASE_URL+"/getAllReviews"
     // BLOG_API:BASE_URL+ "/getAllBlogs"
     
 }
