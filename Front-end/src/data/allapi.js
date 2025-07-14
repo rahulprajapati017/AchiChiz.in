@@ -25,8 +25,18 @@ export const product={
     REMOVE_FROM_WISHLIST:BASE_URL+"/removefromwishlist",
     GET_ALL_PRODUCT:BASE_URL+"/fileUpload/getallproductforcategory",
     CREATE_ORDER:BASE_URL+"/createOrder",
-    GET_BANNERS:BASE_URL+"/admin/getAllBanner"
+    GET_BANNERS:BASE_URL+"/admin/getAllBanner",
+    GET_ALL_REVIEWS:BASE_URL+"/getAllReviews",
+    CREATEING_REVIEWS:BASE_URL+"/createRating",
+    GET_SINGLE_ORDER:BASE_URL+"/getSingleOrder"
     // BLOG_API:BASE_URL+ "/getAllBlogs"
     
+}
+export const address={
+  CREATE_ADDRESS:BASE_URL+"/address/create",
+  GET_ADDRESSES:BASE_URL+"/address/getaddress",
+  UPDATE_ADDRESS:BASE_URL+"/address/updateaddress",
+  DELETE_ADDRESS:BASE_URL+"/address/deleteaddress",
+  SET_DEFAULT_ADDRESS:BASE_URL+"/address"
 }
 
