@@ -375,7 +375,17 @@ const Header = () => {
       )}
 
       {showLoginModal && (
-        <AuthPage closeModal={() => setShowLoginModal(false)} />
+        <div className="fixed inset-0 bg-white bg-opacity-90 backdrop-blur-md flex items-center justify-center z-[70]">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 relative border border-gray-200">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
+            >
+              ×
+            </button>
+            <AuthPage onSuccess={() => setShowLoginModal(false)} />
+          </div>
+        </div>
       )}
     </>
   );
