@@ -1,35 +1,23 @@
 // src/pages/Login.jsx
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../../Front-end/src/data/allapi";
 
 const Login = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@demo.com"); // prefill for demo
+  const [password, setPassword] = useState("admin123");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    try {
-      const response = await fetch(auth.LOGIN_BY_EMAIL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      console.log(response)
-
-      if (response.ok) {
-        navigate("/adminpanel");
-      } else {
-        alert("Login failed");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("An error occurred");
+    const success = await login(email, password);
+    if (success) {
+      navigate("/");
+    } else {
+      setError("Invalid email or password");
     }
   };
 
@@ -39,7 +27,11 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm"
       >
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Admin/Seller Login</h2>
+
+        {error && (
+          <p className="mb-4 text-red-600 text-sm text-center">{error}</p>
+        )}
 
         <div className="mb-4">
           <label className="block text-gray-700 mb-1">Email</label>
@@ -69,6 +61,11 @@ const Login = () => {
         >
           Login
         </button>
+
+        <p className="mt-4 text-sm text-center text-gray-500">
+          Try <strong>admin@demo.com / admin123</strong> or{" "}
+          <strong>seller@demo.com / seller123</strong>
+        </p>
       </form>
     </div>
   );

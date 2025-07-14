@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { product } from "../data/allapi";
 
 const textMotion = {
   hidden: { opacity: 0, x: -100 },
@@ -20,49 +21,28 @@ const imageMotion = {
   },
 };
 
-const panels = [
-  {
-    subtitle: "HANDCRAFTED CERAMICS",
-    title: "DECORATE WITH PURPOSE",
-    description:
-      "Explore a wide range of handmade ceramics from cups, mugs, etc. from premium materials, traditional & modern blend.",
-    button: "SHOP COLLECTION",
-    image: "https://images.pexels.com/photos/18295443/pexels-photo-18295443.jpeg",
-    blurredBackground: "https://images.pexels.com/photos/18295445/pexels-photo-18295445.jpeg",
-  },
-  {
-    subtitle: "SUSTAINABLE ARTISTRY",
-    title: "CRAFTED FOR LIFE",
-    description:
-      "Discover eco-friendly materials and craftsmanship that lasts for generations.",
-    button: "EXPLORE NOW",
-    image: "https://images.pexels.com/photos/10560635/pexels-photo-10560635.jpeg",
-    blurredBackground: "https://images.pexels.com/photos/10560623/pexels-photo-10560623.jpeg",
-  },
-  {
-    subtitle: "MODERN RUSTIC TOUCH",
-    title: "ELEVATE YOUR SPACE",
-    description:
-      "Minimalist yet soulful. Give your home a rustic yet refined style.",
-    button: "BROWSE PIECES",
-    image: "https://images.pexels.com/photos/18295442/pexels-photo-18295442.jpeg",
-    blurredBackground: "https://images.pexels.com/photos/18295444/pexels-photo-18295444.jpeg",
-  },
-  {
-    subtitle: "CULTURAL HERITAGE",
-    title: "ROOTED IN TRADITION",
-    description:
-      "Each product carries a piece of legacy through timeless design and handcrafted beauty.",
-    button: "VIEW COLLECTION",
-    image: "https://images.pexels.com/photos/14218757/pexels-photo-14218757.jpeg",
-    blurredBackground: "https://images.pexels.com/photos/18295441/pexels-photo-18295441.jpeg",
-  },
-];
-
 export default function HeroScroll() {
   const containerRef = useRef();
   const [index, setIndex] = useState(0);
   const [animateKey, setAnimateKey] = useState(0);
+  const [panels, setPanels] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBanners() {
+      try {
+        const res = await fetch(product.GET_BANNERS);
+        if (!res.ok) throw new Error("Failed to fetch banners");
+        const result = await res.json();
+        setPanels(result?.banners || []);
+      } catch (error) {
+        console.error("Error fetching banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchBanners();
+  }, []);
 
   const scrollToPanel = (i) => {
     containerRef.current?.scrollTo({
@@ -72,6 +52,7 @@ export default function HeroScroll() {
   };
 
   const next = () => {
+    if (panels.length === 0) return;
     const nextIndex = (index + 1) % panels.length;
     setIndex(nextIndex);
     scrollToPanel(nextIndex);
@@ -79,6 +60,7 @@ export default function HeroScroll() {
   };
 
   const prev = () => {
+    if (panels.length === 0) return;
     const prevIndex = (index - 1 + panels.length) % panels.length;
     setIndex(prevIndex);
     scrollToPanel(prevIndex);
@@ -86,14 +68,14 @@ export default function HeroScroll() {
   };
 
   useEffect(() => {
+    if (panels.length === 0) return;
     const timer = setInterval(next, 7000);
     return () => clearInterval(timer);
-  }, [index]);
+  }, [index, panels]);
 
-  // Loop scroll detection
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    if (!container || panels.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -115,7 +97,23 @@ export default function HeroScroll() {
     children.forEach((child) => observer.observe(child));
 
     return () => observer.disconnect();
-  }, []);
+  }, [panels]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        Loading banners...
+      </div>
+    );
+  }
+
+  if (panels.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen text-gray-500">
+        No banners to display.
+      </div>
+    );
+  }
 
   return (
     <div className="font-sans">
@@ -126,13 +124,13 @@ export default function HeroScroll() {
         >
           {panels.map((panel, idx) => (
             <div
-              key={idx}
+              key={panel._id || idx}
               data-index={idx}
               className="panel w-screen full-screen-mobile flex-shrink-0 relative snap-start"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center z-0"
-                style={{ backgroundImage: `url(${panel.blurredBackground})` }}
+                style={{ backgroundImage: `url(${panel.backgroundImage?.url})` }}
               />
               <div className="absolute inset-0 bg-black/60 z-0" />
 
@@ -169,7 +167,7 @@ export default function HeroScroll() {
                 >
                   <div className="relative hover:scale-105 transition-transform duration-500">
                     <img
-                      src={panel.image}
+                      src={panel.coverImage?.url}
                       alt="Product"
                       className="w-[240px] h-[320px] sm:w-[300px] sm:h-[400px] md:w-[380px] md:h-[550px] object-cover rounded shadow-xl"
                     />
@@ -202,7 +200,7 @@ export default function HeroScroll() {
           ))}
         </div>
 
-        {/* Arrows (Desktop Only) */}
+        {/* Arrows */}
         <div className="hidden md:block">
           <button
             onClick={prev}

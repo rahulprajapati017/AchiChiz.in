@@ -50,7 +50,7 @@ const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
   useEffect(()=>{
 userauthentication()
 console.log(usertoken)
-  },[usertoken])
+  },[usertoken,userdata])
   
   const login = (name = "John Doe") => setUser({ name });
   const logout = () => setUser(null);

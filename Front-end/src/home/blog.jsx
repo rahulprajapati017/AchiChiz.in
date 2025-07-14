@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { auth } from "../data/allapi";
 
+// Blog card for each post
 const BlogCard = ({ blog }) => {
   return (
     <div className="mb-10">
@@ -18,9 +19,7 @@ const BlogCard = ({ blog }) => {
       </div>
       <div className="mt-4">
         <p className="text-sm text-gray-500">{blog.date}</p>
-        <h2 className="text-2xl font-bold text-gray-900 mt-1">
-          {blog.title}
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900 mt-1">{blog.title}</h2>
         <p className="text-gray-600 mt-2 line-clamp-2">{blog.description}</p>
         <NavLink to={`/blog/${blog.id}`}>
           <button className="mt-4 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition">
@@ -35,7 +34,7 @@ const BlogCard = ({ blog }) => {
 const BlogSection = () => {
   const [blogs, setBlogs] = useState([]);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
@@ -47,18 +46,18 @@ const BlogSection = () => {
           category: item.categories?.[0] || "General",
           image: item.coverImage?.url || "",
           date: new Date(item.createdAt).toLocaleDateString(),
+          createdAt: new Date(item.createdAt), // actual date for sorting
           title: item.title,
           description: item.summary,
         }));
 
-        const allCategories = [
-          "All",
-          ...new Set(apiBlogs.map((blog) => blog.category)),
-        ];
+        const uniqueCategories = Array.from(
+          new Set(apiBlogs.map((blog) => blog.category))
+        );
 
         setBlogs(apiBlogs);
         setFilteredBlogs(apiBlogs);
-        setCategories(allCategories);
+        setCategories(["All", ...uniqueCategories]);
       } catch (err) {
         console.error("Error fetching blogs:", err);
       }
@@ -77,9 +76,9 @@ const BlogSection = () => {
     }
   };
 
-  // Latest posts from filteredBlogs, sorted by newest first
-  const latestPosts = [...filteredBlogs]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+  // ✅ Latest posts from all blogs (not filtered), sorted by createdAt descending
+  const latestPosts = [...blogs]
+    .sort((a, b) => b.createdAt - a.createdAt)
     .slice(0, 3);
 
   return (
@@ -91,7 +90,6 @@ const BlogSection = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar */}
         <aside className="lg:w-1/4 space-y-8">
-
           {/* Categories */}
           <div>
             <h3 className="text-lg font-semibold mb-2">Categories</h3>
@@ -122,7 +120,10 @@ const BlogSection = () => {
                   key={post.id}
                   className="flex flex-col sm:flex-row items-start gap-3"
                 >
-                  <NavLink to={`/blog/${post.id}`} className="flex items-start gap-3 w-full group">
+                  <NavLink
+                    to={`/blog/${post.id}`}
+                    className="flex items-start gap-3 w-full group"
+                  >
                     <img
                       src={post.image}
                       alt={post.title}
@@ -130,7 +131,9 @@ const BlogSection = () => {
                     />
                     <div>
                       <p className="text-sm text-gray-500">{post.date}</p>
-                      <p className="text-sm font-medium group-hover:underline">{post.title}</p>
+                      <p className="text-sm font-medium group-hover:underline">
+                        {post.title}
+                      </p>
                     </div>
                   </NavLink>
                 </li>
