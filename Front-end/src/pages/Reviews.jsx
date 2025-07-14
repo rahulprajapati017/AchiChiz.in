@@ -1,206 +1,204 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { products } from '../data/products';
 import ReviewSummary from '../components/ReviewSummary';
 import ReviewCard from '../components/ReviewCard';
 import { Input } from '../components/ui/input';
+import { AuthContext } from "../context/AuthContext";
+import { product } from '../data/allapi';
 
 const Reviews = () => {
   const { id } = useParams();
+  const { userdata, usertoken } = useContext(AuthContext);
+
   if (!id) return <Navigate to="/reviews" replace />;
 
-  const product = products.find((p) => p.id === id);
-  if (!product) {
-    return (
-      <div className="text-center text-red-600 py-20 text-xl font-semibold">
-        ❌ Product not found.
-      </div>
-    );
-  }
-
-  const reviewData = {
-    averageRating: product.rating || 0,
-    totalReviews: product.reviews?.length || 0,
-    ratingDistribution: [5, 4, 3, 2, 1].map(
-      (star) => product.reviews?.filter((r) => r.rating === star).length || 0
-    ),
-  };
+  const [reviews, setReviews] = useState([]);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [ratingDistribution, setRatingDistribution] = useState([0,0,0,0,0]);
+  const [averageRating, setAverageRating] = useState(0);
 
   const [sortBy, setSortBy] = useState('most-recent');
   const [filterRating, setFilterRating] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [form, setForm] = useState({ author: '', title: '', content: '', rating: '' });
+  const [showForm, setShowForm] = useState(false);
+  const [canReview, setCanReview] = useState(false);
 
-  // Form State
-  const [form, setForm] = useState({
-    author: '',
-    title: '',
-    content: '',
-    rating: '',
-  });
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`${product.GET_ALL_REVIEWS}/${id}`);
+        const data = await res.json();
+        if (data.success) {
+          const revs = data.reviews.map((r) => ({
+            id: r._id,
+            author: r.user?.name || 'Anonymous',
+            title: '',
+            content: r.review,
+            rating: r.rating,
+            date: r.createdAt,
+            helpful: r.helpful || 0,
+            notHelpful: r.notHelpful || 0,
+            verified: true,
+            images: []
+          }));
 
-  const [showForm, setShowForm] = useState(false); // ✅ controls visibility
+          setReviews(revs);
+          setTotalReviews(data.totalReviews || revs.length);
 
-  const handleChange = (e) => {
+          const dist = [5, 4, 3, 2, 1].map((star) =>
+            revs.filter((r) => r.rating === star).length
+          );
+          setRatingDistribution(dist);
+
+          const avg =
+            revs.reduce((sum, r) => sum + r.rating, 0) / (revs.length || 1);
+          setAverageRating(parseFloat(avg.toFixed(1)));
+        }
+      } catch (err) {
+        console.error('Fetch reviews failed', err);
+      }
+    };
+
+    fetchReviews();
+  }, [id]);
+
+  useEffect(() => {
+    if (!userdata || !userdata.orders) return;
+
+    const hasOrdered = userdata.orders.some(order =>
+      order.orderStatus === "Delivered" &&
+      order.orderItems.some(item =>
+        item.product === id || item.product?._id === id
+      )
+    );
+
+    setCanReview(hasOrdered);
+  }, [userdata, id]);
+
+  const handleChange = e => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.author || !form.title || !form.content || !form.rating) return;
 
-    const newReview = {
-      id: Date.now(),
-      ...form,
-      rating: parseInt(form.rating),
-      date: new Date().toISOString(),
-      verified: true,
-      helpful: 0,
-      notHelpful: 0,
-      images: [],
-    };
+    try {
+      const res = await fetch(`${product.CREATEING_REVIEWS}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${usertoken}`  // ✅ Send token
+        },
+        body: JSON.stringify({
+          product: id,
+          rating: parseInt(form.rating),
+          review: form.content
+        })
+      });
 
-    product.reviews.unshift(newReview); // add at beginning
-    setForm({ author: '', title: '', content: '', rating: '' });
-    setShowForm(false); // ✅ close form after submission
+      const data = await res.json();
+      if (data.success) {
+        const newReview = {
+          id: data.review._id,
+          author: userdata.name,
+          title: form.title,
+          content: form.content,
+          rating: parseInt(form.rating),
+          date: new Date().toISOString(),
+          verified: true,
+          helpful: 0,
+          notHelpful: 0,
+          images: []
+        };
+
+        const newList = [newReview, ...reviews];
+        setReviews(newList);
+        setTotalReviews(prev => prev + 1);
+
+        const idx = 5 - newReview.rating;
+        const newDist = [...ratingDistribution];
+        newDist[idx] += 1;
+        setRatingDistribution(newDist);
+
+        const sumRatings = newList.reduce((sum, r) => sum + r.rating, 0);
+        const avg = sumRatings / newList.length;
+        setAverageRating(parseFloat(avg.toFixed(1)));
+
+        setForm({ author: '', title: '', content: '', rating: '' });
+        setShowForm(false);
+      } else {
+        alert(data.message || "Failed to submit review");
+      }
+    } catch (error) {
+      console.error("Submit review error:", error);
+    }
   };
 
-  const filteredReviews = product.reviews.filter((review) => {
-    const matchesSearch =
-      review.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      review.author.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesRating =
-      filterRating === 'all' || review.rating.toString() === filterRating;
-
+  const filtered = reviews.filter(review => {
+    const matchesSearch = [review.title, review.content, review.author]
+      .some(str => str.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesRating = filterRating === 'all' || review.rating.toString() === filterRating;
     return matchesSearch && matchesRating;
   });
 
-  const sortedReviews = [...filteredReviews].sort((a, b) => {
+  const sorted = [...filtered].sort((a, b) => {
     switch (sortBy) {
-      case 'most-recent':
-        return new Date(b.date) - new Date(a.date);
-      case 'oldest':
-        return new Date(a.date) - new Date(b.date);
-      case 'highest-rating':
-        return b.rating - a.rating;
-      case 'lowest-rating':
-        return a.rating - b.rating;
-      case 'most-helpful':
-        return b.helpful - a.helpful;
-      default:
-        return 0;
+      case 'most-recent': return new Date(b.date) - new Date(a.date);
+      case 'oldest': return new Date(a.date) - new Date(b.date);
+      case 'highest-rating': return b.rating - a.rating;
+      case 'lowest-rating': return a.rating - b.rating;
+      case 'most-helpful': return b.helpful - a.helpful;
+      default: return 0;
     }
   });
 
   return (
     <div className="max-w-6xl mx-auto mt-20 px-6 py-10">
       <h2 className="text-3xl font-bold mb-2">Customer Reviews</h2>
-      <p className="text-gray-600 mb-4">
-        Read what customers said about <strong>{product.title}</strong>
-      </p>
+      <p className="text-gray-600 mb-4">Read what customers said about <strong>Product {id}</strong></p>
 
-      {/* ✅ Write Review Button */}
-      <div className="mb-6">
-       <button
-  onClick={() => setShowForm((prev) => !prev)}
-  className=" bg-gradient-to-r from-red-500 to-orange-700 relative group overflow-hidden px-5 py-2 text-white font-medium shadow hover:scale-105"
->
-  <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0 "></span>
-  <span className="relative z-10">
-    {showForm ? 'Cancel' : 'Write a Review'}
-  </span>
-</button>
-      </div>
+      {canReview && (
+        <div className="mb-6">
+          <button
+            onClick={() => setShowForm(prev => !prev)}
+            className="bg-gradient-to-r from-red-500 to-orange-700 relative group overflow-hidden px-5 py-2 text-white font-medium shadow hover:scale-105"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out z-0 "></span>
+            <span className="relative z-10">{showForm ? 'Cancel' : 'Write a Review'}</span>
+          </button>
+        </div>
+      )}
 
-      {/* ✅ Review Form (conditionally visible) */}
-      {showForm && (
-        <div className="bg-white border  shadow-sm p-6 mb-8">
+      {canReview && showForm && (
+        <div className="bg-white border shadow-sm p-6 mb-8">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">Leave a Review</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-4">
-              <input
-                type="text"
-                name="author"
-                value={form.author}
-                onChange={handleChange}
-                placeholder="Your Name"
-                className="w-full border  px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-                required
-              />
-              <select
-                name="rating"
-                value={form.rating}
-                onChange={handleChange}
-                className="w-full border  px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-                required
-              >
+              <input name="author" value={form.author} onChange={handleChange} placeholder="Your Name" required className="border px-4 py-2" />
+              <select name="rating" value={form.rating} onChange={handleChange} required className="border px-4 py-2">
                 <option value="">Rating</option>
-                {[5, 4, 3, 2, 1].map((r) => (
-                  <option key={r} value={r}>{r} Star</option>
-                ))}
+                {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Star</option>)}
               </select>
             </div>
-
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              placeholder="Review Title"
-              className="w-full border  px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-              required
-            />
-
-            <textarea
-              name="content"
-              value={form.content}
-              onChange={handleChange}
-              rows="4"
-              placeholder="Your review..."
-              className="w-full border  px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200"
-              required
-            ></textarea>
-
-            <button
-              type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-2  shadow"
-            >
-              Submit Review
-            </button>
+            <input name="title" value={form.title} onChange={handleChange} placeholder="Review Title" required className="border px-4 py-2 w-full" />
+            <textarea name="content" value={form.content} onChange={handleChange} placeholder="Your review..." rows={4} required className="border px-4 py-2 w-full" />
+            <button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 shadow">Submit Review</button>
           </form>
         </div>
       )}
 
-      {/* Summary + Filters */}
-      <ReviewSummary {...reviewData} />
+      <ReviewSummary averageRating={averageRating} totalReviews={totalReviews} ratingDistribution={ratingDistribution} />
 
       <div className="flex flex-col sm:flex-row items-center gap-4 my-6">
-        <Input
-          type="text"
-          placeholder="Search reviews..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="sm:w-1/2"
-        />
-        <select
-          value={filterRating}
-          onChange={(e) => setFilterRating(e.target.value)}
-          className="border p-2 "
-        >
+        <Input type="text" placeholder="Search reviews..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="sm:w-1/2" />
+        <select value={filterRating} onChange={e => setFilterRating(e.target.value)} className="border p-2">
           <option value="all">All Ratings</option>
-          <option value="5">5 Stars</option>
-          <option value="4">4 Stars</option>
-          <option value="3">3 Stars</option>
-          <option value="2">2 Stars</option>
-          <option value="1">1 Star</option>
+          {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Stars</option>)}
         </select>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className="border p-2 "
-        >
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="border p-2">
           <option value="most-recent">Most Recent</option>
           <option value="oldest">Oldest</option>
           <option value="highest-rating">Highest Rating</option>
@@ -209,16 +207,11 @@ const Reviews = () => {
         </select>
       </div>
 
-      {/* Reviews */}
       <div className="space-y-6">
-        {sortedReviews.length > 0 ? (
-          sortedReviews.map((review) => (
-            <ReviewCard key={review.id} {...review} />
-          ))
+        {sorted.length > 0 ? (
+          sorted.map(review => <ReviewCard key={review.id} {...review} />)
         ) : (
-          <div className="text-center py-16 text-gray-500">
-            No reviews match your filters.
-          </div>
+          <div className="text-center py-16 text-gray-500">No reviews match your filters.</div>
         )}
       </div>
     </div>

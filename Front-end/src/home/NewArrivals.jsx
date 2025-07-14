@@ -18,7 +18,6 @@ const NewArrivals = () => {
       try {
         const res = await fetch(productAPI.APPROVED_PRODUCTS_FOR_HOME);
         const { data } = await res.json();
-        console.log(data)
         const validData = Array.isArray(data) ? data : data?.products || [];
         setProductsData(validData.slice(0, 4));
       } catch (error) {
@@ -32,73 +31,52 @@ const NewArrivals = () => {
 
   const isInWishlist = (id) =>
     userdata?.addtowishlist?.some((item) => item._id === id);
+
   const isInCart = (id) =>
     userdata?.addtocart?.some((item) => item._id === id);
 
-  const toggleWishlist = async (product) => {
+  const addToWishlist = async (product) => {
     if (!usertoken) return toast.error("Please login to manage wishlist");
 
-    const currentlyInWishlist = isInWishlist(product._id);
-
     try {
-      const url = currentlyInWishlist
-        ? `${productAPI.REMOVE_FROM_WISHLIST}/${product._id}`
-        : `${productAPI.ADD_TO_WISHLIST}/${product._id}`;
-
-      const method = currentlyInWishlist ? "PATCH" : "POST";
-
+      const url = `${productAPI.ADD_TO_WISHLIST}/${product._id}`;
       const res = await fetch(url, {
-        method,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${usertoken}`,
         },
       });
 
-      if (!res.ok) throw new Error("Wishlist update failed");
+      if (!res.ok) throw new Error("Failed to add to wishlist");
 
-      toast.success(
-        currentlyInWishlist ? "Removed from wishlist" : "Added to wishlist"
-      );
+      toast.success("Added to wishlist");
 
-      const updatedWishlist = currentlyInWishlist
-        ? userdata.addtowishlist.filter((item) => item._id !== product._id)
-        : [...userdata.addtowishlist, product];
-
+      const updatedWishlist = [...userdata.addtowishlist, product];
       setuserdata((prev) => ({ ...prev, addtowishlist: updatedWishlist }));
     } catch (err) {
       toast.error(err.message || "Something went wrong");
     }
   };
 
-  const toggleCart = async (product) => {
+  const addToCart = async (product) => {
     if (!usertoken) return toast.error("Please login to manage cart");
 
-    const currentlyInCart = isInCart(product._id);
-
     try {
-      const url = currentlyInCart
-        ? `${productAPI.REMOVE_FROM_CART}/${product._id}`
-        : `${productAPI.ADD_TO_CART}/${product._id}`;
-
-      const method = currentlyInCart ? "PATCH" : "POST";
-
+      const url = `${productAPI.ADD_TO_CART}/${product._id}`;
       const res = await fetch(url, {
-        method,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${usertoken}`,
         },
       });
 
-      if (!res.ok) throw new Error("Cart update failed");
+      if (!res.ok) throw new Error("Failed to add to cart");
 
-      toast.success(currentlyInCart ? "Removed from cart" : "Added to cart");
+      toast.success("Added to cart");
 
-      const updatedCart = currentlyInCart
-        ? userdata.addtocart.filter((item) => item._id !== product._id)
-        : [...userdata.addtocart, product];
-
+      const updatedCart = [...userdata.addtocart, product];
       setuserdata((prev) => ({ ...prev, addtocart: updatedCart }));
     } catch (err) {
       toast.error(err.message || "Something went wrong");
@@ -135,16 +113,14 @@ const NewArrivals = () => {
               </div>
 
               <div className="absolute top-1/2 right-2 -translate-y-1/1 flex flex-col items-center space-y-3 z-10">
-                <button
-                  onClick={() => toggleCart(product)}
-                  className={`w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100 ${
-                    isInCart(product._id)
-                      ? "bg-red-500 text-white"
-                      : "bg-white text-gray-600"
-                  }`}
-                >
-                  <ShoppingCart size={20} />
-                </button>
+                {!isInCart(product._id) && (
+                  <button
+                    onClick={() => addToCart(product)}
+                    className="w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100 bg-white text-gray-600"
+                  >
+                    <ShoppingCart size={20} />
+                  </button>
+                )}
 
                 <button
                   onClick={() => {
@@ -156,16 +132,14 @@ const NewArrivals = () => {
                   <Eye size={20} />
                 </button>
 
-                <button
-                  onClick={() => toggleWishlist(product)}
-                  className={`w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 ${
-                    isInWishlist(product._id)
-                      ? "bg-red-500 text-white"
-                      : "bg-white text-gray-600"
-                  }`}
-                >
-                  <Heart size={20} />
-                </button>
+                {!isInWishlist(product._id) && (
+                  <button
+                    onClick={() => addToWishlist(product)}
+                    className="w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 bg-white text-gray-600"
+                  >
+                    <Heart size={20} />
+                  </button>
+                )}
               </div>
             </div>
 

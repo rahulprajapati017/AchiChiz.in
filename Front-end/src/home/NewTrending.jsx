@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
 import { Eye, Heart, ShoppingCart } from "lucide-react";
-
 import Quickviews from "../pages/Quickviews";
 import { Link } from "react-router-dom";
 import { product as productAPI } from "../data/allapi";
@@ -20,10 +19,7 @@ const NewTrending = () => {
         const res = await fetch(productAPI.APPROVED_PRODUCTS_FOR_HOME);
         const { data } = await res.json();
 
-        const validData = Array.isArray(data)
-          ? data
-          : data?.products || [];
-
+        const validData = Array.isArray(data) ? data : data?.products || [];
         setProductsData(validData.slice(0, 4));
       } catch (error) {
         console.error("API error:", error);
@@ -42,18 +38,13 @@ const NewTrending = () => {
 
   const toggleWishlist = async (product) => {
     if (!usertoken) return toast.error("Please login to manage wishlist");
-
-    const currentlyInWishlist = isInWishlist(product._id);
+    if (isInWishlist(product._id)) return;
 
     try {
-      const url = currentlyInWishlist
-        ? `${productAPI.REMOVE_FROM_WISHLIST}/${product._id}`
-        : `${productAPI.ADD_TO_WISHLIST}/${product._id}`;
-
-      const method = currentlyInWishlist ? "PATCH" : "POST";
+      const url = `${productAPI.ADD_TO_WISHLIST}/${product._id}`;
 
       const res = await fetch(url, {
-        method,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${usertoken}`,
@@ -62,13 +53,9 @@ const NewTrending = () => {
 
       if (!res.ok) throw new Error("Wishlist update failed");
 
-      toast.success(
-        currentlyInWishlist ? "Removed from wishlist" : "Added to wishlist"
-      );
+      toast.success("Added to wishlist");
 
-      const updatedWishlist = currentlyInWishlist
-        ? userdata.addtowishlist.filter((item) => item._id !== product._id)
-        : [...userdata.addtowishlist, product];
+      const updatedWishlist = [...userdata.addtowishlist, product];
 
       setuserdata((prev) => ({ ...prev, addtowishlist: updatedWishlist }));
     } catch (err) {
@@ -78,18 +65,13 @@ const NewTrending = () => {
 
   const toggleCart = async (product) => {
     if (!usertoken) return toast.error("Please login to manage cart");
-
-    const currentlyInCart = isInCart(product._id);
+    if (isInCart(product._id)) return;
 
     try {
-      const url = currentlyInCart
-        ? `${productAPI.REMOVE_FROM_CART}/${product._id}`
-        : `${productAPI.ADD_TO_CART}/${product._id}`;
-
-      const method = currentlyInCart ? "PATCH" : "POST";
+      const url = `${productAPI.ADD_TO_CART}/${product._id}`;
 
       const res = await fetch(url, {
-        method,
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${usertoken}`,
@@ -98,11 +80,9 @@ const NewTrending = () => {
 
       if (!res.ok) throw new Error("Cart update failed");
 
-      toast.success(currentlyInCart ? "Removed from cart" : "Added to cart");
+      toast.success("Added to cart");
 
-      const updatedCart = currentlyInCart
-        ? userdata.addtocart.filter((item) => item._id !== product._id)
-        : [...userdata.addtocart, product];
+      const updatedCart = [...userdata.addtocart, product];
 
       setuserdata((prev) => ({ ...prev, addtocart: updatedCart }));
     } catch (err) {
@@ -164,14 +144,14 @@ const NewTrending = () => {
                 </div>
 
                 <div className="absolute top-1/2 right-2 -translate-y-1/1 flex flex-col items-center space-y-3 z-10">
-                  <button
-                    onClick={() => toggleCart(product)}
-                    className={`w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100 ${
-                      inCart ? "bg-red-500 text-white" : "bg-white text-gray-600"
-                    }`}
-                  >
-                    <ShoppingCart size={20} />
-                  </button>
+                  {!inCart && (
+                    <button
+                      onClick={() => toggleCart(product)}
+                      className={`w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-100 bg-white text-gray-600`}
+                    >
+                      <ShoppingCart size={20} />
+                    </button>
+                  )}
 
                   <button
                     onClick={() => {
@@ -183,16 +163,14 @@ const NewTrending = () => {
                     <Eye size={20} />
                   </button>
 
-                  <button
-                    onClick={() => toggleWishlist(product)}
-                    className={`w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 ${
-                      inWishlist
-                        ? "bg-red-500 text-white"
-                        : "bg-white text-gray-600"
-                    }`}
-                  >
-                    <Heart size={20} />
-                  </button>
+                  {!inWishlist && (
+                    <button
+                      onClick={() => toggleWishlist(product)}
+                      className={`w-12 h-12 flex items-center justify-center rounded-full shadow transition hover:bg-red-500 hover:text-white opacity-100 lg:opacity-0 lg:translate-x-4 lg:group-hover:opacity-100 lg:group-hover:translate-x-0 duration-300 delay-300 bg-white text-gray-600`}
+                    >
+                      <Heart size={20} />
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -246,26 +224,22 @@ const NewTrending = () => {
                 >
                   <Eye size={18} />
                 </button>
-                <button
-                  onClick={() => toggleWishlist(product)}
-                  className={`w-10 h-10 flex items-center justify-center rounded-full shadow transition ${
-                    inWishlist
-                      ? "bg-red-500 text-white"
-                      : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
-                  }`}
-                >
-                  <Heart size={18} />
-                </button>
-                <button
-                  onClick={() => toggleCart(product)}
-                  className={`w-10 h-10 flex items-center justify-center rounded-full shadow transition ${
-                    inCart
-                      ? "bg-red-500 text-white"
-                      : "bg-white text-gray-600 hover:bg-red-500 hover:text-white"
-                  }`}
-                >
-                  <ShoppingCart size={18} />
-                </button>
+                {!inWishlist && (
+                  <button
+                    onClick={() => toggleWishlist(product)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full shadow transition bg-white text-gray-600 hover:bg-red-500 hover:text-white"
+                  >
+                    <Heart size={18} />
+                  </button>
+                )}
+                {!inCart && (
+                  <button
+                    onClick={() => toggleCart(product)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full shadow transition bg-white text-gray-600 hover:bg-red-500 hover:text-white"
+                  >
+                    <ShoppingCart size={18} />
+                  </button>
+                )}
               </div>
 
               <div className="p-4">

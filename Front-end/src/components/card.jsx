@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { ChevronDown, Star } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 
 /**
@@ -29,7 +29,7 @@ const HoverReview = ({
       setShowCard(false);
     }, 150);
   };
-
+const  {id}=useParams()
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
 
@@ -103,7 +103,7 @@ const HoverReview = ({
           {/* View All Reviews Link */}
           <div className="mt-3 text-right">
             <Link
-              to={`/reviews/${productId}`}
+              to={`/reviews/${id}`}
               className="text-blue-600 hover:underline text-sm"
              >
               See customer reviews

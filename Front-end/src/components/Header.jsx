@@ -47,18 +47,24 @@ const Header = () => {
 
   useEffect(() => {
     if (searchOpen && allProducts.length === 0) {
-      setIsLoading(true);
-      fetch(product.GET_ALL_PRODUCT)
-        .then((res) => res.json())
-        .then((data) => {
+      const fetchProducts = async () => {
+        setIsLoading(true);
+        try {
+          const res = await fetch(product.GET_ALL_PRODUCT);
+          const data = await res.json();
+
           const products = Array.isArray(data?.data) ? data.data : [];
+
           setAllProducts(products);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error("Product fetch error:", err);
           setAllProducts([]);
-        })
-        .finally(() => setIsLoading(false));
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchProducts();
     }
   }, [searchOpen, allProducts.length]);
 
@@ -184,12 +190,18 @@ const Header = () => {
                   >
                     Profile
                   </NavLink>
+                  <NavLink to="/order-page"
+                    className="text-sm hover:text-[#fe5f55] cursor-pointer" 
+                  >
+                    Orders
+                  </NavLink>
                   <div
                     className="text-sm hover:text-[#fe5f55] cursor-pointer"
                     onClick={handleLogout}
                   >
                     Logout
                   </div>
+                  
                 </div>
               )}
             </div>
@@ -354,28 +366,52 @@ const Header = () => {
               </div>
             )}
             {!isLoading && filteredProducts.length > 0 && (
-              <ul className="max-h-60 overflow-y-auto">
-                {filteredProducts.map((product) => (
-                  <li
-                    key={product.id}
-                    onClick={() => {
-                      navigate(`/product/${product.slug}`);
-                      setSearchOpen(false);
-                      setSearchQuery("");
-                    }}
-                    className="px-4 py-2 cursor-pointer hover:bg-[#cfbd8c]"
-                  >
-                    {product.title}
-                  </li>
-                ))}
-              </ul>
+             <ul className="max-h-60 overflow-y-auto">
+  {filteredProducts.map((product) => (
+    <li
+      key={product.id}
+      onClick={() => {
+        navigate(`/product/${product._id}`);
+        setSearchOpen(false);
+        setSearchQuery("");
+      }}
+      className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-[#cfbd8c]"
+    >
+      <img
+        src={product.images?.[0].url} // or product.images[0] if images is an array
+        alt={product.title}
+        className="w-10 h-10 object-cover rounded"
+      />
+      {product.title}
+    </li>
+  ))}
+</ul>
+
             )}
           </div>
         </div>
       )}
 
       {showLoginModal && (
-        <AuthPage closeModal={() => setShowLoginModal(false)} />
+        <div
+          className="fixed inset-0 z-[999] flex items-center justify-center"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.2)", // semi-transparent white background
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+          }}
+        >
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
+              aria-label="Close login modal"
+            >
+              ×
+            </button>
+            <AuthPage onSuccess={() => setShowLoginModal(false)} />
+          </div>
+        </div>
       )}
     </>
   );
