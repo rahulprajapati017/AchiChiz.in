@@ -32,4 +32,11 @@ export const product={
     // BLOG_API:BASE_URL+ "/getAllBlogs"
     
 }
+export const address={
+  CREATE_ADDRESS:BASE_URL+"/address/create",
+  GET_ADDRESSES:BASE_URL+"/address/getaddress",
+  UPDATE_ADDRESS:BASE_URL+"/address/updateaddress",
+  DELETE_ADDRESS:BASE_URL+"/address/deleteaddress",
+  SET_DEFAULT_ADDRESS:BASE_URL+"/address"
+}
 
