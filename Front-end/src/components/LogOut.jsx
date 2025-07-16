@@ -9,7 +9,7 @@ const LogOut = () => {
 
     useEffect(()=>{
         logoutuser()
-        console.log("main chla")
+        // console.log("main chla")
     },[logoutuser])
   return (
     <Navigate to="/"/>

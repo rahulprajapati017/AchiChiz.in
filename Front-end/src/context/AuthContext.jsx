@@ -7,6 +7,12 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [quantity,setQuantity]=useState(1)
+  if(quantity<1){
+    setQuantity(1)
+    
+  }
+  
 
 const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
   const [userdata,setuserdata]=useState()
@@ -35,7 +41,7 @@ const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
   const { user } = mydata;
 
   setuserdata(user); // ✅ This sets the user data correctly
-  console.log("user my data", user);
+  // console.log("user my data", user);
 }
 
         // console.log("data from context",response)
@@ -49,14 +55,14 @@ const [usertoken,setusertoken]=useState(localStorage.getItem("token"))
 
   useEffect(()=>{
 userauthentication()
-console.log(usertoken)
+// console.log(usertoken)
   },[usertoken])
   
   const login = (name = "John Doe") => setUser({ name });
   const logout = () => setUser(null);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout,userdata,setuserdata,usertoken,setusertoken,logoutuser,settoken }}>
+    <AuthContext.Provider value={{ user, login, logout,userdata,setuserdata,usertoken,setusertoken,logoutuser,settoken,quantity,setQuantity }}>
       {children}
     </AuthContext.Provider>
   );

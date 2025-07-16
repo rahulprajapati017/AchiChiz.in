@@ -61,6 +61,7 @@ import CartPage from "./pages/Cart";
 import LogOut from "./components/LogOut";
 import ProductDetail from "./pages/ProductDetail";
 import { LogIn } from "lucide-react";
+// import ForgotPasswordPage from "./components/Auth/ForgotPasswordPage";
 
 
 
@@ -107,13 +108,13 @@ function App() {
               <Route path="product/:id" element={<ProductPage />} />
               <Route path="/order-page" element={<OrderPage />} />
               <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
-              <Route path="/return-refund" element={<ReturnRefundPage />} />
+              {/* <Route path="/return-refund" element={<ReturnRefundPage />} /> */}
               <Route path="/track-order" element={<TrackOrderPage />} />
               <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
               {/* <Route path="/product/:id" element={<productdetails />} /> */}
               <Route path="/order-page" element={<OrderPage />} />
               <Route path="/order-detail/:id" element={<OrderDetailsPage />} />
-              <Route path="/return-refund" element={<ReturnRefundPage />} />
+              <Route path="/return-refund/:id" element={<ReturnRefundPage />} />
               <Route path="/track-order" element={<TrackOrderPage />} />
               <Route
                 path="/return-refund-policy"
@@ -136,7 +137,9 @@ function App() {
               <Route path="PayoutHistory" element={<PayoutHistory />} /> */}
               {/* <Route path="KYCUpload " element={< KYCUpload />} /> */}
 
-   
+   {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
+  
+
               <Route path="/admin" element={<Login/>}/>
             </Route>
               <Route path="/logout" element={<LogOut/>}/>

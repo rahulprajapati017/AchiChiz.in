@@ -11,7 +11,7 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import { useFavorites } from "../context/FavoriteContext";
 import { useCart } from "../context/CartContext";
-import AuthPage from "../components/Auth/AuthPage";
+import AuthPage from "../components/Auth/Authpage";
 import { product } from "../data/allapi";
 
 const navItems = [

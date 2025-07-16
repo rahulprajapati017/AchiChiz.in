@@ -133,7 +133,7 @@ const Quickviews = ({ product, onClose }) => {
             </button>
           </div>
 
-          <button onClick={() => navigate(`/checkout/${id}`)} className="w-full border py-3 mt-4 hover:bg-gray-100">
+          <button onClick={() => navigate(`/checkout/${product._id}`)} className="w-full border py-3 mt-4 hover:bg-gray-100">
             BUY NOW
           </button>
 

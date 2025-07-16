@@ -5,6 +5,7 @@ import ReviewCard from '../components/ReviewCard';
 import { Input } from '../components/ui/input';
 import { AuthContext } from "../context/AuthContext";
 import { product } from '../data/allapi';
+import toast from 'react-hot-toast';
 
 const Reviews = () => {
   const { id } = useParams();
@@ -14,9 +15,8 @@ const Reviews = () => {
 
   const [reviews, setReviews] = useState([]);
   const [totalReviews, setTotalReviews] = useState(0);
-  const [ratingDistribution, setRatingDistribution] = useState([0,0,0,0,0]);
+  const [ratingDistribution, setRatingDistribution] = useState([0, 0, 0, 0, 0]);
   const [averageRating, setAverageRating] = useState(0);
-
   const [sortBy, setSortBy] = useState('most-recent');
   const [filterRating, setFilterRating] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -76,6 +76,25 @@ const Reviews = () => {
     setCanReview(hasOrdered);
   }, [userdata, id]);
 
+  const handleDeleteReview = (deletedId) => {
+    setReviews(prev => prev.filter(review => review.id !== deletedId));
+    setTotalReviews(prev => prev - 1);
+
+    const deletedReview = reviews.find(r => r.id === deletedId);
+    if (deletedReview) {
+      const newDist = [...ratingDistribution];
+      const idx = 5 - deletedReview.rating;
+      newDist[idx] -= 1;
+      setRatingDistribution(newDist);
+
+      const remaining = reviews.filter(r => r.id !== deletedId);
+      const newAvg =
+        remaining.reduce((sum, r) => sum + r.rating, 0) /
+        (remaining.length || 1);
+      setAverageRating(parseFloat(newAvg.toFixed(1)));
+    }
+  };
+
   const handleChange = e => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
@@ -90,7 +109,7 @@ const Reviews = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${usertoken}`  // ✅ Send token
+          Authorization: `Bearer ${usertoken}`
         },
         body: JSON.stringify({
           product: id,
@@ -130,10 +149,11 @@ const Reviews = () => {
         setForm({ author: '', title: '', content: '', rating: '' });
         setShowForm(false);
       } else {
-        alert(data.message || "Failed to submit review");
+        toast.error(data.message || "Failed to submit review");
       }
     } catch (error) {
       console.error("Submit review error:", error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -209,7 +229,13 @@ const Reviews = () => {
 
       <div className="space-y-6">
         {sorted.length > 0 ? (
-          sorted.map(review => <ReviewCard key={review.id} {...review} />)
+          sorted.map(review => (
+            <ReviewCard
+              key={review.id}
+              {...review}
+              onDelete={handleDeleteReview}
+            />
+          ))
         ) : (
           <div className="text-center py-16 text-gray-500">No reviews match your filters.</div>
         )}

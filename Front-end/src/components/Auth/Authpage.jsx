@@ -30,6 +30,7 @@ const AuthPage = ({ onSuccess }) => {
   const location = useLocation();
   const { login } = useAuth();
   const { settoken } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const emailFromQuery = new URLSearchParams(location.search).get("email") || "";
 
@@ -39,7 +40,11 @@ const AuthPage = ({ onSuccess }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
-  const navigate=useNavigate()
+  const [otpCode, setOtpCode] = useState(""); // <--- store OTP here for reset
+
+  // Forgot Password Modal state & email input
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -79,20 +84,19 @@ const AuthPage = ({ onSuccess }) => {
     }
   };
 
-  const handleOtpVerify = async (otpCode) => {
+  // OTP verify for signup and login
+  const handleOtpVerify = async (otp) => {
     try {
-      await fetch("https://reqres.in/api/verify-otp", {
+      await fetch(auth.VERIFY_OTP, {
         method: "POST",
-        body: JSON.stringify({ otp: otpCode }),
+        body: JSON.stringify({ otp }),
         headers: { "Content-Type": "application/json" },
       });
 
       toast.success("OTP verified!");
       setShowOtpModal(false);
 
-      if (mode === "forgot") {
-        setStep("reset");
-      } else if (mode === "signup") {
+      if (mode === "signup") {
         localStorage.setItem("user", JSON.stringify({ name: form.name || "User" }));
         login(form.name || "User");
         onSuccess?.();
@@ -102,6 +106,26 @@ const AuthPage = ({ onSuccess }) => {
       toast.error("Invalid OTP");
     }
   };
+
+  // OTP verify for forgot password flow
+const handleForgotOtpVerify = async (otp) => {
+  console.log("Verifying OTP for reset:", otp); // <-- ADD THIS
+  try {
+    const res = await fetch(auth.FORGOT_OTP_VERIFY, {
+      method: "POST",
+      body: JSON.stringify({ otp }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    toast.success("OTP verified!");
+    setShowOtpModal(false);
+    setOtpCode(otp); // Save OTP for reset password step
+    setStep("reset");
+  } catch (err) {
+    toast.error("Invalid OTP");
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -128,11 +152,11 @@ const AuthPage = ({ onSuccess }) => {
           setShowOtpModal(true);
         } else {
           toast.error(data.message || "Signup failed");
-          navigate("/notfound")
+          navigate("/notfound");
         }
       } catch (err) {
         toast.error("An error occurred during signup");
-        navigate("/notfound")
+        navigate("/notfound");
       }
     } else if (mode === "login") {
       try {
@@ -162,19 +186,57 @@ const AuthPage = ({ onSuccess }) => {
     }
   };
 
-  const handleResetPassword = (e) => {
-    e.preventDefault();
-    if (!form.password || !form.confirmPassword) return toast.error("Fill both fields");
-    if (form.password !== form.confirmPassword) return toast.error("Passwords do not match");
-    toast.success("Password reset successful!");
-    resetAll();
-  };
+const handleResetPassword = async (e) => {
+  e.preventDefault();
+  if (!form.password || !form.confirmPassword) return toast.error("Fill both fields");
+  if (form.password !== form.confirmPassword) return toast.error("Passwords do not match");
+
+  console.log("Reset Password Payload:", {
+    email: forgotEmail,
+    otp: otpCode,
+    password: form.password,
+    confirmPassword: form.confirmPassword,
+  }); // <-- ADDED LOG HERE
+
+  try {
+    const res = await fetch(auth.RESET_PASSWORD, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: forgotEmail,
+        otp: otpCode, // Use saved OTP here
+        password: form.password,
+        confirmPassword: form.confirmPassword,
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log("Reset Password Response:", data); // <-- ADDED LOG HERE
+
+    if (res.ok) {
+      toast.success(data.message || "Password reset successful!");
+      resetAll();
+      setMode("login");
+      setStep("form");
+    } else {
+      toast.error(data.message || "Password reset failed");
+    }
+  } catch (error) {
+    toast.error("An error occurred during password reset");
+  }
+};
 
   const resetAll = () => {
     setMode("login");
     setStep("form");
     setShowOtpModal(false);
+    setShowForgotModal(false);
     setForm({ name: "", email: "", password: "", confirmPassword: "" });
+    setForgotEmail("");
+    setOtpCode("");
     setShowPassword(false);
     setShowConfirmPassword(false);
   };
@@ -186,13 +248,34 @@ const AuthPage = ({ onSuccess }) => {
     onSuccess?.();
   };
 
-  const title = mode === "signup"
-    ? "SIGN UP"
-    : mode === "forgot" && step === "reset"
-    ? "RESET PASSWORD"
-    : mode === "forgot"
-    ? "FORGOT PASSWORD"
-    : "SIGN IN";
+  // Send OTP for forgot password modal
+  const handleForgotSendOtp = async () => {
+    if (!forgotEmail) return toast.error("Please enter your email");
+    try {
+      await fetch(auth.FORGOT_PASSWORD, {
+        method: "POST",
+        body: JSON.stringify({ email: forgotEmail }),
+        headers: { "Content-Type": "application/json" },
+      });
+      toast.success("OTP sent to your email!");
+      setOtpEmail(forgotEmail);
+      setShowOtpModal(true);
+      setShowForgotModal(false);
+      setMode("forgot");
+      setStep("otp");
+    } catch (err) {
+      toast.error("Failed to send OTP");
+    }
+  };
+
+  const title =
+    mode === "signup"
+      ? "SIGN UP"
+      : mode === "forgot" && step === "reset"
+      ? "RESET PASSWORD"
+      : mode === "forgot"
+      ? "FORGOT PASSWORD"
+      : "SIGN IN";
 
   return (
     <div className="p-6 w-full max-w-md mx-auto">
@@ -270,11 +353,7 @@ const AuthPage = ({ onSuccess }) => {
             type="submit"
             className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded"
           >
-            {mode === "signup"
-              ? "SIGN UP"
-              : mode === "forgot"
-              ? "SEND OTP"
-              : "SIGN IN"}
+            {mode === "signup" ? "SIGN UP" : mode === "forgot" ? "SEND OTP" : "SIGN IN"}
           </button>
 
           {mode !== "forgot" && (
@@ -293,9 +372,8 @@ const AuthPage = ({ onSuccess }) => {
         <p className="text-center mt-3">
           <button
             onClick={() => {
-              setMode("forgot");
-              setStep("form");
-              resetAll();
+              setForgotEmail(form.email || "");
+              setShowForgotModal(true);
             }}
             className="text-sm text-orange-700 underline"
           >
@@ -308,20 +386,14 @@ const AuthPage = ({ onSuccess }) => {
         {mode === "signup" ? (
           <>
             Already have an account?{" "}
-            <button
-              onClick={() => setMode("login")}
-              className="text-orange-700 underline"
-            >
+            <button onClick={() => setMode("login")} className="text-orange-700 underline">
               Sign in
             </button>
           </>
         ) : (
           <>
             Don’t have an account?{" "}
-            <button
-              onClick={() => setMode("signup")}
-              className="text-orange-700 underline"
-            >
+            <button onClick={() => setMode("signup")} className="text-orange-700 underline">
               Sign up
             </button>
           </>
@@ -337,11 +409,40 @@ const AuthPage = ({ onSuccess }) => {
             >
               ×
             </button>
+            {/* Pass correct onVerify handler based on mode */}
             <OTPPage
               email={otpEmail}
-              onVerify={handleOtpVerify}
-              onResend={sendOtp}
+              onVerify={mode === "forgot" ? handleForgotOtpVerify : handleOtpVerify}
+              onResend={mode === "forgot" ? handleForgotSendOtp : sendOtp}
             />
+          </div>
+        </div>
+      )}
+
+      {showForgotModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 relative w-full max-w-sm">
+            <button
+              onClick={() => setShowForgotModal(false)}
+              className="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl"
+            >
+              ×
+            </button>
+            <h3 className="text-lg font-semibold mb-4 text-center">Forgot Password</h3>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              className="w-full px-4 py-2 border mb-4"
+              required
+            />
+            <button
+              onClick={handleForgotSendOtp}
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded"
+            >
+              Send OTP
+            </button>
           </div>
         </div>
       )}

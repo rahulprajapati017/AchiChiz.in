@@ -10,7 +10,7 @@ import Quickviews from "../../pages/Quickviews";
 import { product as pro } from "../../data/allapi";
 
 const AllProducts = ({ products }) => {
-  console.log(products)
+  // console.log(products)
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showQuickView, setShowQuickView] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -90,12 +90,12 @@ const AllProducts = ({ products }) => {
               key={product._id}
               className="relative bg-white overflow-hidden border border-gray-200 group transition-all duration-300"
             >
-              <div className="relative w-full h-72 sm:h-80 md:h-96 overflow-hidden group">
+              <div className="relative w-full h-48 sm:h-64 md:h-72 lg:h-80 xl:h-80 overflow-hidden group ">
                 <Link to={`/product/${product._id}`}>
                   <img
                     src={product.image?.url}
                     alt={product.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 "
                   />
                 </Link>
 
@@ -126,18 +126,31 @@ const AllProducts = ({ products }) => {
                 </div>
               </div>
 
-              <div className="px-4 py-4">
-                <p className="text-xs uppercase text-gray-400 tracking-widest">
+              <div className="px-2 py-2 sm:px-4 sm:py-4">
+                <p className="text-[10px] sm:text-xs uppercase text-gray-400 tracking-widest leading-tight">
                   {product.category || "Handmade"}
                 </p>
                 <Link to={`/product/${product._id}`}>
-                  <h2 className="text-base font-semibold text-gray-800 truncate hover:text-red-500 mt-1">
+                  <h2 className="text-[13px] sm:text-base font-semibold text-gray-800 truncate hover:text-red-500 mt-0.5 sm:mt-1 leading-snug">
                     {product.title}
                   </h2>
                 </Link>
-                <p className="text-sm font-medium text-gray-900 mt-1">
-                  ₹{product.price}
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-0.5 sm:mt-1 gap-1 sm:gap-0">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    {/* MRP (cut price) */}
+                    <span className="text-xs sm:text-sm text-gray-500 line-through">
+                      ₹{Math.round(product.price * 1.3)}
+                    </span>
+                    {/* Offer price with green color */}
+                    <span className="text-xs sm:text-sm font-semibold text-green-600">
+                      ₹{product.price}
+                    </span>
+                    {/* Discount percentage */}
+                    {/* <span className="text-[10px] sm:text-xs text-green-600 font-medium">
+                      ({Math.round(((product.price * 1.3 - product.price) / (product.price * 1.3)) * 100)}% OFF)
+                    </span> */}
+                  </div>
+                </div>
               </div>
             </div>
           );

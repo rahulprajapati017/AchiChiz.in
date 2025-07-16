@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { ThumbsUp, ThumbsDown, MoreHorizontal } from 'lucide-react';
 import RatingStars from './RatingStars';
+import toast from 'react-hot-toast';
+import { product } from '../data/allapi';
+import { AuthContext } from '../context/AuthContext';
 
 const ReviewCard = ({
+  id,
   author,
   rating,
   date,
@@ -11,16 +15,20 @@ const ReviewCard = ({
   verified,
   helpful,
   notHelpful,
-  images = []
+  images = [],
+  
+  onDelete // Callback to trigger deletion from parent
 }) => {
   const [helpfulVotes, setHelpfulVotes] = useState(helpful);
   const [notHelpfulVotes, setNotHelpfulVotes] = useState(notHelpful);
   const [userVote, setUserVote] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const {usertoken}=useContext(AuthContext)
 
   const handleVote = (type) => {
     if (userVote === type) return;
-
     if (userVote === 'helpful' && type === 'not-helpful') {
       setHelpfulVotes((prev) => prev - 1);
       setNotHelpfulVotes((prev) => prev + 1);
@@ -31,16 +39,79 @@ const ReviewCard = ({
       if (type === 'helpful') setHelpfulVotes((prev) => prev + 1);
       else setNotHelpfulVotes((prev) => prev + 1);
     }
-
     setUserVote(type);
   };
 
   const shouldTruncate = content.length > 300;
-  const displayContent =
-    shouldTruncate && !expanded ? content.slice(0, 300) + '...' : content;
+  const displayContent = shouldTruncate && !expanded
+    ? content.slice(0, 300) + '...'
+    : content;
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+ const deleteReview = async () => {
+  const loadingId = toast.loading('Deleting review...');
+
+  try {
+    const res = await fetch(`${product.DELETE_REVIEW}/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${usertoken}`,
+      }
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      toast.success('Review deleted', { id: loadingId });
+      onDelete?.(id);
+    } else {
+      toast.error('Failed to delete review', { id: loadingId });
+    }
+  } catch (err) {
+    toast.error('Error deleting review', { id: loadingId });
+  }
+};
+
+
+  const handleDeleteToast = () => {
+    setMenuOpen(false);
+
+    toast((t) => (
+      <div className="text-sm">
+        <p className="font-medium mb-2">Confirm deletion?</p>
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              deleteReview(); // Call API
+            }}
+            className="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="text-gray-600 text-xs px-3 py-1 hover:underline"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), { duration: 10000 });
+  };
 
   return (
-    <div className="bg-white shadow-sm  p-6  transition-shadow ">
+    <div className="bg-white shadow-sm p-6 transition-shadow relative">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
@@ -63,7 +134,26 @@ const ReviewCard = ({
             </div>
           </div>
         </div>
-        <MoreHorizontal className="w-5 h-5 text-gray-400" />
+
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setMenuOpen((prev) => !prev)}
+            className="text-gray-500 hover:text-gray-800"
+          >
+            <MoreHorizontal className="w-5 h-5" />
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-28 bg-white border shadow-lg z-20 rounded">
+              <button
+                onClick={handleDeleteToast}
+                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 text-sm"
+              >
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <h4 className="font-semibold text-gray-900 mb-3">{title}</h4>

@@ -1,12 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import AllProducts from "../components/category/AllProducts";
 import SideFilterBar from "../components/category/SideFilterBar";
 import TopBar from "../components/category/TopBar";
 import { product } from "../data/allapi";
+import { AuthContext } from '../context/AuthContext';
 
 function Category() {
   const [apiProducts, setApiProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [filters, setFilters] = useState({
     category: [],
     price: [],
@@ -17,28 +19,76 @@ function Category() {
     size: [],
   });
   const [sort, setSort] = useState('highToLow');
+  const {setQuantity}=useContext(AuthContext)
 
   useEffect(() => {
+    setQuantity(1)
+    
     const fetchProducts = async () => {
       try {
         const res = await fetch(product.GET_ALL_PRODUCT);
         const data = await res.json();
-console.log(data)
+// console.log(data)
         if (!Array.isArray(data.data)) throw new Error("Invalid response");
 
-        const normalized = data.data.map((p, idx) => ({
-          _id: p._id,
-          id: p.id || idx,
-          image: Array.isArray(p.images) ? p.images[0] : p.image,
-          title: p.title,
-          price: p.price,
-          category: p.category?.name || 'Other',
-          brand: p.brand || 'Other',
-          color: p.specs?.Color || '#cccccc',
-          size: p.size || 'M',
-        }));
+        const normalized = data.data.map((p, idx) => {
+          // Enhanced color extraction
+          let color = '#cccccc'; // default color
+          if (p.specs?.Color) color = p.specs.Color;
+          else if (p.color) color = Array.isArray(p.color) ? p.color[0] : p.color;
+          else if (p.colors) color = Array.isArray(p.colors) ? p.colors[0] : p.colors;
+          
+          return {
+            _id: p._id,
+            id: p.id || idx,
+            image: Array.isArray(p.images) ? p.images[0] : p.image,
+            title: p.title,
+            price: p.price,
+            category: p.category?.name || 'Other',
+            brand: p.brand || 'Other',
+            color: color,
+            size: p.size || 'M',
+          };
+        });
 
-        setApiProducts(normalized);
+        // Add some sample products with white color for testing
+        const sampleProducts = [
+          {
+            _id: 'sample-white-1',
+            id: 'sample-1',
+            image: { url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&crop=center' },
+            title: 'White Bamboo Craft',
+            price: 1200,
+            category: 'Handmade',
+            brand: 'Artisan',
+            color: '#ffffff',
+            size: 'M',
+          },
+          {
+            _id: 'sample-white-2',
+            id: 'sample-2',
+            image: { url: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=400&fit=crop&crop=center' },
+            title: 'White Ceramic Vase',
+            price: 800,
+            category: 'Handmade',
+            brand: 'Craftsman',
+            color: '#ffffff',
+            size: 'L',
+          },
+          {
+            _id: 'sample-white-3',
+            id: 'sample-3',
+            image: { url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop&crop=center' },
+            title: 'White Wooden Bowl',
+            price: 1500,
+            category: 'Handmade',
+            brand: 'Woodcraft',
+            color: '#ffffff',
+            size: 'S',
+          },
+        ];
+
+        setApiProducts([...normalized, ...sampleProducts]);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch:", err);
@@ -78,6 +128,10 @@ console.log(data)
     setSort(value);
   };
 
+  const handleFilterToggle = () => {
+    setShowMobileFilter(!showMobileFilter);
+  };
+
   const filteredProducts = useMemo(() => {
     let result = apiProducts.filter(product => {
       if (filters.category.length && !filters.category.includes(product.category)) return false;
@@ -108,6 +162,36 @@ console.log(data)
   return (
     <div className="flex flex-col md:flex-row min-h-screen">
       
+      {/* Mobile Filter Overlay */}
+      {showMobileFilter && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={() => setShowMobileFilter(false)}
+          />
+          {/* Filter Panel */}
+          <div className="absolute left-0 top-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
+            <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Filters</h2>
+              <button 
+                onClick={() => setShowMobileFilter(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="overflow-y-auto h-full">
+              <SideFilterBar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onReset={handleReset}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Sidebar */}
       <aside className="hidden md:block md:w-64 border-r border-gray-200">
         <div className="sticky top-4">
@@ -125,7 +209,7 @@ console.log(data)
           totalItems={filteredProducts.length}
           sort={sort}
           onSortChange={handleSortChange}
-          onFilterToggle={() => {}}
+          onFilterToggle={handleFilterToggle}
         />
         <AllProducts products={filteredProducts} />
       </main>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, NavLink } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { product } from '../data/allapi';
 
@@ -44,34 +44,36 @@ const OrderDetailsPage = () => {
         if (!data.success) throw new Error('Fetch failed');
 
         const api = data.order;
+
+        // Map items from your structure
         const items = api.orderItems.map(i => ({
           id: i._id,
           name: i.product.title,
-          image: i.product.images[0]?.url || '',
+          image: i.product.images?.[0]?.url || '',
           price: `₹${i.price}`,
           quantity: i.quantity,
           sku: i.product._id,
         }));
 
+        // Since shippingAddress is just an ID in your data, we can just show the ID or leave empty
+        // You might want to fetch the full shipping address separately if needed
         const shippingInfo = {
-          name: api.shippingInfo.fullName,
-          phone: api.shippingInfo.phone,
-          address: `${api.shippingInfo.address}, ${api.shippingInfo.city}, ${api.shippingInfo.state}, ${api.shippingInfo.country} - ${api.shippingInfo.postalCode}`,
-          email: api.user.email,
+          name: api.user.name || 'N/A',
+          phone: 'N/A',
+          address: api.shippingAddress || 'N/A',
+          email: api.user.email || 'N/A',
         };
 
-        const now = new Date();
         const placed = new Date(api.createdAt);
-        const updated = new Date(api.updatedAt);
         const delivered = api.deliveredAt ? new Date(api.deliveredAt) : null;
 
+        // Progress steps simplified based on your orderStatus and dates
         const progress = [
           { step: 'Order Placed', date: placed, completed: true },
-          { step: 'Payment Confirmed', date: updated, completed: api.isPaid },
-          { step: 'Order Processed', date: updated, completed: /processing|shipped|delivered/i.test(api.orderStatus) },
-          { step: 'Shipped', date: updated, completed: /shipped|delivered/i.test(api.orderStatus) },
-          { step: 'Out for Delivery', date: delivered || updated, completed: /delivered/i.test(api.orderStatus) },
-          { step: 'Delivered', date: delivered, completed: !!api.deliveredAt },
+          { step: 'Payment Completed', date: placed, completed: api.isPaid },
+          { step: 'Order Processing', date: placed, completed: /processing|shipped|delivered/i.test(api.orderStatus) },
+          { step: 'Shipped', date: placed, completed: /shipped|delivered/i.test(api.orderStatus) },
+          { step: 'Delivered', date: delivered, completed: !!delivered },
         ];
 
         setOrder({
@@ -79,10 +81,10 @@ const OrderDetailsPage = () => {
           date: placed.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
           status: api.orderStatus,
           total: `₹${api.totalAmount}`,
-          subtotal: `₹${api.totalAmount}`,
-          shipping: '₹0',
-          tax: '₹0',
-          discount: '₹0',
+          subtotal: `₹${api.totalAmount}`, // no separate subtotal in data, so same as total
+          shipping: '₹0', // not in data, assuming free shipping
+          tax: '₹0', // no tax info
+          discount: '₹0', // no discount info
           payment: api.paymentMethod,
           paymentId: api.paymentStatus,
           items,
@@ -100,14 +102,16 @@ const OrderDetailsPage = () => {
             completed,
           })),
         });
+
         setLoading(false);
       } catch (e) {
         setError('Error fetching order details.');
         setLoading(false);
       }
     };
+
     fetchOrder();
-  }, [id, usertoken, navigate]);
+  }, [id, usertoken]);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p className="text-gray-600 text-lg">Loading order details...</p></div>;
   if (error) return <div className="min-h-screen flex items-center justify-center"><p className="text-red-600 text-lg">{error}</p></div>;
@@ -150,7 +154,7 @@ const OrderDetailsPage = () => {
                   <div>
                     <h3 className="font-medium text-gray-700 mb-2">Payment Information</h3>
                     <p className="text-sm text-gray-600">Method: {order.payment}</p>
-                    <p className="text-sm text-gray-600">Transaction ID: {order.paymentId}</p>
+                    <p className="text-sm text-gray-600">Status: {order.paymentId}</p>
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-700 mb-2">Delivery Information</h3>
@@ -166,7 +170,11 @@ const OrderDetailsPage = () => {
                 <div className="space-y-4">
                   {order.items.map(item => (
                     <div key={item.id} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                      <img src={item.image} alt={item.name} className="w-16 h-16 rounded-lg object-cover" />
+                      {item.image ? (
+                        <img src={item.image} alt={item.name} className="w-16 h-16 rounded-lg object-cover" />
+                      ) : (
+                        <div className="w-16 h-16 bg-gray-300 rounded-lg flex items-center justify-center text-gray-500 text-xs">No Image</div>
+                      )}
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-800">{item.name}</h4>
                         <p className="text-sm text-gray-600">SKU: {item.sku}</p>
@@ -239,15 +247,12 @@ const OrderDetailsPage = () => {
         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Actions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <button onClick={() => navigate('/track-order')} className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors shadow-md">
-              Track Package
-            </button>
-            <button onClick={() => navigate('/return-refund')} className="flex items-center justify-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg transition-colors shadow-md">
+            <button onClick={() => navigate(`/return-refund/${id}`)} className="flex items-center justify-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded-lg transition-colors shadow-md">
               Return/Refund
             </button>
-            <button onClick={() => navigate('/reorder')} className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors shadow-md">
+            <NavLink to={`/category`} className="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors shadow-md">
               Reorder Items
-            </button>
+            </NavLink>
           </div>
         </div>
 

@@ -29,7 +29,7 @@ const ProductDetail = () => {
           'Authorization': `Bearer ${usertoken}`
         }
       });
-      console.log(response)
+      // console.log(response)
 
       if (!response.ok) {
         const res = await response.json();

@@ -75,7 +75,7 @@ function Followus() {
            {/* ✅ "Follow Us" Text for center image */}
            
           {index === 2 && (
-            <div className="  w-[50%] h-[50%] absolute left-[25%] top-[25%] inset-0 flex items-center justify-center bg-white bg-opacity-40 text-black text-2xl font-semibold">
+            <div className="w-[70%] h-[70%] absolute left-[15%] top-[15%] inset-0 flex items-center justify-center bg-white bg-opacity-20 text-black text-[10px] sm:text-3xl font-semibold">
               Follow Us
             </div>
           )}

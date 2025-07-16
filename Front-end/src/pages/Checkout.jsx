@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, NavLink, useParams } from 'react-router-dom';
-import { FiChevronLeft, FiMail, FiTruck, FiUser } from 'react-icons/fi';
+import { FiChevronLeft, FiMail, FiTruck, FiUser, FiPlus, FiMinus } from 'react-icons/fi';
 import { AuthContext } from '../context/AuthContext';
 import { auth, product } from '../data/allapi';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { usertoken } = useContext(AuthContext);
+  const { usertoken, quantity, setQuantity } = useContext(AuthContext);
 
   const [userdata, setUserdata] = useState(null);
   const [singleProduct, setSingleProduct] = useState(null);
@@ -15,7 +15,7 @@ const Checkout = () => {
     email: '',
     firstName: '',
     lastName: '',
-    country: '',
+    country: 'India',
     address1: '',
     address2: '',
     city: '',
@@ -24,6 +24,15 @@ const Checkout = () => {
     phone: '',
     deliveryMethod: 'standard',
   });
+  const [loading, setLoading] = useState(false);
+
+  // Redirect or show message if no token
+  useEffect(() => {
+    if (!usertoken) {
+      alert('Please login to proceed to checkout.');
+      navigate('/login');
+    }
+  }, [usertoken, navigate]);
 
   useEffect(() => {
     if (!usertoken) return;
@@ -56,6 +65,7 @@ const Checkout = () => {
         }));
       } catch (err) {
         console.error(err);
+        alert('Failed to load user data. Please try again.');
       }
     })();
   }, [usertoken]);
@@ -70,6 +80,7 @@ const Checkout = () => {
         setSingleProduct(data);
       } catch (err) {
         console.error(err);
+        alert('Failed to load product data.');
       }
     })();
   }, [id]);
@@ -79,32 +90,59 @@ const Checkout = () => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const quantity = 1;
-  const subtotal = singleProduct ? singleProduct.price * quantity : 0;
+  const subtotal = singleProduct ? singleProduct.price * (quantity || 1) : 0;
   const shippingCost = form.deliveryMethod === 'express' ? 15 : 5;
   const total = subtotal + shippingCost;
 
   const isFormValid = () => {
     const required = [
-      'firstName', 'lastName', 'country',
-      'address1', 'city', 'state',
-      'postalCode', 'phone'
+      'firstName',
+      'lastName',
+      'country',
+      'address1',
+      'city',
+      'state',
+      'postalCode',
+      'phone',
     ];
     return required.every(f => form[f]?.trim());
   };
 
+  const incrementQuantity = () => setQuantity(prev => (prev ? prev + 1 : 1));
+  const decrementQuantity = () => setQuantity(prev => (prev && prev > 1 ? prev - 1 : 1));
+
   const handleContinueToPayment = async () => {
     if (!singleProduct || !userdata) return;
 
+    if (!isFormValid()) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
+    const address1 = form.address1.trim();
+    const address2 = form.address2.trim();
+    const streetAddress = address1 + (address2 ? ', ' + address2 : '');
+
+    if (!address1) {
+      alert('Street Address is required');
+      return;
+    }
+
+    setLoading(true);
+
     const shippingInfo = {
-      fullName: `${form.firstName} ${form.lastName}`,
-      address: `${form.address1}${form.address2 ? ', ' + form.address2 : ''}`,
-      city: form.city,
-      state: form.state,
-      postalCode: form.postalCode,
-      country: form.country,
-      phone: form.phone,
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      streetAddress,
+      city: form.city.trim(),
+      state: form.state.trim(),
+      postalCode: form.postalCode.trim(),
+      country: form.country.trim(),
+      phone: form.phone.trim(),
     };
+
+    // Ensure quantity is at least 1
+    const finalQuantity = quantity && quantity > 0 ? quantity : 1;
 
     const payload = {
       user: userdata._id,
@@ -112,15 +150,14 @@ const Checkout = () => {
       orderItems: [
         {
           product: singleProduct._id,
-          quantity,
+          quantity: finalQuantity,
           price: singleProduct.price,
         },
       ],
-      totalAmount: subtotal,          // ✅ Only product total
-      shippingPrice: shippingCost,    // ✅ Send separately
+      totalAmount: total,
+      shippingPrice: shippingCost,
       paymentMethod: 'COD',
-      paymentStatus:'Pending'
-      
+      paymentStatus: 'Pending',
     };
 
     try {
@@ -137,22 +174,16 @@ const Checkout = () => {
 
       if (!res.ok) {
         console.error('Order API error:', result);
-        throw new Error('Order failed');
+        throw new Error(result.message || 'Order failed');
       }
 
-      console.log(result);
-      alert("order submitted")
-      navigate("/category")
-      // navigate('/payment', {
-      //   state: {
-      //     orderId: result.order._id,
-      //     total,
-      //     orderItems: payload.orderItems,
-      //   },
-      // });
+      alert('Order submitted successfully!');
+      navigate('/category');
     } catch (err) {
       console.error(err);
       alert('Order creation failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,7 +196,8 @@ const Checkout = () => {
       <div className="max-w-7xl mx-auto py-8 px-4">
         <div className="mb-8">
           <NavLink to="/cartpage" className="flex items-center gap-2 text-blue-600 hover:text-blue-800">
-            <FiChevronLeft /><span>Back to Cart</span>
+            <FiChevronLeft />
+            <span>Back to Cart</span>
           </NavLink>
           <div className="text-center mt-4">
             <h1 className="text-4xl font-bold">Secure Checkout</h1>
@@ -208,18 +240,66 @@ const Checkout = () => {
                 <option>UK</option>
               </select>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange} className="border rounded-lg px-4 py-3"/>
-                <input name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange} className="border rounded-lg px-4 py-3"/>
+                <input
+                  name="firstName"
+                  placeholder="First Name"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  className="border rounded-lg px-4 py-3"
+                />
+                <input
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  className="border rounded-lg px-4 py-3"
+                />
               </div>
-              <input name="address1" placeholder="Street Address" value={form.address1} onChange={handleChange} className="border rounded-lg px-4 py-3 w-full mb-4"/>
-              <input name="address2" placeholder="Apt, suite (optional)" value={form.address2} onChange={handleChange} className="border rounded-lg px-4 py-3 w-full mb-4"/>
+              <input
+                name="address1"
+                placeholder="Street Address"
+                value={form.address1}
+                onChange={handleChange}
+                className="border rounded-lg px-4 py-3 w-full mb-4"
+              />
+              <input
+                name="address2"
+                placeholder="Apt, suite (optional)"
+                value={form.address2}
+                onChange={handleChange}
+                className="border rounded-lg px-4 py-3 w-full mb-4"
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="city" placeholder="City" value={form.city} onChange={handleChange} className="border rounded-lg px-4 py-3"/>
-                <input name="state" placeholder="State" value={form.state} onChange={handleChange} className="border rounded-lg px-4 py-3"/>
+                <input
+                  name="city"
+                  placeholder="City"
+                  value={form.city}
+                  onChange={handleChange}
+                  className="border rounded-lg px-4 py-3"
+                />
+                <input
+                  name="state"
+                  placeholder="State"
+                  value={form.state}
+                  onChange={handleChange}
+                  className="border rounded-lg px-4 py-3"
+                />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <input name="postalCode" placeholder="Postal Code" value={form.postalCode} onChange={handleChange} className="border rounded-lg px-4 py-3"/>
-                <input name="phone" placeholder="Phone" value={form.phone} onChange={handleChange} className="border rounded-lg px-4 py-3"/>
+                <input
+                  name="postalCode"
+                  placeholder="Postal Code"
+                  value={form.postalCode}
+                  onChange={handleChange}
+                  className="border rounded-lg px-4 py-3"
+                />
+                <input
+                  name="phone"
+                  placeholder="Phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className="border rounded-lg px-4 py-3"
+                />
               </div>
             </div>
 
@@ -227,7 +307,10 @@ const Checkout = () => {
             <div className="bg-white p-6 rounded-xl shadow border">
               <h3 className="text-lg font-semibold mb-4">Shipping Method</h3>
               {['standard', 'express'].map(m => (
-                <label key={m} className="flex items-center mb-2 border rounded-lg p-3 cursor-pointer">
+                <label
+                  key={m}
+                  className="flex items-center mb-2 border rounded-lg p-3 cursor-pointer"
+                >
                   <input
                     type="radio"
                     name="deliveryMethod"
@@ -236,7 +319,9 @@ const Checkout = () => {
                     onChange={handleChange}
                     className="mr-3"
                   />
-                  <span className="flex-1">{m === 'standard' ? 'Standard Shipping' : 'Express Shipping'}</span>
+                  <span className="flex-1">
+                    {m === 'standard' ? 'Standard Shipping' : 'Express Shipping'}
+                  </span>
                   <span className="text-green-600 font-semibold">
                     ₹{m === 'standard' ? '5.00' : '15.00'}
                   </span>
@@ -254,27 +339,62 @@ const Checkout = () => {
               </div>
               <div className="border-b pb-4 mb-4 space-y-4">
                 <div className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg">
-                  <img src={singleProduct.images?.[0]?.url} alt={singleProduct.name} className="w-16 h-16 object-cover rounded-lg"/>
+                  <img
+                    src={singleProduct.images?.[0]?.url}
+                    alt={singleProduct.name}
+                    className="w-16 h-16 object-cover rounded-lg"
+                  />
                   <div className="flex-1">
                     <p className="font-semibold">{singleProduct.name}</p>
-                    <p className="text-xs text-gray-500">Qty: {quantity}</p>
+                    {/* Quantity with increment/decrement buttons */}
+                    <div className="flex items-center space-x-2 mt-1">
+                      <button
+                        type="button"
+                        onClick={decrementQuantity}
+                        className="p-1 border rounded hover:bg-gray-200 disabled:opacity-50"
+                        disabled={quantity <= 1}
+                        aria-label="Decrease quantity"
+                      >
+                        <FiMinus />
+                      </button>
+                      <span className="px-3 py-1 border rounded select-none">{quantity || 1}</span>
+                      <button
+                        type="button"
+                        onClick={incrementQuantity}
+                        className="p-1 border rounded hover:bg-gray-200"
+                        aria-label="Increase quantity"
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
                   </div>
                   <p className="font-semibold">₹{singleProduct.price.toFixed(2)}</p>
                 </div>
               </div>
               <div className="space-y-3">
-                <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal.toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Shipping</span><span>₹{shippingCost.toFixed(2)}</span></div>
-                <div className="flex justify-between"><span>Total</span><span className="font-bold">₹{total.toFixed(2)}</span></div>
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>₹{shippingCost.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Total</span>
+                  <span className="font-bold">₹{total.toFixed(2)}</span>
+                </div>
               </div>
               <button
-                disabled={!isFormValid()}
+                disabled={!isFormValid() || loading}
                 onClick={handleContinueToPayment}
                 className={`w-full py-3 rounded-lg font-semibold ${
-                  isFormValid() ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  isFormValid() && !loading
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                Continue to BUY
+                {loading ? 'Processing...' : 'Continue to BUY'}
               </button>
             </div>
           </div>

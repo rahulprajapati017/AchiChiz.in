@@ -17,6 +17,7 @@ import AccountInformation from "../components/accountInfo";
 import AccountDashboard from "../components/accountdashboard";
 import { AuthContext } from "../context/AuthContext";
 import { auth } from "../data/allapi";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [section, setSection] = useState("dashboard");
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [userdata, setUserdata] = useState(null);
   const { usertoken } = useContext(AuthContext);
+  const navigate=useNavigate()
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -67,7 +69,8 @@ const Dashboard = () => {
   ];
 
   const handleLogout = () => {
-    window.location.href = "/logout";
+    navigate("/logout")
+    
   };
 
   if (!userdata) {
@@ -98,11 +101,11 @@ const Dashboard = () => {
         >
           <div>
             <div className="flex items-center gap-3 mb-8">
-              <img
+              {userdata.image && <img
                 src={userdata.image}
                 alt="User"
                 className="w-12 h-12 rounded-full shadow-lg border-2 border-white/70"
-              />
+              />}
               <div>
                 <p className="text-sm font-semibold text-[#0f2c5c] dark:text-white">
                   {userdata.name}
