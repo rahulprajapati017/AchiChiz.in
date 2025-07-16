@@ -36,8 +36,9 @@ export { default as ReturnRefundPolicy } from './pages/RetunRefundPolicy';
 export { default as OtpPage } from './components/Auth/OtpPage';
 export { default as PageTopBanner } from './components/Displayimage';
 export { default as Payment } from './pages/Payment';
-
-
+export { default as PaymentSuccessPage } from './pages/PaymentSuccess';
+export { default as PaymentFailPage } from './pages/PaymentFailure'; 
+export { default as FaqPage } from './pages/FaqPage';
 
 
 //seller dashboard

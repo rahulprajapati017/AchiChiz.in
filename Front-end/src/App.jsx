@@ -102,7 +102,6 @@ function App() {
               <Route path="/blog/:id" element={<  BlogCommentSection />} />
               <Route path="category" element={<  Category />} />
               <Route path="notfound" element={<  NotFound />} />
-           
               <Route path="/checkout/:id" element={<Checkout />} />
               <Route path="/checkout-page" element={<CheckoutPage />} />
               <Route path="product/:id" element={<ProductPage />} />
